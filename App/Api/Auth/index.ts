@@ -1,17 +1,23 @@
 import {Router} from "express";
+import {Login} from "./Login";
+import {Register} from "./Register";
 
-import {auth} from './Login';
-
-export class AuthRoutes {
+/**
+ * Authentication Endpoints
+ *  - Login
+ *  - Register
+ *  - JWT Auth
+ */
+export class Authentication {
 
   constructor(
-    private readonly _user: Router = Router()
+    private readonly _auth: Router = Router()
   ) {
-    this._user.use('/', auth);
+    this._auth.use('/', new Login().route);
+    this._auth.use('/', new Register().route);
   }
 
   get routes(): Router {
-    return this._user;
+    return this._auth;
   }
-
 }
