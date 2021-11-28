@@ -1,5 +1,6 @@
 import {Router, Request, Response, NextFunction} from "express";
 import {LoginService as loginService} from "../../Services/Auth/LoginService";
+import {AuthenticationService as authService} from "../../Services/Auth/AuthenticationService";
 
 /**
  * All endpoints related to login
@@ -14,7 +15,12 @@ export class Login {
 
   async doLogin(req: Request, res: Response) {
     const user = await loginService.findUser(req.body);
-    res.status(200).send(user);
+
+    if (!user)
+      return res.status(200).send({e: 'Not Found', m: 'User not found with those details'});
+
+    const token = authService.generateToken(user);
+    res.status(200).send({token});
   }
 
   get loginRoute(): Router {
