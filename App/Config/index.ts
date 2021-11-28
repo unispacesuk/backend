@@ -1,2 +1,2 @@
 export {Config} from "./Config";
-export {Connection} from "./Connection";
+export {Connection, client} from "./Connection";

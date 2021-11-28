@@ -2,21 +2,21 @@ import {Config} from "./Config";
 import {Client} from 'pg';
 
 const config = new Config();
+const client = new Client(config.dbUrl);
 
-export class Connection {
+function Connection() {
+  client.connect(error => {
+    if (error) return console.log('Could not connect to the Database!!');
 
-  private readonly _client: Client;
+    console.log(`|    Database is also connected.   |`);
+    console.log('|                                  |');
+    console.log('|==================================|');
+  });
 
-  constructor() {
-    this._client = new Client(config.dbUrl);
-  }
-
-  get connection(): Promise<void> {
-    return this.client.connect();
-  }
-
-  get client(): Client {
-    return this._client;
-  }
-
+  return client;
 }
+
+export {
+  client,
+  Connection
+};

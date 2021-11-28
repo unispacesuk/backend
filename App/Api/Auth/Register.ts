@@ -1,26 +1,12 @@
 import {Router, Request, Response, NextFunction} from "express";
 
+const Register: Router = Router();
+export { Register };
+
 /**
- * Register Endpoint
+ * Register endpoint
  */
-export class Register {
+Register.get('/register', async (req, res) => {
 
-  constructor(
-    private readonly _register: Router = Router()
-  ) {
-    this._register.post('/register', this.doRegister);
-  }
-
-  async doRegister(req: Request, res: Response, next: NextFunction) {
-    console.log('register route');
-    res.status(200).send({message: 'Registered!!!'});
-  }
-
-  /**
-   * Getter for the register route
-   */
-  get route(): Router {
-    return this._register;
-  }
-
-}
+  res.send();
+});
