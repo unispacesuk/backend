@@ -13,14 +13,25 @@ export class Register {
   }
 
   async doRegister(req: Request, res: Response) {
+
+    // TODO username size, email check, password check
+
+    // check if username exists
+    if (await registerService.userExists('username', req.body.username))
+      return res.status(200).send({error: 'Username already registered'});
+
+    // check if email exists
+    if (await registerService.userExists('email', req.body.email))
+      return res.status(200).send({error: 'Email already registered'});
+
     let response;
     try {
-      response = await registerService.createUser(req.body);
-    } catch (e) {
-      return res.status(400).send({e: 'Error', m: 'Could not register the user'});
+      response = await registerService.saveUser(req.body);
+    } catch (error) {
+      return res.status(400).send({error: 'Could not register the user'});
     }
 
-    res.status(200).send({m: response});
+    res.status(200).send({message: response});
   }
 
   get registerRoute(): Router {

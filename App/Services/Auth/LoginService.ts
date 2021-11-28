@@ -8,6 +8,7 @@ export class LoginService {
 
   private static _client: Client = Connection.Client;
 
+  // TODO: Refactor this shit
   public static findUser(user: any) {
     const {username, not_username} = user;
     return new Promise<IUserResponse | null>((resolve, reject) => {
