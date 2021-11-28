@@ -9,7 +9,7 @@ export class Connection {
     return new Promise<string>((resolve, reject) => {
       this._client.connect().then(() => {
         resolve('Database is connected!!!');
-      }).catch((error) => {
+      }).catch(() => {
         reject('Could not connect to Postgres...');
       });
     });
@@ -19,23 +19,3 @@ export class Connection {
     return this._client;
   }
 }
-
-// const config = new Config();
-// const client = new Client(config.dbUrl);
-//
-// function Connection() {
-//   client.connect(error => {
-//     if (error) return console.log('Could not connect to the Database!!');
-//
-//     console.log(`|    Database is also connected.   |`);
-//     console.log('|                                  |');
-//     console.log('|==================================|');
-//   });
-//
-//   return client;
-// }
-//
-// export {
-//   client,
-//   Connection
-// };

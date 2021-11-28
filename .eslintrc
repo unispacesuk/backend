@@ -12,6 +12,9 @@
   "rules": {
     "@typescript-eslint/semi": [
       "error"
+    ],
+    "@typescript-eslint/ban-ts-comment": [
+      0
     ]
   }
 }
