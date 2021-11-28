@@ -1,30 +1,22 @@
 import {Connection} from "../../Config";
 import {Client} from "pg";
 
-interface UserIn {
-  username: string,
-  not_username: string
-}
-
-interface UserOut {
-  username: string,
-  email: string
-}
+import {UserResponse, IUserResponse} from "../../Models/UserModel";
 
 export class LoginService {
 
   private static _client: Client = Connection.Client;
 
-  public static findUser(user: UserIn): Promise<UserOut> {
+  public static findUser(user: any) {
     const {username, not_username} = user;
-    return new Promise<UserOut>((resolve, reject) => {
+    return new Promise<IUserResponse | null>((resolve, reject) => {
       this._client.query('select * from users where username=$1 and not_username=$2',
         [username, not_username], (error, result) => {
-          const response: UserOut = {
-            username: result.rows[0].username,
-            email: result.rows[0].email
-          };
-          resolve(response);
+          if (error) reject(error);
+          if (result.rows.length > 0) {
+            resolve(UserResponse(result.rows[0]));
+          }
+          resolve(null);
         });
     });
   }
