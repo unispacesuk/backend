@@ -1,5 +1,7 @@
+import {Authentication} from "../App/Api/Auth/Authentication";
+
 describe('Validate user authentication route', () => {
-  let auth;
+  let auth: Authentication;
 
   beforeAll(() => {
     auth = new Authentication();
