@@ -1,4 +1,5 @@
-import {Router, Request, Response, NextFunction} from "express";
+import {Router, Request, Response, NextFunction} from 'express';
+import {RegisterService as registerService} from '../../Services/Auth/RegisterService';
 
 /**
  * All endpoints related to register
@@ -12,8 +13,14 @@ export class Register {
   }
 
   async doRegister(req: Request, res: Response) {
+    let response;
+    try {
+      response = await registerService.createUser(req.body);
+    } catch (e) {
+      return res.status(400).send({e: 'Error', m: 'Could not register the user'});
+    }
 
-    res.status(200).send({m: 'hi from register'});
+    res.status(200).send({m: response});
   }
 
   get registerRoute(): Router {
