@@ -1,10 +1,12 @@
 import {Router, Request, Response} from "express";
 import {AuthenticationService as authService} from "../../Services/Auth/AuthenticationService";
 import {TokenExpiredError} from "jsonwebtoken";
-import {rejects} from "assert";
 
 // TODO: verify the current token exp and reject if already expired
 
+/**
+ * Dont think this route will get used so often... But still keep it here
+ */
 export class Authentication {
 
   constructor(

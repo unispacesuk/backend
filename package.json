@@ -7,8 +7,10 @@
     "test": "jest --watchAll --detectOpenHandles"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/jsonwebtoken": "^8.5.6",
     "@types/pg": "^8.6.1",
+    "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "eslint-config-prettier": "^8.3.0",
     "express": "^4.17.1",
