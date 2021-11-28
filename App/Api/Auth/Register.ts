@@ -1,12 +1,23 @@
 import {Router, Request, Response, NextFunction} from "express";
 
-const Register: Router = Router();
-export { Register };
-
 /**
- * Register endpoint
+ * All endpoints related to register
  */
-Register.get('/register', async (req, res) => {
+export class Register {
 
-  res.send();
-});
+  constructor(
+    private _registerRoute: Router = Router()
+  ) {
+    this._registerRoute.get('/register', this.doRegister);
+  }
+
+  async doRegister(req: Request, res: Response) {
+
+    res.status(200).send({m: 'hi from register'});
+  }
+
+  get registerRoute(): Router {
+    return this._registerRoute;
+  }
+
+}

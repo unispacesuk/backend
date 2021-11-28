@@ -1,14 +1,24 @@
 import {Router, Request, Response, NextFunction} from "express";
-
-import {findUser} from "../../Services/Auth/LoginService";
-
-const Login: Router = Router();
-export { Login };
+import {LoginService as loginService} from "../../Services/Auth/LoginService";
 
 /**
- * Login endpoint
+ * All endpoints related to login
  */
-Login.get('/login', async (req, res) => {
-  const user = await findUser(req.body);
-  res.send(user);
-});
+export class Login {
+
+  constructor(
+    private _loginRoute: Router = Router()
+  ) {
+    this._loginRoute.get('/login', this.doLogin);
+  }
+
+  async doLogin(req: Request, res: Response) {
+    const user = await loginService.findUser(req.body);
+    res.status(200).send(user);
+  }
+
+  get loginRoute(): Router {
+    return this._loginRoute;
+  }
+
+}
