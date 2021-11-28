@@ -1,4 +1,4 @@
-import {Router, Request, Response, NextFunction} from "express";
+import {Router, Request, Response} from "express";
 import {LoginService as loginService} from "../../Services/Auth/LoginService";
 import {AuthenticationService as authService} from "../../Services/Auth/AuthenticationService";
 
