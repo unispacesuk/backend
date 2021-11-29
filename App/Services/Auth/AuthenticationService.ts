@@ -21,7 +21,7 @@ export class AuthenticationService {
     return this.token;
   }
 
-  static verifyToken(token: string) {
+  public static verifyToken(token: string) {
     return new Promise((resolve, reject) => {
       verify(token, this._config.secret, (error, payload) => {
         if (error) reject(error);
@@ -33,9 +33,14 @@ export class AuthenticationService {
   /**
    * Authentication middleware method
    */
-  public static authenticate(req: MoreRequest, res: Response, next: NextFunction) {
-    console.log(req.headers.authorization);
-    req.some = 'hey';
+  public static async authenticate(req: MoreRequest, res: Response, next: NextFunction) {
+    const token: any = req.headers.authorization?.split(' ')[1];
+
+    if (!token)
+      return res.status(400).send({error: 'Unauthorized', reason: 'No token provided'});
+
+    console.log(await AuthenticationService.verifyToken(token));
+
     next();
   }
 
