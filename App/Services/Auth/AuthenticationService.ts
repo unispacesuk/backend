@@ -1,5 +1,7 @@
+import {Request, Response, NextFunction} from "express";
 import {sign, verify} from 'jsonwebtoken';
 import {Config} from "../../Config";
+import {MoreRequest} from "../../Interfaces/MoreRequest";
 
 /**
  * This is the authentication middleware
@@ -26,6 +28,15 @@ export class AuthenticationService {
         resolve(payload);
       });
     });
+  }
+
+  /**
+   * Authentication middleware method
+   */
+  public static authenticate(req: MoreRequest, res: Response, next: NextFunction) {
+    console.log(req.headers.authorization);
+    req.some = 'hey';
+    next();
   }
 
 }
