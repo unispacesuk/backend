@@ -1,0 +1,10 @@
+{
+  "user": {
+    "username": "ricardo",
+    "password": "12345",
+    "email": "email@email.com",
+    "created_at": "now()",
+    "last_login": "",
+    "updated_at": ""
+  }
+}

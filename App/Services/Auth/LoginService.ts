@@ -6,7 +6,7 @@ import {UserResponse, IUserResponse} from "../../Models/UserModel";
 
 export class LoginService {
 
-  private static _client: Client = Connection.Client;
+  private static _client: Client = Connection.client;
 
   public static findUser(user: any) {
     const {username, not_username} = user;

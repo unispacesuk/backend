@@ -11,10 +11,13 @@
   ],
   "rules": {
     "@typescript-eslint/semi": [
-      "error"
+      2
     ],
     "@typescript-eslint/ban-ts-comment": [
       0
+    ],
+    "@typescript-eslint/no-empty-function": [
+      1
     ]
   }
 }

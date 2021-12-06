@@ -22,7 +22,7 @@ describe('My config', () => {
   test('Connection is initiated and valid', async () => {
     expect(config.Connection).toBeTruthy();
     await expect(config.Connection.tryConnection()).resolves.toBeTruthy();
-    expect(config.Connection.Client).toBeInstanceOf(Client);
+    expect(config.Connection.client).toBeInstanceOf(Client);
   });
 
 });

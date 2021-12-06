@@ -4,7 +4,7 @@ import {hash} from 'bcrypt';
 
 export class RegisterService {
 
-  private static _client: Client = Connection.Client;
+  private static _client: Client = Connection.client;
 
   public static async createUser(user: any) {
     const {username, not_username, email} = user;
