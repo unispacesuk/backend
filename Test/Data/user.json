@@ -1,7 +1,7 @@
 {
   "user": {
-    "username": "ricardo",
-    "password": "12345",
+    "username": "mockuser",
+    "not_username": "12345",
     "email": "email@email.com",
     "created_at": "now()",
     "last_login": "",
