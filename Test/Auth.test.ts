@@ -1,20 +1,24 @@
-import {Authentication} from "../App/Api/Auth/Authentication";
+import {AuthenticationService as auth} from "../App/Services/Auth/AuthenticationService";
+import {data} from './Data/data';
 
-describe('Validate user authentication route', () => {
-  let auth: Authentication;
+describe('Token authentication test.', () => {
+
+  const user = data.user;
+  let token: string;
 
   beforeAll(() => {
-    auth = new Authentication();
-  });
-
-  test('Authentication class to be initiated', () => {
     expect(auth).toBeTruthy();
   });
 
-  test('Route to exist and be defined', () => {
-    expect(auth.authRoute).toBeDefined();
+  it('Can generate token.', () => {
+    token = auth.generateToken({username: user.username});
+    expect(token).toBeDefined();
   });
 
-  test.todo('test route and return');
+  it('Contains username when decoded', async   () => {
+    // @ts-ignore
+    const {username} = await auth.verifyToken(token);
+    expect(username).toMatch(user.username);
+  });
 
 });

@@ -1,4 +1,4 @@
-{
+export const data = {
   "user": {
     "username": "mockuser",
     "not_username": "12345",
@@ -7,4 +7,4 @@
     "last_login": "",
     "updated_at": ""
   }
-}
+};
