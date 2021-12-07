@@ -1,6 +1,6 @@
 export const data = {
   "user": {
-    "username": "mockuser",
+    "username": "uncleric",
     "not_username": "12345",
     "email": "email@email.com",
     "created_at": "now()",
