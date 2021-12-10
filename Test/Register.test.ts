@@ -23,9 +23,9 @@ describe('Register a user', () => {
 
   it('Can create user.', async () => {
     try {
-      const {rows} = await client.query(`INSERT INTO users (username, email, not_username)
+      const {rows} = await client.query(`INSERT INTO users (username, email, not_username, first_name, last_name)
                                          VALUES ('${user.username}', '${user.email}',
-                                                 '${user.not_username}')
+                                                 '${user.not_username}', '${user.first_name}', '${user.last_name}')
                                          RETURNING *`);
       expect(rows.length).toBeGreaterThan(0);
     } catch (e) {

@@ -14,8 +14,8 @@ CREATE SEQUENCE USERS_ID_AI;
 CREATE TABLE users (
     _id SMALLINT NOT NULL DEFAULT NEXTVAL('USERS_ID_AI'),
     username VARCHAR (100) NOT NULL UNIQUE,
-    --first_name varchar (100) NOT NULL,
-    --last_name varchar (100) NOT NULL,
+    first_name varchar (100) NOT NULL,
+    last_name varchar (100) NOT NULL,
     email varchar (100) NOT NULL UNIQUE,
     not_username varchar (255) NOT NULL, -- password
     PRIMARY KEY (_id)
@@ -41,7 +41,7 @@ CREATE TABLE user_roles (
 
 -- questions table
 CREATE TABLE questions (
-    _id UUID NOT NULL UNIQUE,
+    _id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     user_id SMALLINT REFERENCES users (_id),
     title VARCHAR (255) NOT NULL,
     content TEXT NOT NULL,

@@ -1,5 +1,5 @@
-import {Config} from "./Config";
-import {Client} from 'pg';
+import { Config } from './Config';
+import { Client } from 'pg';
 
 /**
  * Doesn't need to be a class, but can also be a class
@@ -11,13 +11,16 @@ export class Connection {
   /**
    * Try the database connection
    */
-  static tryConnection(): Promise<string> {
+  public tryConnection(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      this._client.connect().then(() => {
-        resolve('Database is connected!!!');
-      }).catch(() => {
-        reject('Could not connect to Postgres...');
-      });
+      Connection._client
+        .connect()
+        .then(() => {
+          resolve('Database is connected!!!');
+        })
+        .catch(() => {
+          reject('Could not connect to Postgres...');
+        });
     });
   }
 
