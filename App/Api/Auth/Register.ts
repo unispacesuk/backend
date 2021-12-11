@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { RegisterService as registerService } from '../../Services/Auth/RegisterService';
+import { RegisterService } from '../../Services/Auth/RegisterService';
+import { UserInterface } from '../../Interfaces/UserInterface';
 
 /**
  * All endpoints related to register
@@ -10,15 +11,44 @@ export class Register {
   }
 
   async doRegister(req: Request, res: Response) {
-    let response;
-    try {
-      response = await registerService.createUser(req.body);
-    } catch (e) {
-      // console.log(e);
-      return res.status(400).send({ e: 'Error', m: 'Could not register the user' });
-    }
+    const user: UserInterface = req.body;
 
-    res.status(200).send({ m: response });
+    // check if the username is already in the database
+    const usernameExists = await Promise.resolve(
+      RegisterService.findOne({
+        field: 'username',
+        value: user.username,
+      })
+    );
+    if (usernameExists.rows.length > 0)
+      return res.status(200).send({
+        error: 400,
+        username: user.username,
+        message: 'username already registered',
+      });
+
+    // check if the email is already in the database
+    const emailExists = await Promise.resolve(
+      RegisterService.findOne({
+        field: 'email',
+        value: user.email,
+      })
+    );
+    if (emailExists.rows.length > 0)
+      return res.status(200).send({
+        error: 400,
+        email: user.email,
+        message: 'email already registered',
+      });
+
+    // register the user or error is something is wrong
+    try {
+      await Promise.resolve(RegisterService.createUser(user));
+      return res.status(200).send({ error: null, message: 'user registered successfully' });
+    } catch (e) {
+      console.log(e);
+      return res.status(200).send({ error: 400, message: 'something went wrong' });
+    }
   }
 
   get registerRoute(): Router {

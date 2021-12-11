@@ -7,6 +7,12 @@ import {NextFunction, Request, Response} from "express";
 
 export class BodyMiddleware {
 
+  /**
+   * TODO: Loop the body and remove any password or api key that might be send in the body.
+   * @param req
+   * @param res
+   * @param next
+   */
   public printBody(req: Request, res: Response, next: NextFunction): void {
     console.log(req.body);
     next();
