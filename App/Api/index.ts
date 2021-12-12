@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { Auth } from './Auth';
 
 // test data
-import router from "../Decorators/DecoratorFactory";
+import router from '../Decorators/DecoratorFactory';
 
 const Api: Router = Router();
 export { Api };

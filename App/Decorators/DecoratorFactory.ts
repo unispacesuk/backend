@@ -17,7 +17,6 @@ export function get(path: string) {
       args[1].status(200).send(t);
       return t;
     };
-
   };
 }
 
