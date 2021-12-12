@@ -14,7 +14,9 @@ export class BodyMiddleware {
    * @param next
    */
   public printBody(req: Request, res: Response, next: NextFunction): void {
-    console.log(req.body);
+    if (req.method === 'POST') {
+      console.log(req.body);
+    }
     next();
   }
 

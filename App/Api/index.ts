@@ -1,8 +1,15 @@
 import { Request, Response, Router } from 'express';
 import { Auth } from './Auth';
 
+// test data
+import router from "../Decorators/DecoratorFactory";
+
 const Api: Router = Router();
 export { Api };
+
+// test data
+const DecTest: Router = router;
+Api.use('/t', DecTest);
 
 /**
  * Main API Endpoint
