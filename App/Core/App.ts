@@ -5,8 +5,9 @@ import * as morgan from 'morgan';
 import { BodyMiddleware } from '../Middlewares/Body';
 
 // test data
-import TestRoute from '../Decorators/TestRoute';
-import {createRoutes, RequestFactory} from '../Decorators/DecoratorFactory';
+import TestRoute from './Decorators/TestRoute';
+import {createRoutes, RequestFactory} from './Decorators/DecoratorFactory';
+import {NextFunction, Request, Response} from "express";
 
 export default class App {
   private _express: express.Express;
@@ -31,6 +32,15 @@ export default class App {
   public setMiddlewares(): App {
     this._express.use(express.json());
     this._express.use(morgan('dev'));
+
+    /**
+     * This piece of code allows to intercept the request and allows for a good way of getting the body
+     *  and organising a response. This then allows for a good way to use decorators 🤙🏼
+     */
+    this._express.use((req: Request, res: Response, next: NextFunction) => {
+      new RequestFactory(req, res);
+      next();
+    });
 
     this._express.use('/', this._bodyMiddleware.printBody);
     this._express.use('/', Api);

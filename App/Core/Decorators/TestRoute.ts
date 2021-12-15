@@ -1,5 +1,5 @@
-import {get, RequestFactory} from './DecoratorFactory';
-import { Connection } from '../Config';
+import {get, RequestFactory as rf} from './DecoratorFactory';
+import { Connection } from '../../Config';
 
 export default class TestRoute {
 
@@ -12,7 +12,8 @@ export default class TestRoute {
       id,
     ]);
 
-    console.log(RequestFactory.getHeaders());
+    console.log(rf.request().headers);
+    // console.log(RequestFactory.getHeaders());
 
     return {
       rows,
