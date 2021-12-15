@@ -1,8 +1,8 @@
-import {get, RequestFactory as rf} from './DecoratorFactory';
+import { get, post } from './DecoratorFactory';
+import { RequestContext as rc } from '../Requests';
 import { Connection } from '../../Config';
 
 export default class TestRoute {
-
   @get('/test')
   async test() {
     // const id = args[0].params.id;
@@ -12,11 +12,21 @@ export default class TestRoute {
       id,
     ]);
 
-    console.log(rf.request().headers);
+    console.log(rc.request().headers);
+    console.log(rc.request().body);
     // console.log(RequestFactory.getHeaders());
 
     return {
       rows,
     };
+  }
+
+  @post('/test2')
+  async test2() {
+    console.log(rc.request().body);
+
+    console.log(rc.response()._response);
+
+    rc.response().send({ m: 'nice!!!!' });
   }
 }

@@ -6,8 +6,9 @@ import { BodyMiddleware } from '../Middlewares/Body';
 
 // test data
 import TestRoute from './Decorators/TestRoute';
-import {createRoutes, RequestFactory} from './Decorators/DecoratorFactory';
-import {NextFunction, Request, Response} from "express";
+import { createRoutes } from './Decorators/DecoratorFactory';
+import { NextFunction, Request, Response } from 'express';
+import { RequestContext } from './Requests';
 
 export default class App {
   private _express: express.Express;
@@ -38,7 +39,7 @@ export default class App {
      *  and organising a response. This then allows for a good way to use decorators 🤙🏼
      */
     this._express.use((req: Request, res: Response, next: NextFunction) => {
-      new RequestFactory(req, res);
+      new RequestContext(req, res);
       next();
     });
 
