@@ -12,7 +12,8 @@ export class AuthenticationService {
   static token = '';
   private static _config = new Config();
 
-  static generateToken(data: UserModel): string {
+  // TODO: Something wrong with the model. please fix
+  static generateToken(data: any): string {
     this.token = sign(data, this._config.secret, {
       algorithm: 'HS256',
       expiresIn: '5 days',

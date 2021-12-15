@@ -6,7 +6,7 @@ import { BodyMiddleware } from '../Middlewares/Body';
 
 // test data
 import TestRoute from '../Decorators/TestRoute';
-import { createRoutes } from '../Decorators/DecoratorFactory';
+import {createRoutes, RequestFactory} from '../Decorators/DecoratorFactory';
 
 export default class App {
   private _express: express.Express;

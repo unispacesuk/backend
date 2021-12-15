@@ -1,13 +1,20 @@
-import { Request, Response, Router } from 'express';
+import {NextFunction, Request, Response, Router} from 'express';
 import { Auth } from './Auth';
 
 // test data
-import router from '../Decorators/DecoratorFactory';
+import router, {RequestFactory} from '../Decorators/DecoratorFactory';
 
 const Api: Router = Router();
 export { Api };
 
-// test data
+/**
+ * This piece of code allows to intercept the request and allows for a good way of getting the body
+ *  and organising a response. This then allows for a good way to use decorators 🤙🏼
+ */
+Api.use((req: Request, res: Response, next: NextFunction) => {
+  new RequestFactory(req, res);
+  next();
+});
 const DecTest: Router = router;
 Api.use('/t', DecTest);
 

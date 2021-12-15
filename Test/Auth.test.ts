@@ -4,6 +4,7 @@ import {data} from './Data/data';
 describe('Token authentication test.', () => {
 
   const user = data.user;
+  const username = user.username;
   let token: string;
 
   beforeAll(() => {
@@ -11,7 +12,7 @@ describe('Token authentication test.', () => {
   });
 
   it('Can generate token.', () => {
-    token = auth.generateToken({username: user.username});
+    token = auth.generateToken({username: username});
     expect(token).toBeDefined();
   });
 
