@@ -1,22 +1,24 @@
-import {Request, Response} from "express";
-import {RequestHandler, ResponseHandler} from "../Requests";
+import { NextFunction, Request, Response } from 'express';
+import { RequestHandler, ResponseHandler } from '../Requests';
 
 /**
  * Test for Request Handler
  */
 export class RequestContext {
-
   static _request: Request | undefined;
   static _response: Response | undefined;
 
-  constructor(
-    request?: Request,
-    response?: Response
-  ) {
-    if (request)
-      RequestContext._request = request;
-    if (response)
-      RequestContext._response = response;
+  /**
+   * Initiate a middleware for the decorators
+   * @param request
+   * @param response
+   * @param next
+   */
+  initRouter(request: Request, response: Response, next: NextFunction) {
+    RequestContext._request = request;
+    RequestContext._response = response;
+
+    next();
   }
 
   static request(): RequestHandler {
@@ -26,5 +28,4 @@ export class RequestContext {
   static response(): ResponseHandler {
     return new ResponseHandler(RequestContext._response);
   }
-
 }

@@ -10,7 +10,13 @@ export class ResponseHandler {
     this._response = response;
   }
 
+  status(code: number) {
+    this._response?.status(code);
+    return this;
+  }
+
   send(body: any) {
-    this._response?.status(200).send(body);
+    this._response?.send(body);
+    return this;
   }
 }

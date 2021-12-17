@@ -7,7 +7,6 @@ import { BodyMiddleware } from '../Middlewares/Body';
 // test data
 import TestRoute from './Decorators/TestRoute';
 import { createRoutes } from './Decorators/DecoratorFactory';
-import { NextFunction, Request, Response } from 'express';
 import { RequestContext } from './Requests';
 
 export default class App {
@@ -38,10 +37,7 @@ export default class App {
      * This piece of code allows to intercept the request and allows for a good way of getting the body
      *  and organising a response. This then allows for a good way to use decorators 🤙🏼
      */
-    this._express.use((req: Request, res: Response, next: NextFunction) => {
-      new RequestContext(req, res);
-      next();
-    });
+    this._express.use(new RequestContext().initRouter);
 
     this._express.use('/', this._bodyMiddleware.printBody);
     this._express.use('/', Api);

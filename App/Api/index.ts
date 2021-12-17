@@ -1,8 +1,8 @@
-import {NextFunction, Request, Response, Router} from 'express';
+import {Request, Response, Router} from 'express';
 import { Auth } from './Auth';
 
 // test data
-import router, {RequestFactory} from '../Core/Decorators/DecoratorFactory';
+import router from '../Core/Decorators/DecoratorFactory';
 
 const Api: Router = Router();
 export { Api };
