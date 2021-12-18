@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { RequestContext } from '../Requests';
+import { RequestContext } from '../../Requests';
 import 'reflect-metadata';
 
 const router: Router = Router();

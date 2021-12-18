@@ -4,43 +4,26 @@ import { Api } from '../Api';
 import * as morgan from 'morgan';
 import { BodyMiddleware } from '../Middlewares/Body';
 
-// test data
-import TestRoute from './Decorators/TestRoute';
-import { createRoutes } from './Decorators/DecoratorFactory';
-import { RequestContext } from './Requests';
-
 export default class App {
   private _express: express.Express;
   private _config: Config;
   private _connection: Connection;
   private _bodyMiddleware: BodyMiddleware;
 
-  // test data
-  private _testRoute: TestRoute;
 
   constructor() {
     this._express = express();
     this._config = new Config();
     this._connection = new Connection();
     this._bodyMiddleware = new BodyMiddleware();
-
-    // test data
-    this._testRoute = new TestRoute();
-    createRoutes();
   }
 
   public setMiddlewares(): App {
     this._express.use(express.json());
     this._express.use(morgan('dev'));
 
-    /**
-     * This piece of code allows to intercept the request and allows for a good way of getting the body
-     *  and organising a response. This then allows for a good way to use decorators 🤙🏼
-     */
-    this._express.use(new RequestContext().initRouter);
-
     this._express.use('/', this._bodyMiddleware.printBody);
-    this._express.use('/', Api);
+    this._express.use('/', new Api().mainRoutes);
 
     return this;
   }
