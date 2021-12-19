@@ -14,14 +14,14 @@ export function middleware() {
       next();
     };
 
-    const meta: middlewareMetaData = {
-      target: descriptor.value
-    };
-    const metaDataList = Reflect.getMetadata('middleware', target.constructor) || [];
-    if (!Reflect.hasMetadata('middleware', target.constructor)) {
-      Reflect.defineMetadata('middleware', metaDataList, target.constructor);
-    }
-    metaDataList.push(meta);
-    Reflect.defineMetadata('middleware', metaDataList, target.constructor);
+    // const meta: middlewareMetaData = {
+    //   target: descriptor.value
+    // };
+    // const metaDataList = Reflect.getMetadata('middleware', target.constructor) || [];
+    // if (!Reflect.hasMetadata('middleware', target.constructor)) {
+    //   Reflect.defineMetadata('middleware', metaDataList, target.constructor);
+    // }
+    // metaDataList.push(meta);
+    // Reflect.defineMetadata('middleware', metaDataList, target.constructor);
   };
 }

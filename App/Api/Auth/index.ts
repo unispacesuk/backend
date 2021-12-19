@@ -1,7 +1,7 @@
-import {Router} from "express";
-import {Login} from "./Login";
-import {Register} from "./Register";
-import {Authentication} from "./Authentication";
+import { Router } from 'express';
+import { Login } from './Login';
+import { Register } from './Register';
+import { Authentication } from './Authentication';
 
 const Auth: Router = Router();
 export { Auth };
@@ -12,6 +12,6 @@ export { Auth };
  *  - Register
  *  - JWT Auth
  */
-Auth.use('/auth', new Login().loginRoute);
-Auth.use('/auth', new Register().registerRoute);
-Auth.use('/auth', new Authentication().authRoute);
+Auth.use('/auth', new Login().route);
+Auth.use('/auth', new Register().route);
+Auth.use('/auth', new Authentication().route);

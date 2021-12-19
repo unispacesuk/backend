@@ -1,17 +1,24 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { RegisterService } from '../../Services/Auth/RegisterService';
 import { UserInterface } from '../../Interfaces/UserInterface';
+import { request, response } from '../../Core/Requests';
+import { Route } from "../../Core/Route/Route";
 
 /**
  * All endpoints related to register
  */
-export class Register {
+export class Register extends Route {
   constructor(private _registerRoute: Router = Router()) {
-    this._registerRoute.post('/register', this.doRegister);
+    super();
+    this.createRoute({
+      method: 'post',
+      path: '/register',
+      controller: this.doRegister
+    });
   }
 
-  async doRegister(req: Request, res: Response) {
-    const user: UserInterface = req.body;
+  async doRegister() {
+    const user: UserInterface = request().body;
 
     // check if the username is already in the database
     const usernameExists = await Promise.resolve(
@@ -21,7 +28,7 @@ export class Register {
       })
     );
     if (usernameExists.rows.length > 0)
-      return res.status(200).send({
+      return response().status(200).send({
         error: 400,
         username: user.username,
         message: 'username already registered',
@@ -35,7 +42,7 @@ export class Register {
       })
     );
     if (emailExists.rows.length > 0)
-      return res.status(200).send({
+      return response().status(200).send({
         error: 400,
         email: user.email,
         message: 'email already registered',
@@ -44,10 +51,10 @@ export class Register {
     // register the user or error is something is wrong
     try {
       await Promise.resolve(RegisterService.createUser(user));
-      return res.status(200).send({ error: null, message: 'user registered successfully' });
+      return response().status(200).send({ error: null, message: 'user registered successfully' });
     } catch (e) {
       console.log(e);
-      return res.status(200).send({ error: 400, message: 'something went wrong' });
+      return response().status(200).send({ error: 400, message: 'something went wrong' });
     }
   }
 

@@ -29,4 +29,8 @@ export class RequestHandler {
   get body(): any {
     return this._request?.body;
   }
+
+  get method(): any {
+    return this._request?.method;
+  }
 }

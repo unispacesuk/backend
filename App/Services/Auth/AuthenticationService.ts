@@ -3,6 +3,8 @@ import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { Config } from '../../Config';
 import { MoreRequest } from '../../Interfaces/MoreRequest';
 import { UserModel } from '../../Models/UserModel';
+import {request, response} from "../../Core/Requests";
+import {middleware} from "../../Core/Decorators/MiddlwareDecorator";
 
 /**
  * This is the authentication middleware
@@ -34,15 +36,14 @@ export class AuthenticationService {
   /**
    * Authentication middleware method
    */
-  public static async authenticate(req: MoreRequest, res: Response, next: NextFunction) {
-    const token: string | undefined = req.headers.authorization?.split(' ')[1];
+  @middleware()
+  public static async authenticate() {
+    const token: string | undefined = request().headers?.authorization?.split(' ')[1];
 
     if (!token)
-      return res.status(200).send({
+      return response().status(200).send({
         error: 400,
         reason: 'no authorization token provided',
       });
-
-    next();
   }
 }
