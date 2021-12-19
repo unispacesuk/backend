@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { RequestHandler, ResponseHandler } from '../Requests';
 
-/**
- * Test for Request Handler
- */
+// export type RequestRoute = (req: Request, res: Response, next: NextFunction) => any;
+
 export class RequestContext {
   static _request: Request | undefined;
   static _response: Response | undefined;
