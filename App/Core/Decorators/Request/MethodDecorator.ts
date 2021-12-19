@@ -1,25 +1,15 @@
-import { Router } from 'express';
-import { RequestContext } from '../../Requests';
+import { RequestContext, response } from '../../Requests';
 import 'reflect-metadata';
 
-const router: Router = Router();
-export default router;
-
-const routes: RouteI[] = [];
+export interface routeMetaData {
+  url: string;
+  method: string;
+  target: any;
+}
 
 // interface for the decorator method
 interface HttpDecorator {
   (target: any, propertyKey: string, descriptor: PropertyDescriptor): void;
-}
-
-interface RouteI {
-  method: string | string[],
-  path: string,
-  descriptor: PropertyDescriptor
-}
-
-export function all(path: string): HttpDecorator {
-  return httpRequest(['get', 'head', 'post', 'put', 'patch', 'delete'], path);
 }
 
 export function get(path: string): HttpDecorator {
@@ -51,26 +41,29 @@ export function head(path: string): HttpDecorator {
   return httpRequest('head', path);
 }
 
-export function httpRequest(method: string | string[], path: string) {
+export function httpRequest(method: string, path: string) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const original = descriptor.value;
-    routes.push({ method: method, path: path, descriptor });
 
+    console.log(`route for ${path} has been registered`);
+
+    const original = descriptor.value;
     descriptor.value = async function () {
-      const response = await original.call();
-      RequestContext.response().send(response);
+      const body = await original.call();
+      response().send(body);
     };
+
+    const meta: routeMetaData = {
+      url: path,
+      method: method,
+      target: descriptor.value
+    };
+    const metaDataList = Reflect.getMetadata('method', target.constructor) || [];
+    if (!Reflect.hasMetadata('method', target.constructor)) {
+      Reflect.defineMetadata('method', metaDataList, target.constructor);
+    }
+    metaDataList.push(meta);
+    Reflect.defineMetadata('method', metaDataList, target.constructor);
 
     return descriptor;
   };
-}
-
-export function createRoutes() {
-  for (const r of routes) {
-    // maybe we can have some abstraction here to not have to repeat all this ugliness
-    if (r.method === 'get') router.get(r.path, r.descriptor.value);
-    if (r.method === 'post') router.post(r.path, r.descriptor.value);
-    if (r.method === 'patch') router.patch(r.path, r.descriptor.value);
-    if (r.method === 'put') router.put(r.path, r.descriptor.value);
-  }
 }

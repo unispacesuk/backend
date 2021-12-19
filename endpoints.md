@@ -25,3 +25,13 @@ Collection of API endpoints for logging and testing purposes.
 ```javascript
   //example response
 ```
+
+***
+
+### Decorators
+
+```javascript
+@middleware()
+// This decorator registers a function as a middleware
+// It will run the next() function automatically, we just write the logic
+```
