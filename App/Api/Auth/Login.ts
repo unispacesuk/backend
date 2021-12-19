@@ -1,30 +1,39 @@
-import {Router, Request, Response} from "express";
-import {LoginService as loginService} from "../../Services/Auth/LoginService";
-import {AuthenticationService as authService} from "../../Services/Auth/AuthenticationService";
-
+import { LoginService } from '../../Services/Auth/LoginService';
+import {
+  AuthenticationService as AuthService
+} from '../../Services/Auth/AuthenticationService';
+import { UserModel } from '../../Models/UserModel';
+import { request, response } from '../../Core/Requests';
+import { Route } from '../../Core/Route/Route';
 /**
  * All endpoints related to login
  */
-export class Login {
+export class Login extends Route {
 
-  constructor(
-    private _loginRoute: Router = Router()
-  ) {
-    this._loginRoute.get('/login', this.doLogin);
+  constructor() {
+    super();
+    this.createRoute({
+      method: 'get',
+      path: '/login',
+      controller: this.doLogin
+    });
+    // this._loginRoute.get('/login', this.doLogin);
   }
 
-  async doLogin(req: Request, res: Response) {
-    const user = await loginService.findUser(req.body);
+  async doLogin() {
+    /*
+    This seems confusing, but,
+      the user constant will have a body of type IUserResponse and findUser requires a UserInterface.
+     */
+    const user: UserModel | null = await LoginService.findUser(request().body);
 
     if (!user)
-      return res.status(200).send({e: 'Not Found', m: 'User not found with those details'});
+      return response().status(200).send({
+        error: 400,
+        message: 'incorrect details',
+      });
 
-    const token = authService.generateToken(user);
-    res.status(200).send({token});
+    const token = AuthService.generateToken(user);
+    response().status(200).send({ token });
   }
-
-  get loginRoute(): Router {
-    return this._loginRoute;
-  }
-
 }

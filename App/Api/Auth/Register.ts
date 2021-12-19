@@ -1,41 +1,64 @@
-import {Router, Request, Response} from 'express';
-import {RegisterService as registerService} from '../../Services/Auth/RegisterService';
+import { Router } from 'express';
+import { RegisterService } from '../../Services/Auth/RegisterService';
+import { UserInterface } from '../../Interfaces/UserInterface';
+import { request, response } from '../../Core/Requests';
+import { Route } from "../../Core/Route/Route";
 
 /**
  * All endpoints related to register
  */
-export class Register {
-
-  constructor(
-    private _registerRoute: Router = Router()
-  ) {
-    this._registerRoute.get('/register', this.doRegister);
+export class Register extends Route {
+  constructor(private _registerRoute: Router = Router()) {
+    super();
+    this.createRoute({
+      method: 'post',
+      path: '/register',
+      controller: this.doRegister
+    });
   }
 
-  async doRegister(req: Request, res: Response) {
+  async doRegister() {
+    const user: UserInterface = request().body;
 
-    // TODO username size, email check, password check
+    // check if the username is already in the database
+    const usernameExists = await Promise.resolve(
+      RegisterService.findOne({
+        field: 'username',
+        value: user.username,
+      })
+    );
+    if (usernameExists.rows.length > 0)
+      return response().status(200).send({
+        error: 400,
+        username: user.username,
+        message: 'username already registered',
+      });
 
-    // check if username exists
-    if (await registerService.userExists('username', req.body.username))
-      return res.status(200).send({error: 'Username already registered'});
+    // check if the email is already in the database
+    const emailExists = await Promise.resolve(
+      RegisterService.findOne({
+        field: 'email',
+        value: user.email,
+      })
+    );
+    if (emailExists.rows.length > 0)
+      return response().status(200).send({
+        error: 400,
+        email: user.email,
+        message: 'email already registered',
+      });
 
-    // check if email exists
-    if (await registerService.userExists('email', req.body.email))
-      return res.status(200).send({error: 'Email already registered'});
-
-    let response;
+    // register the user or error is something is wrong
     try {
-      response = await registerService.saveUser(req.body);
-    } catch (error) {
-      return res.status(400).send({error: 'Could not register the user'});
+      await Promise.resolve(RegisterService.createUser(user));
+      return response().status(200).send({ error: null, message: 'user registered successfully' });
+    } catch (e) {
+      console.log(e);
+      return response().status(200).send({ error: 400, message: 'something went wrong' });
     }
-
-    res.status(200).send({message: response});
   }
 
   get registerRoute(): Router {
     return this._registerRoute;
   }
-
 }

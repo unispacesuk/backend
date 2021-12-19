@@ -1,43 +1,45 @@
-import {Router, Request, Response} from "express";
-import {AuthenticationService as authService} from "../../Services/Auth/AuthenticationService";
-import {TokenExpiredError} from "jsonwebtoken";
+import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
+import { TokenExpiredError } from 'jsonwebtoken';
+import { Route } from '../../Core/Route/Route';
+import { request, response } from '../../Core/Requests';
 
 // TODO: verify the current token exp and reject if already expired
 
 /**
  * Dont think this route will get used so often... But still keep it here
  */
-export class Authentication {
-
-  constructor(
-    private _authRoute: Router = Router()
-  ) {
-    this._authRoute.post('/authenticate', this.authenticate);
+export class Authentication extends Route {
+  constructor() {
+    super();
+    this.createRoute({
+      method: 'post',
+      path: '/authenticate',
+      controller: this.authenticate,
+    });
+    // this._authRoute.post('/authenticate', this.authenticate);
   }
 
-  async authenticate(req: Request, res: Response) {
-    const {authorization} = req.headers;
+  async authenticate() {
+    // @ts-ignore
+    const { authorization } = request().headers;
     const token = authorization?.split(' ')[1];
 
     if (!token)
-      return res.status(200).send({e: 'No token', m: 'No token sent on the request'});
+      return response().status(200).send({ e: 'No token', m: 'No token sent on the request' });
 
     let payload;
     try {
       payload = await authService.verifyToken(token);
     } catch (e) {
       if (e instanceof TokenExpiredError) {
-        return res.status(200).send({e: 'Token expired', m: 'The token used to authenticate is expired'});
+        return response()
+          .status(200)
+          .send({ e: 'Token expired', m: 'The token used to authenticate is expired' });
       } else {
         console.log(e);
       }
     }
 
-    res.status(200).send({payload});
+    response().status(200).send({ payload });
   }
-
-  get authRoute(): Router {
-    return this._authRoute;
-  }
-
 }

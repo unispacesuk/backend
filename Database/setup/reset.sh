@@ -44,6 +44,12 @@ else
     psql -U "$username" -d "$database" <"DropAll.sql"
   else
     echo "Cancelling..."
+    exit
   fi
 
 fi
+
+echo
+echo "Now rebuilding..."
+echo
+sh setup.sh -u $username -p $password -d $database;

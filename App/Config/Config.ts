@@ -2,6 +2,9 @@ import {config as dotenv} from "dotenv";
 
 dotenv();
 
+/**
+ * Doesn't need to be class
+ */
 export class Config {
 
   private PORT: number = process.env.PORT as unknown as number || 3000;

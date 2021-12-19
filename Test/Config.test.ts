@@ -1,5 +1,5 @@
 import * as config from '../App/Config';
-import {Client} from "pg";
+import { Client } from 'pg';
 
 /**
  * Config tests the whole Config folder
@@ -8,9 +8,11 @@ import {Client} from "pg";
  */
 describe('My config', () => {
   let configs: config.Config;
+  let connection: config.Connection;
 
   beforeAll(() => {
     configs = new config.Config();
+    connection = new config.Connection();
   });
 
   test('Configs are initiated and valid', () => {
@@ -21,8 +23,7 @@ describe('My config', () => {
 
   test('Connection is initiated and valid', async () => {
     expect(config.Connection).toBeTruthy();
-    await expect(config.Connection.tryConnection()).resolves.toBeTruthy();
-    expect(config.Connection.Client).toBeInstanceOf(Client);
+    await expect(connection.tryConnection()).resolves.toBeTruthy();
+    expect(config.Connection.client).toBeInstanceOf(Client);
   });
-
 });
