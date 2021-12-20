@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Backend core for Unispaces",
   "scripts": {
+    "start": "node ./dist/index.js",
     "dev": "ts-node-dev --respawn ./App/index.ts",
+    "build": "tsc --build --clean && tsc --build",
     "test": "jest --watchAll --detectOpenHandles"
   },
   "dependencies": {
@@ -37,6 +39,7 @@
     "jest": "^27.3.1",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.0",
+    "ts-jest": "^27.1.2",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.2"
   },
