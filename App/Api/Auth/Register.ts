@@ -18,6 +18,30 @@ export class Register extends Route {
   async doRegister() {
     const user: UserInterface = request().body;
 
+    // username has to be larger than 5 characters
+    if (user.username.length <=5) {
+      return response().status(200).send({
+        code: 400,
+        message: 'username has to be larger than 5 characters'
+      });
+    }
+
+    // password has to be larger than 8 characters
+    if (user.not_username.length <= 8) {
+      return response().status(200).send({
+        code: 400,
+        message: 'password has to be larger than 8 characters'
+      });
+    }
+
+    // check for a valid email
+    if (!user.email.match(/\w([a-z0-9_.-]+)(@)([a-z0-9_.-]+)[.]([a-z0-9]+)/g)) {
+      return response().status(200).send({
+        code: 400,
+        message: 'your email is not a valid email'
+      });
+    }
+
     // check if the username is already in the database
     const usernameExists = await Promise.resolve(
       RegisterService.findOne({
@@ -27,7 +51,7 @@ export class Register extends Route {
     );
     if (usernameExists.rows.length > 0)
       return response().status(200).send({
-        error: 400,
+        code: 400,
         username: user.username,
         message: 'username already registered',
       });
@@ -41,7 +65,7 @@ export class Register extends Route {
     );
     if (emailExists.rows.length > 0)
       return response().status(200).send({
-        error: 400,
+        code: 400,
         email: user.email,
         message: 'email already registered',
       });
@@ -49,10 +73,10 @@ export class Register extends Route {
     // register the user or error is something is wrong
     try {
       await Promise.resolve(RegisterService.createUser(user));
-      return response().status(200).send({ error: null, message: 'user registered successfully' });
+      return response().status(200).send({ code: 200, message: 'user registered successfully' });
     } catch (e) {
       console.log(e);
-      return response().status(200).send({ error: 400, message: 'something went wrong' });
+      return response().status(200).send({ code: 400, message: 'something went wrong' });
     }
   }
 }
