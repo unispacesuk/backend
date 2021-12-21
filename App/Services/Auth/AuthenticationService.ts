@@ -1,10 +1,7 @@
-import { Response, NextFunction } from 'express';
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { Config } from '../../Config';
-import { MoreRequest } from '../../Interfaces/MoreRequest';
-import { UserModel } from '../../Models/UserModel';
-import {request, response} from "../../Core/Requests";
-import {middleware} from "../../Core/Decorators/MiddlwareDecorator";
+import { request, response } from '@Requests';
+import { middleware } from '@Decorators';
 
 /**
  * This is the authentication middleware

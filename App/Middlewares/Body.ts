@@ -4,7 +4,7 @@
  * Later I will add way to log this to a file / table on the database.
  */
 import { middleware } from '../Core/Decorators/MiddlwareDecorator';
-import { request } from '../Core/Requests';
+import { request } from '../Core/Routing';
 
 export class BodyMiddleware {
   /**

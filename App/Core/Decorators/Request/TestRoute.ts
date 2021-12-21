@@ -1,6 +1,6 @@
-import { get, post } from './MethodDecorator';
+import { get, post } from '../MethodDecorator';
 import { Connection } from '../../../Config';
-import {RequestContext} from "../../Requests";
+import {RequestContext} from "../../Routing";
 
 export default class TestRoute {
   @get('/test/:id')

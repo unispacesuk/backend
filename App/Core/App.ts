@@ -3,8 +3,8 @@ import { Config, Connection } from '../Config';
 import { Api } from '../Api';
 import * as morgan from 'morgan';
 import { BodyMiddleware } from '../Middlewares/Body';
-import { RequestContext } from './Requests';
-import {registerApis} from "./Decorators/Request/ApiDecorator";
+import { RequestContext } from './Routing';
+import {registerApis} from "./Decorators/ApiDecorator";
 
 import * as path from 'path';
 const apiPath = path.join(process.cwd(), 'App', 'Api');

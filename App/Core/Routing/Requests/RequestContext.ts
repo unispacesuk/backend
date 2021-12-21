@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { RequestHandler, ResponseHandler } from '../Requests';
+import { RequestHandler, ResponseHandler } from '../index';
 
 // export type RequestRoute = (req: Request, res: Response, next: NextFunction) => any;
 

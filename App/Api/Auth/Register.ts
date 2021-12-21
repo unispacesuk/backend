@@ -1,19 +1,17 @@
-import { Router } from 'express';
-import { RegisterService } from '../../Services/Auth/RegisterService';
+import { RegisterService } from '@Services/Auth/RegisterService';
 import { UserInterface } from '../../Interfaces/UserInterface';
-import { request, response } from '../../Core/Requests';
-import { Route } from "../../Core/Route/Route";
+import { request, response, Route } from '@Requests';
 
 /**
  * All endpoints related to register
  */
 export class Register extends Route {
-  constructor(private _registerRoute: Router = Router()) {
+  constructor() {
     super();
     this.createRoute({
       method: 'post',
       path: '/register',
-      controller: this.doRegister
+      controller: this.doRegister,
     });
   }
 
@@ -56,9 +54,5 @@ export class Register extends Route {
       console.log(e);
       return response().status(200).send({ error: 400, message: 'something went wrong' });
     }
-  }
-
-  get registerRoute(): Router {
-    return this._registerRoute;
   }
 }
