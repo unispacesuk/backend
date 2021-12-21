@@ -1,7 +1,6 @@
-import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
+import { AuthenticationService as authService } from '@Services/Auth/AuthenticationService';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { Route } from '../../Core/Route/Route';
-import { request, response } from '../../Core/Requests';
+import { request, response, Route } from '@Requests';
 
 // TODO: verify the current token exp and reject if already expired
 
@@ -20,7 +19,6 @@ export class Authentication extends Route {
   }
 
   async authenticate() {
-    // @ts-ignore
     const { authorization } = request().headers;
     const token = authorization?.split(' ')[1];
 

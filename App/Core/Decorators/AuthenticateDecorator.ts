@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from "express";
-import {request} from "../Requests";
+import {request} from "../Routing";
 
 export function authenticate() {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {

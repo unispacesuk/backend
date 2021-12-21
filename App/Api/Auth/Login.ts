@@ -1,23 +1,18 @@
-import { LoginService } from '../../Services/Auth/LoginService';
-import {
-  AuthenticationService as AuthService
-} from '../../Services/Auth/AuthenticationService';
-import { UserModel } from '../../Models/UserModel';
-import { request, response } from '../../Core/Requests';
-import { Route } from '../../Core/Route/Route';
+import { LoginService } from '@Services/Auth/LoginService';
+import { AuthenticationService as AuthService } from '@Services/Auth/AuthenticationService';
+import { UserModel } from '@Models';
+import { request, response, Route } from '@Requests';
 /**
  * All endpoints related to login
  */
 export class Login extends Route {
-
   constructor() {
     super();
     this.createRoute({
       method: 'get',
       path: '/login',
-      controller: this.doLogin
+      controller: this.doLogin,
     });
-    // this._loginRoute.get('/login', this.doLogin);
   }
 
   async doLogin() {

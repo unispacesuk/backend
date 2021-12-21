@@ -1,4 +1,4 @@
-import { RequestContext, response } from '../../Requests';
+import { RequestContext, response } from '../Routing';
 import 'reflect-metadata';
 
 export interface routeMetaData {

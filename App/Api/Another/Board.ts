@@ -1,5 +1,5 @@
-import {get} from "../../Core/Decorators/Request/MethodDecorator";
-import {api} from "../../Core/Decorators/Request/ApiDecorator";
+import {get} from "../../Core/Decorators/MethodDecorator";
+import {api} from "../../Core/Decorators/ApiDecorator";
 
 @api('/b')
 export default class Board {

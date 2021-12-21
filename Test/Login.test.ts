@@ -11,18 +11,16 @@ describe('Login route tests', () => {
     login = new Login();
   });
 
-  test('Login to be initiated', () => {
+  it('Login to be initiated', () => {
     expect(login).toBeTruthy();
   });
 
-  test('Route to be valid', () => {
+  it('Route to be valid', () => {
     // @ts-ignore
-    const loginRoute = jest.spyOn(login, 'loginRoute', 'get');
+    const loginRoute = jest.spyOn(login, 'route', 'get');
     // @ts-ignore
     loginRoute.mockReturnValue(Router);
 
-    expect(login.loginRoute).toEqual(Router);
+    expect(login.route).toEqual(Router);
   });
-
-  test.todo('test login route and return values');
 });

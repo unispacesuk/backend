@@ -3,11 +3,7 @@ import { Config, Connection } from '../Config';
 import { Api } from '../Api';
 import * as morgan from 'morgan';
 import { BodyMiddleware } from '../Middlewares/Body';
-import { RequestContext } from './Requests';
-import {registerApis} from "./Decorators/Request/ApiDecorator";
-
-import * as path from 'path';
-const apiPath = path.join(process.cwd(), 'App', 'Api');
+import { RequestContext } from './Routing';
 
 export default class App {
   private _express: express.Express;

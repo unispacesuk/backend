@@ -2,7 +2,7 @@ import { Connection } from '../../Config';
 import { Client } from 'pg';
 import { compare } from 'bcrypt';
 
-import { UserResponse, UserModel } from '../../Models/UserModel';
+import { UserResponse, UserModel } from '@Models';
 import { UserInterface } from '../../Interfaces/UserInterface';
 
 export class LoginService {

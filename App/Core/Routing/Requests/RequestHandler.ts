@@ -1,4 +1,5 @@
-import {Request} from "express";
+import { Request } from 'express';
+import { IncomingHttpHeaders } from 'http2';
 
 /**
  * Request constructor
@@ -11,7 +12,7 @@ export class RequestHandler {
   }
 
   get headers() {
-    return this._request?.headers;
+    return <IncomingHttpHeaders>this._request?.headers;
   }
 
   /**
