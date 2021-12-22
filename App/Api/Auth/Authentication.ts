@@ -15,7 +15,6 @@ export class Authentication extends Route {
       path: '/authenticate',
       controller: this.authenticate,
     });
-    // this._authRoute.post('/authenticate', this.authenticate);
   }
 
   async authenticate() {
