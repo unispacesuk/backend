@@ -1,7 +1,8 @@
-import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { Config } from '../../Config';
 import { request, response } from '@Requests';
 import { middleware } from '@Decorators';
+import { IJwtPayload } from '../../Interfaces/IJwtPayload';
 
 /**
  * This is the authentication middleware
@@ -21,11 +22,11 @@ export class AuthenticationService {
     return this.token;
   }
 
-  public static verifyToken(token: string): Promise<JwtPayload | undefined> {
+  public static verifyToken(token: string): Promise<IJwtPayload | undefined> {
     return new Promise((resolve, reject) => {
       verify(token, this._config.secret, (error, payload) => {
         if (error) reject(error);
-        resolve(payload);
+        resolve(<IJwtPayload>payload);
       });
     });
   }
@@ -39,7 +40,7 @@ export class AuthenticationService {
 
     if (!token)
       return response().status(200).send({
-        error: 400,
+        code: 400,
         reason: 'no authorization token provided',
       });
   }

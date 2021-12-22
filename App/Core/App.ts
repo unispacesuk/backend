@@ -26,8 +26,8 @@ export default class App {
     // this will register a request, response, next object
     // it will allow us to create routes without having to repeat request, response in all methods 🤔
     this._express.use(new RequestContext().initRouter);
-
     this._express.use('/', this._bodyMiddleware.printBody);
+
     this._express.use('/', new Api().mainRoutes);
 
     return this;
