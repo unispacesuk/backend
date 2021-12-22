@@ -1,7 +1,8 @@
 import { LoginService } from '@Services/Auth/LoginService';
 import { AuthenticationService as AuthService } from '@Services/Auth/AuthenticationService';
 import { UserModel } from '@Models';
-import { request, response, Route } from '@Requests';
+import { request, Route } from '@Requests';
+import { route } from '@Decorators';
 /**
  * All endpoints related to login
  */
@@ -15,6 +16,7 @@ export class Login extends Route {
     });
   }
 
+  @route()
   async doLogin() {
     /*
     This seems confusing, but,
@@ -23,12 +25,15 @@ export class Login extends Route {
     const user: UserModel | null = await LoginService.findUser(request().body);
 
     if (!user)
-      return response().status(200).send({
-        error: 400,
+      return {
+        code: 400,
         message: 'incorrect details',
-      });
+      };
 
     const token = AuthService.generateToken(user);
-    response().status(200).send({ token });
+    return {
+      code: 200,
+      token: token
+    };
   }
 }

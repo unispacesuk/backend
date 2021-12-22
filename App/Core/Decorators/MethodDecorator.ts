@@ -1,5 +1,26 @@
-import { RequestContext, response } from '../Routing';
+import { response } from '@Requests';
 import 'reflect-metadata';
+
+/**
+ * We will use a @route() decorator to generate "routes"
+ * This will allow us to just return a body from the controller function and the decorator
+ *  will handle the response.
+ */
+export function route() {
+  return prepareRoute();
+}
+
+function prepareRoute() {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const original = descriptor.value;
+    descriptor.value = async () => {
+      const body = await original.call();
+      response().status(body.code).send(body);
+    };
+
+    return descriptor;
+  };
+}
 
 export interface routeMetaData {
   url: string;
