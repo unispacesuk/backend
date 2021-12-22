@@ -79,10 +79,22 @@ doLogin(req: Request, res: Response)
 // becomes
 doLogin()
 ```
-
+***
 ```typescript
 @middleware()
 // This decorator registers a function as a middleware
 // It will run the next() function automatically, we just write the logic
 // A middleware can also be registered in a separate class and called as a function when building the route
+```
+***
+```typescript
+@route()
+// Use this decorator to register something as a route
+// It will not "generate" a route but make use of a response sender.
+// All we do on the controller method is return the body response
+
+interface IResponse {
+  code: number;
+  body: object;
+}
 ```
