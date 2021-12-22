@@ -16,7 +16,12 @@ export class ResponseHandler {
   }
 
   send(body: any) {
-    this._response?.send(body);
+    if (!this._response?.headersSent)
+      this._response?.send(body);
     return this;
+  }
+
+  end(): any {
+    return this._response?.end();
   }
 }

@@ -34,6 +34,7 @@ done
 if [[ $username == "" || $password == "" || $database == "" ]]; then
   echo "Make sure you set all the flags."
   echo "script -u <username> -p <password> -d <database>"
+  exit
 else
 
   echo "Dropping all tables. Continue? (yes)"

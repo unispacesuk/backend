@@ -13,7 +13,15 @@ export class BodyMiddleware {
   @middleware()
   public printBody() {
     if (request().method === 'POST') {
-      console.log(request().body);
+
+      const privates = ['not_username', 'password', 'token'];
+      const body = request().body;
+      // privates.map(p => {
+      //   if (body[p])
+      //     body[p] = '***';
+      // });
+
+      console.log(body);
     }
   }
 }
