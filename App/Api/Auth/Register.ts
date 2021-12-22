@@ -17,12 +17,12 @@ export class Register extends Route {
   }
 
   @route()
-  async doRegister() {
+  async doRegister(): Promise<IResponse> {
     const user: IUser = request().body;
 
     // username has to be larger than 5 characters
     if (user.username.length <= 5) {
-      return <IResponse>{
+      return {
         code: 400,
         body: {
           message: 'username has to be larger than 5 characters',
@@ -32,7 +32,7 @@ export class Register extends Route {
 
     // password has to be larger than 8 characters
     if (user.not_username.length <= 8) {
-      return <IResponse>{
+      return {
         code: 400,
         body: {
           message: 'password has to be larger than 8 characters',
@@ -58,7 +58,7 @@ export class Register extends Route {
       })
     );
     if (usernameExists.rows.length > 0)
-      return <IResponse>{
+      return {
         code: 400,
         body: {
           username: user.username,
@@ -74,10 +74,10 @@ export class Register extends Route {
       })
     );
     if (emailExists.rows.length > 0)
-      return <IResponse>{
+      return {
         code: 400,
-        email: user.email,
         body: {
+          email: user.email,
           message: 'email already registered',
         },
       };
@@ -85,14 +85,14 @@ export class Register extends Route {
     // register the user or error is something is wrong
     try {
       await Promise.resolve(RegisterService.createUser(user));
-      return <IResponse>{
+      return {
         code: 200,
         body: {
           message: 'user registered successfully',
         },
       };
     } catch (e) {
-      return <IResponse>{
+      return {
         code: 400,
         body: {
           message: 'something went wrong',

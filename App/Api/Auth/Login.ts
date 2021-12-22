@@ -18,7 +18,7 @@ export class Login extends Route {
   }
 
   @route()
-  async doLogin() {
+  async doLogin(): Promise<IResponse> {
     /*
     This seems confusing, but,
       the user constant will have a body of type IUserResponse and findUser requires a UserInterface.
@@ -26,7 +26,7 @@ export class Login extends Route {
     const user: UserModel | null = await LoginService.findUser(request().body);
 
     if (!user)
-      return <IResponse>{
+      return {
         code: 400,
         body: {
           message: 'incorrect details',
@@ -34,7 +34,7 @@ export class Login extends Route {
       };
 
     const token = AuthService.generateToken(user);
-    return <IResponse>{
+    return {
       code: 200,
       body: {
         token: token,

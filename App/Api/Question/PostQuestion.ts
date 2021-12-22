@@ -1,6 +1,8 @@
 import { response, Route } from '@Requests';
 import { AuthenticationService as authService } from '@Services/Auth/AuthenticationService';
 import { QuestionService } from '@Services/Question/QuestionService';
+import { route } from '@Decorators';
+import { IResponse } from '@Interfaces';
 
 export class PostQuestion extends Route {
   constructor() {
@@ -13,22 +15,27 @@ export class PostQuestion extends Route {
     });
   }
 
-  async postNew() {
+  @route()
+  async postNew(): Promise<IResponse> {
     let question;
 
     try {
       question = await QuestionService.postQuestion();
     } catch (error) {
-      return response().status(400).send({
+      return {
         code: 400,
-        message: error,
-      });
+        body: {
+          message: error,
+        },
+      };
     }
 
-    response().status(200).send({
+    return {
       code: 200,
-      message: 'question posted',
-      _id: question._id,
-    });
+      body: {
+        message: 'question posted',
+        question,
+      },
+    };
   }
 }
