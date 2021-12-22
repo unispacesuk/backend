@@ -15,11 +15,52 @@ Collection of API endpoints for logging and testing purposes.
 ```javascript
   //example response
 ```
-
+***
 #### Register
 
 ```http
   POST /auth/register
+```
+
+```javascript
+  //example response
+```
+***
+## Questions
+#### Post new question
+
+```http
+  POST /question/post
+```
+
+```javascript
+  //example response
+```
+***
+#### Get one question
+
+```http
+  GET /question/get/:id
+```
+
+```javascript
+  //example response
+```
+***
+#### Get all questions
+
+```http
+  POST /question/get/all
+```
+
+```javascript
+  //example response
+```
+***
+#### Get a users questions
+
+```http
+  POST /question/get/user/:id
 ```
 
 ```javascript
@@ -41,7 +82,7 @@ doLogin()
 
 ```typescript
 @middleware()
-// This decorator registers a function as a global middleware
+// This decorator registers a function as a middleware
 // It will run the next() function automatically, we just write the logic
 // A middleware can also be registered in a separate class and called as a function when building the route
 ```
