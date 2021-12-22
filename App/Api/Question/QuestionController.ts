@@ -4,6 +4,7 @@ import { QuestionService } from '@Services/Question/QuestionService';
 import { route } from '@Decorators';
 import { IResponse } from '@Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
+import { UserService } from '@Services/User/UserService';
 
 export class QuestionController extends Route {
   constructor() {
@@ -18,32 +19,32 @@ export class QuestionController extends Route {
       method: 'get',
       path: '/get/:id',
       controller: this.getOne,
-      middlewares: [authService.authenticate]
+      middlewares: [authService.authenticate],
     });
     this.createRoute({
       method: 'get',
       path: '/get/user/:userId',
       controller: this.getAll,
-      middlewares: [authService.authenticate]
+      middlewares: [authService.authenticate],
     });
     this.createRoute({
       method: 'post',
       path: '/post',
       controller: this.postNew,
-      middlewares: [authService.authenticate]
+      middlewares: [authService.authenticate],
     });
     // this can be patch or put... we send the id as part of the body 🤔
     this.createRoute({
       method: 'patch',
       path: '/update',
       controller: this.update,
-      middlewares: [authService.authenticate]
+      middlewares: [authService.authenticate],
     });
     this.createRoute({
       method: 'delete',
       path: '/delete/:id',
-      controller: () => {},
-      middlewares: [authService.authenticate]
+      controller: this.deleteQuestion,
+      middlewares: [authService.authenticate],
     });
   }
 
@@ -76,7 +77,7 @@ export class QuestionController extends Route {
     return {
       code: 200,
       body: {
-        response
+        response,
       },
     };
   }
@@ -92,7 +93,7 @@ export class QuestionController extends Route {
     return {
       code: 200,
       body: {
-        response
+        response,
       },
     };
   }
@@ -119,7 +120,7 @@ export class QuestionController extends Route {
       code: 200,
       body: {
         message: 'question posted',
-        question
+        question,
       },
     };
   }
@@ -132,6 +133,16 @@ export class QuestionController extends Route {
   async update(): Promise<IResponse> {
     let question;
 
+    // userCanEdit() or userIdStaff()
+    if (!(await userCanUpdate())) {
+      return {
+        code: 400,
+        body: {
+          message: 'you cannot edit this question',
+        },
+      };
+    }
+
     try {
       question = await QuestionService.updateQuestion();
     } catch (error) {
@@ -139,8 +150,8 @@ export class QuestionController extends Route {
       return {
         code: 400,
         body: {
-          message: error
-        }
+          message: error,
+        },
       };
     }
 
@@ -148,8 +159,54 @@ export class QuestionController extends Route {
       code: 200,
       body: {
         message: 'question updated',
-        question
-      }
+        question,
+      },
     };
   }
+
+  /**
+   * Delete a question
+   */
+  @route()
+  async deleteQuestion(): Promise<IResponse> {
+    let response;
+    // userCanEdit() or userIdStaff()
+    if (!(await userCanUpdate())) {
+      return {
+        code: 400,
+        body: {
+          message: 'you cannot delete this question',
+        },
+      };
+    }
+
+    try {
+      (await QuestionService.deleteQuestion()) ?
+        response = 'question deleted' : response = 'could not delete the question';
+    } catch (error) {
+      return {
+        code: 400,
+        body: {
+          message: error,
+        }
+      };
+    }
+
+    return {
+      code: 200,
+      body: {
+        message: response,
+      },
+    };
+  }
+}
+
+// check if the user is allowed to delete the question
+async function userCanUpdate(): Promise<boolean> {
+  const currentUser = await UserService.getUserId(request().token);
+  const { userId } = <IQuestionModel>(
+    await QuestionService.getQuestion(request().body._id || request().parameters.id)
+  );
+
+  return currentUser === userId;
 }

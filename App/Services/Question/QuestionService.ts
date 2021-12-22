@@ -85,6 +85,8 @@ export class QuestionService {
    */
   public static async updateQuestion(): Promise<IQuestionModel> {
     const {_id, title, content} = request().body;
+    const userId = <string>await UserService.getUserId(request().token); // can cast to string :poggers:
+
     const values: string[] = [];
 
     let query = 'UPDATE questions SET last_updated = now()';
@@ -99,8 +101,9 @@ export class QuestionService {
       query += `,content = $${values.length}`;
     }
 
-    values.push(_id);
-    query += ` WHERE _id = $${values.length} RETURNING *`;
+    // values.length-1 because we are adding two items on the array and we want two different indexes
+    values.push(_id, userId);
+    query += ` WHERE _id = $${values.length-1} AND user_id = $${values.length} RETURNING *`;
     return new Promise((resolve, reject) => {
       this.conn.query(query, [...values], (error, result) => {
         if (error) return reject(error);
