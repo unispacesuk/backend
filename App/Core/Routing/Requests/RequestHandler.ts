@@ -27,11 +27,20 @@ export class RequestHandler {
    * Return the request body
    * TODO: maybe make it not return anything if there is no body 🤔
    */
-  get body(): any {
+  get body(): object | any {
     return this._request?.body;
   }
 
   get method(): any {
     return this._request?.method;
+  }
+
+  /**
+   * We use this to get the token from the headers once it gets validated by the auth middleware
+   *
+   * THIS WILL ONLY BE CALLED WHEN THERE IS A TOKEN!!!
+   */
+  get token(): string {
+    return this.headers.authorization!.split(' ')[1];
   }
 }

@@ -9,7 +9,7 @@ export class Login extends Route {
   constructor() {
     super();
     this.createRoute({
-      method: 'get',
+      method: 'post',
       path: '/login',
       controller: this.doLogin,
     });
