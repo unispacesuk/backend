@@ -1,6 +1,7 @@
 import { RegisterService } from '@Services/Auth/RegisterService';
-import { UserInterface } from '../../Interfaces/UserInterface';
-import { request, response, Route } from '@Requests';
+import { IResponse, IUser } from '@Interfaces';
+import { request, Route } from '@Requests';
+import { route } from '@Decorators';
 
 /**
  * All endpoints related to register
@@ -15,31 +16,38 @@ export class Register extends Route {
     });
   }
 
+  @route()
   async doRegister() {
-    const user: UserInterface = request().body;
+    const user: IUser = request().body;
 
     // username has to be larger than 5 characters
-    if (user.username.length <=5) {
-      return response().status(200).send({
+    if (user.username.length <= 5) {
+      return <IResponse>{
         code: 400,
-        message: 'username has to be larger than 5 characters'
-      });
+        body: {
+          message: 'username has to be larger than 5 characters',
+        },
+      };
     }
 
     // password has to be larger than 8 characters
     if (user.not_username.length <= 8) {
-      return response().status(200).send({
+      return <IResponse>{
         code: 400,
-        message: 'password has to be larger than 8 characters'
-      });
+        body: {
+          message: 'password has to be larger than 8 characters',
+        },
+      };
     }
 
     // check for a valid email
     if (!user.email.match(/\w([a-z0-9_.-]+)(@)([a-z0-9_.-]+)[.]([a-z0-9]+)/g)) {
-      return response().status(200).send({
+      return <IResponse>{
         code: 400,
-        message: 'your email is not a valid email'
-      });
+        body: {
+          message: 'your email is not a valid email',
+        },
+      };
     }
 
     // check if the username is already in the database
@@ -50,11 +58,13 @@ export class Register extends Route {
       })
     );
     if (usernameExists.rows.length > 0)
-      return response().status(200).send({
+      return <IResponse>{
         code: 400,
-        username: user.username,
-        message: 'username already registered',
-      });
+        body: {
+          username: user.username,
+          message: 'username already registered',
+        },
+      };
 
     // check if the email is already in the database
     const emailExists = await Promise.resolve(
@@ -64,19 +74,30 @@ export class Register extends Route {
       })
     );
     if (emailExists.rows.length > 0)
-      return response().status(200).send({
+      return <IResponse>{
         code: 400,
         email: user.email,
-        message: 'email already registered',
-      });
+        body: {
+          message: 'email already registered',
+        },
+      };
 
     // register the user or error is something is wrong
     try {
       await Promise.resolve(RegisterService.createUser(user));
-      return response().status(200).send({ code: 200, message: 'user registered successfully' });
+      return <IResponse>{
+        code: 200,
+        body: {
+          message: 'user registered successfully',
+        },
+      };
     } catch (e) {
-      console.log(e);
-      return response().status(200).send({ code: 400, message: 'something went wrong' });
+      return <IResponse>{
+        code: 400,
+        body: {
+          message: 'something went wrong',
+        },
+      };
     }
   }
 }

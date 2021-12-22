@@ -15,7 +15,7 @@ export class ResponseHandler {
     return this;
   }
 
-  send(body: any) {
+  send(body: object) {
     if (!this._response?.headersSent)
       this._response?.send(body);
     return this;

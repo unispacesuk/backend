@@ -3,6 +3,7 @@ import { AuthenticationService as AuthService } from '@Services/Auth/Authenticat
 import { UserModel } from '@Models';
 import { request, Route } from '@Requests';
 import { route } from '@Decorators';
+import { IResponse } from '@Interfaces';
 /**
  * All endpoints related to login
  */
@@ -25,15 +26,19 @@ export class Login extends Route {
     const user: UserModel | null = await LoginService.findUser(request().body);
 
     if (!user)
-      return {
+      return <IResponse>{
         code: 400,
-        message: 'incorrect details',
+        body: {
+          message: 'incorrect details',
+        },
       };
 
     const token = AuthService.generateToken(user);
-    return {
+    return <IResponse>{
       code: 200,
-      token: token
+      body: {
+        token: token,
+      },
     };
   }
 }

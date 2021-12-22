@@ -1,4 +1,4 @@
-export interface UserInterface {
+export interface IUser {
   username: string;
   not_username: string;
   email: string;

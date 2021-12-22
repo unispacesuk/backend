@@ -3,13 +3,13 @@ import { Client } from 'pg';
 import { compare } from 'bcrypt';
 
 import { UserResponse, UserModel } from '@Models';
-import { UserInterface } from '../../Interfaces/UserInterface';
+import { IUser } from '@Interfaces';
 
 export class LoginService {
   private static _client: Client = Connection.client;
 
   // TODO: REFACTOR THIS SHIT CODE
-  public static findUser(user: UserInterface) {
+  public static findUser(user: IUser) {
     const { username, not_username } = user;
     return new Promise<UserModel | null>((resolve, reject) => {
       this._client.query('SELECT * FROM users WHERE username=$1', [username], (error, result) => {
