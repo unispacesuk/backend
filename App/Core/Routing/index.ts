@@ -8,9 +8,20 @@ export { RequestHandler };
 export { ResponseHandler };
 export { Route };
 
-export function request(): RequestHandler {
+function request(): RequestHandler;
+function request(): RequestHandler {
   return RequestContext.request();
 }
+// generics below
+// function request<T>(key: string): T;
+// function request<T>(key?: string): T | RequestHandler {
+//   if (key) {
+//     return request().parameters[key];
+//   }
+//
+//   return RequestContext.request();
+// }
+export { request };
 
 export function response(): ResponseHandler {
   return RequestContext.response();

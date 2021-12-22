@@ -1,15 +1,7 @@
 import { Router } from 'express';
-import {PostQuestion} from "./PostQuestion";
-import {GetQuestion} from "./GetQuestion";
+import { QuestionController } from './QuestionController';
 
 const Question: Router = Router();
 export { Question };
 
-/**
- * Question Endpoints
- *  - Post Question
- */
-Question.use('/question', [
-  new PostQuestion().route,
-  new GetQuestion().route
-]);
+Question.use('/question', [new QuestionController().route]);

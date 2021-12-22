@@ -51,6 +51,7 @@ CREATE TABLE questions (
     answers JSONB DEFAULT '{}',
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
+    -- last_replied on
     PRIMARY KEY (_id)
 );
 -- INSERT INTO questions (_id, user_id, title, content) VALUES (gen_random_uuid(), 1, 'The first question', 'This will be the question content here. Text should allow for long texts....')

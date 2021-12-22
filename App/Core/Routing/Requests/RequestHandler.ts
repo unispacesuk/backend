@@ -39,8 +39,8 @@ export class RequestHandler {
     return this._request?.body;
   }
 
-  get method(): any {
-    return this._request?.method;
+  get method(): string {
+    return this._request!.method;
   }
 
   /**

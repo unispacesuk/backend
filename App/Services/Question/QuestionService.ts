@@ -8,24 +8,11 @@ interface ICriteria {
   userId?: string;
   orderBy?: string;
   sort?: string;
+  page?: number;
 }
 
 export class QuestionService {
   static conn: Client = Connection.client;
-
-  /**
-   * Fetch a single question from the database using its id.
-   * @param id
-   */
-  public static async getQuestion(id: string): Promise<IQuestionModel | []> {
-    return new Promise((resolve, reject) => {
-      this.conn.query('SELECT * FROM questions WHERE _id = $1', [id], (error, result) => {
-        if (error) return reject(error);
-        if (result.rows.length === 0) return resolve([]);
-        resolve(QuestionModel(result.rows[0]));
-      });
-    });
-  }
 
   /**
    * Post / Insert a new question on the database.
@@ -44,6 +31,20 @@ export class QuestionService {
           resolve(QuestionModel(result.rows[0]));
         }
       );
+    });
+  }
+
+  /**
+   * Fetch a single question from the database using its id.
+   * @param id
+   */
+  public static async getQuestion(id: string): Promise<IQuestionModel | []> {
+    return new Promise((resolve, reject) => {
+      this.conn.query('SELECT * FROM questions WHERE _id = $1', [id], (error, result) => {
+        if (error) return reject(error);
+        if (result.rows.length === 0) return resolve([]);
+        resolve(QuestionModel(result.rows[0]));
+      });
     });
   }
 
@@ -80,13 +81,53 @@ export class QuestionService {
   }
 
   /**
+   * Update question
+   */
+  public static async updateQuestion(): Promise<IQuestionModel> {
+    const {_id, title, content} = request().body;
+    const values: string[] = [];
+
+    let query = 'UPDATE questions SET last_updated = now()';
+
+    if (title) {
+      values.push(title);
+      query += `,title = $${values.length}`;
+    }
+
+    if (content) {
+      values.push(content);
+      query += `,content = $${values.length}`;
+    }
+
+    values.push(_id);
+    query += ` WHERE _id = $${values.length} RETURNING *`;
+    return new Promise((resolve, reject) => {
+      this.conn.query(query, [...values], (error, result) => {
+        if (error) return reject(error);
+        resolve(QuestionModel(result.rows[0]));
+      });
+    });
+  }
+
+  /**
    * Delete a question.
    * Only admins, mods and the owner will be able to delete.
    * @const id - the id of the question. sent as a parameter on the url.
+   *
+   * TODO: MAKE SURE THAT THE USER OWNS THE QUESTION OR OVERRIDE IF ADMIN/MOD/STAFF
    */
-  public static async deleteQuestion(): Promise<any> {
+  public static async deleteQuestion(): Promise<boolean | Error> {
     const { id } = request().parameters;
-    console.log(id);
+    const userId = await UserService.getUserId(request().token);
+
+    return new Promise((resolve, reject) => {
+      this.conn.query('DELETE FROM questions WHERE _id = $1 AND user_id = $2',
+        [id, userId], (error, result) => {
+          if (error) return reject(error);
+          if (result.rowCount === 0) return resolve(false);
+          resolve(true);
+        });
+    });
   }
 
   /**
