@@ -12,6 +12,8 @@ export { Auth };
  *  - Register
  *  - JWT Auth
  */
-Auth.use('/auth', new Login().route);
-Auth.use('/auth', new Register().route);
-Auth.use('/auth', new Authentication().route);
+Auth.use('/auth', [
+  new Login().route,
+  new Register().route,
+  new Authentication().route
+]);

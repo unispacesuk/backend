@@ -9,5 +9,7 @@ export { Question };
  * Question Endpoints
  *  - Post Question
  */
-Question.use('/question', new PostQuestion().route);
-Question.use('/question', new GetQuestion().route);
+Question.use('/question', [
+  new PostQuestion().route,
+  new GetQuestion().route
+]);
