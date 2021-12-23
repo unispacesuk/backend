@@ -27,6 +27,7 @@ ALTER SEQUENCE USERS_ID_AI OWNED BY users._id;
 -- INSERT INTO users (username, email, not_username) VALUES ('admin', 'admin@email.com', 'admin');
 
 -- roles table
+-- user / mod / admin -- start with these roles. admin can do all and mods will have some less permissions
 CREATE SEQUENCE ROLES_ID_AI;
 CREATE TABLE roles (
     _id SMALLINT NOT NULL DEFAULT NEXTVAL('ROLES_ID_AI'),
