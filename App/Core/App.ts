@@ -28,22 +28,27 @@ export default class App {
     this._express.use(new RequestContext().initRouter);
     this._express.use('/', this._bodyMiddleware.printBody);
 
-    this._express.use('/', new Api().mainRoutes);
-
     return this;
   }
 
-  public tryConnection(): App {
-    this._connection.tryConnection().then(() => {
-      console.log('connected!!!!!');
-    });
-
+  public initialiseRoutes(): App {
+    this._express.use('/', new Api().mainRoutes);
     return this;
+  }
+
+  public tryConnection(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this._connection.tryConnection());
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   public RunServer(): App {
     this._express.listen(this._config.port, () => {
-      console.log('server is on!!!');
+      console.log(`Server is up and running on port: ${this._config.port}`);
     });
     return this;
   }

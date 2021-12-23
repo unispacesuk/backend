@@ -2,4 +2,9 @@ import App from './Core/App';
 
 const app: App = new App();
 
-app.setMiddlewares().tryConnection().RunServer();
+(async () => {
+    await app.tryConnection().then((r) => {
+      console.log(r);
+      app.setMiddlewares().initialiseRoutes().RunServer();
+    });
+})();
