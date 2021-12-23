@@ -27,6 +27,7 @@ ALTER SEQUENCE USERS_ID_AI OWNED BY users._id;
 -- INSERT INTO users (username, email, not_username) VALUES ('admin', 'admin@email.com', 'admin');
 
 -- roles table
+-- user / mod / admin -- start with these roles. admin can do all and mods will have some less permissions
 CREATE SEQUENCE ROLES_ID_AI;
 CREATE TABLE roles (
     _id SMALLINT NOT NULL DEFAULT NEXTVAL('ROLES_ID_AI'),
@@ -51,6 +52,7 @@ CREATE TABLE questions (
     answers JSONB DEFAULT '{}',
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
+    -- last_replied on
     PRIMARY KEY (_id)
 );
 -- INSERT INTO questions (_id, user_id, title, content) VALUES (gen_random_uuid(), 1, 'The first question', 'This will be the question content here. Text should allow for long texts....')

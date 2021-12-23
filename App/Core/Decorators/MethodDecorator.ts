@@ -1,5 +1,6 @@
 import { response } from '@Requests';
 import 'reflect-metadata';
+import {IResponse} from "@Interfaces";
 
 /**
  * We will use a @route() decorator to generate "routes"
@@ -14,14 +15,15 @@ function prepareRoute() {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value;
     descriptor.value = async () => {
-      const body = await original.call();
-      response().status(body.code).send(body);
+      const body: IResponse = await original.call();
+      response().status(body.code).send(body.body);
     };
 
     return descriptor;
   };
 }
 
+// WILL MAYBE NEED THIS IN THE FUTURE
 export interface routeMetaData {
   url: string;
   method: string;

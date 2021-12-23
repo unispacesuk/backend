@@ -1,7 +1,7 @@
 import { Connection } from '../../Config';
 import { Client } from 'pg';
 import { hash } from 'bcrypt';
-import { UserInterface } from '../../Interfaces/UserInterface';
+import { IUser } from '@Interfaces';
 
 interface Options {
   field: string;
@@ -11,7 +11,7 @@ interface Options {
 export class RegisterService {
   private static _client: Client = Connection.client;
 
-  public static async createUser(user: UserInterface): Promise<any> {
+  public static async createUser(user: IUser): Promise<any> {
     const { username, not_username, email, first_name, last_name } = user;
     const hashed_not_username = await hash(not_username, 10);
 

@@ -3,6 +3,7 @@ import { AuthenticationService as AuthService } from '@Services/Auth/Authenticat
 import { UserModel } from '@Models';
 import { request, Route } from '@Requests';
 import { route } from '@Decorators';
+import { IResponse } from '@Interfaces';
 /**
  * All endpoints related to login
  */
@@ -17,7 +18,7 @@ export class Login extends Route {
   }
 
   @route()
-  async doLogin() {
+  async doLogin(): Promise<IResponse> {
     /*
     This seems confusing, but,
       the user constant will have a body of type IUserResponse and findUser requires a UserInterface.
@@ -27,13 +28,17 @@ export class Login extends Route {
     if (!user)
       return {
         code: 400,
-        message: 'incorrect details',
+        body: {
+          message: 'incorrect details',
+        },
       };
 
     const token = AuthService.generateToken(user);
     return {
       code: 200,
-      token: token
+      body: {
+        token: token,
+      },
     };
   }
 }

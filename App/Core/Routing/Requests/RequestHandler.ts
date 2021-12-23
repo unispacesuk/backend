@@ -24,6 +24,14 @@ export class RequestHandler {
   }
 
   /**
+   * We need sometimes to get the queries from the url so we use this method.
+   * api.unispaces.uk/endpoint?key=value&key=value&key=value
+   */
+  get query(): any {
+    return this._request?.query;
+  }
+
+  /**
    * Return the request body
    * TODO: maybe make it not return anything if there is no body 🤔
    */
@@ -31,8 +39,8 @@ export class RequestHandler {
     return this._request?.body;
   }
 
-  get method(): any {
-    return this._request?.method;
+  get method(): string {
+    return this._request!.method;
   }
 
   /**

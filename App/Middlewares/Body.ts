@@ -12,7 +12,8 @@ export class BodyMiddleware {
    */
   @middleware()
   public printBody() {
-    if (request().method === 'POST') {
+    const methods: string[] = ['POST', 'PUT', 'PATCH'];
+    if (methods.includes(request().method)) {
 
       const privates = ['not_username', 'password', 'token'];
       const body = request().body;
