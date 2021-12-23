@@ -1,6 +1,6 @@
-import { AuthenticationService as authService } from '@Services/Auth/AuthenticationService';
+import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { request, response, Route } from '@Requests';
+import { request, response, Route } from '../../Core/Routing';
 
 // TODO: verify the current token exp and reject if already expired
 

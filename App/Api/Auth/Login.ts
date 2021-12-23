@@ -1,9 +1,9 @@
-import { LoginService } from '@Services/Auth/LoginService';
-import { AuthenticationService as AuthService } from '@Services/Auth/AuthenticationService';
-import { UserModel } from '@Models';
-import { request, Route } from '@Requests';
-import { route } from '@Decorators';
-import { IResponse } from '@Interfaces';
+import { LoginService } from '../../Services/Auth/LoginService';
+import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
+import { UserModel } from '../../Models';
+import { request, Route } from '../../Core/Routing';
+import { route } from '../../Core/Decorators';
+import { IResponse } from '../../Interfaces';
 /**
  * All endpoints related to login
  */

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { middleware } from '@Decorators';
+import { middleware } from '../../Decorators';
 
 interface RouteOptions {
   method: string;

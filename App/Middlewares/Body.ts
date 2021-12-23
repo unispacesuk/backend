@@ -3,8 +3,8 @@
  * This allows to keep a log of all bodies ever send to the server for security purposes.
  * Later I will add way to log this to a file / table on the database.
  */
-import { middleware } from '@Decorators';
-import { request } from '@Requests';
+import { middleware } from '../Core/Decorators';
+import { request } from '../Core/Routing';
 
 export class BodyMiddleware {
   /**

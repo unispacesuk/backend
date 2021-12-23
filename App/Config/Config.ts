@@ -1,4 +1,4 @@
-import {config as dotenv} from "dotenv";
+import { config as dotenv } from 'dotenv';
 
 dotenv();
 
@@ -6,8 +6,7 @@ dotenv();
  * Doesn't need to be class
  */
 export class Config {
-
-  private PORT: number = process.env.PORT as unknown as number || 3000;
+  private PORT: number = (process.env.PORT as unknown as number) || 3000;
   private DB_URL: string = process.env.DB_URL || '';
   private SECRET: string = process.env.SECRET || '';
 
@@ -22,5 +21,4 @@ export class Config {
   get secret(): string {
     return this.SECRET;
   }
-
 }

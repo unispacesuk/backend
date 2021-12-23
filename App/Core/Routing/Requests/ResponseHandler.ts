@@ -1,4 +1,4 @@
-import {Response} from "express";
+import { Response } from 'express';
 
 /**
  * Response constructor
@@ -16,8 +16,7 @@ export class ResponseHandler {
   }
 
   send(body: object) {
-    if (!this._response?.headersSent)
-      this._response?.send(body);
+    if (!this._response?.headersSent) this._response?.send(body);
     return this;
   }
 

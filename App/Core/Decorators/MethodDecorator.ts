@@ -1,6 +1,6 @@
-import { response } from '@Requests';
+import { response } from '../Routing';
 import 'reflect-metadata';
-import {IResponse} from "@Interfaces";
+import { IResponse } from '../../Interfaces';
 
 /**
  * We will use a @route() decorator to generate "routes"
@@ -66,7 +66,6 @@ export function head(path: string): HttpDecorator {
 
 export function httpRequest(method: string, path: string) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-
     console.log(`route for ${path} has been registered`);
 
     const original = descriptor.value;
@@ -78,7 +77,7 @@ export function httpRequest(method: string, path: string) {
     const meta: routeMetaData = {
       url: path,
       method: method,
-      target: descriptor.value
+      target: descriptor.value,
     };
     const metaDataList = Reflect.getMetadata('method', target.constructor) || [];
     if (!Reflect.hasMetadata('method', target.constructor)) {

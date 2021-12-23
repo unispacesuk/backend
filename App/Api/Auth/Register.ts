@@ -1,7 +1,7 @@
-import { RegisterService } from '@Services/Auth/RegisterService';
-import { IResponse, IUser } from '@Interfaces';
-import { request, Route } from '@Requests';
-import { route } from '@Decorators';
+import { RegisterService } from '../../Services/Auth/RegisterService';
+import { IResponse, IUser } from '../../Interfaces';
+import { request, Route } from '../../Core/Routing';
+import { route } from '../../Core/Decorators';
 
 /**
  * All endpoints related to register

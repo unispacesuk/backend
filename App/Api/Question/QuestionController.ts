@@ -1,10 +1,10 @@
-import { request, Route } from '@Requests';
-import { AuthenticationService as authService } from '@Services/Auth/AuthenticationService';
-import { QuestionService } from '@Services/Question/QuestionService';
-import { route } from '@Decorators';
-import { IResponse } from '@Interfaces';
+import { request, Route } from '../../Core/Routing';
+import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
+import { QuestionService } from '../../Services/Question/QuestionService';
+import { route } from '../../Core/Decorators';
+import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
-import { UserService } from '@Services/User/UserService';
+import { UserService } from '../../Services/User/UserService';
 
 export class QuestionController extends Route {
   constructor() {

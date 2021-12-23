@@ -35,6 +35,9 @@ CREATE TABLE roles (
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE ROLES_ID_AI OWNED BY roles._id;
+INSERT INTO roles (name) VALUES ('Administrator');
+INSERT INTO roles (name) VALUES ('Moderator');
+INSERT INTO roles (name) VALUES ('Default');
 
 -- user roles table (joint table users <-> roles)
 CREATE TABLE user_roles (

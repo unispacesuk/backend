@@ -1,7 +1,7 @@
 import { Connection } from '../../Config';
 import { Client } from 'pg';
 import { hash } from 'bcrypt';
-import { IUser } from '@Interfaces';
+import { IUser } from '../../Interfaces';
 
 interface Options {
   field: string;

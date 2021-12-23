@@ -39,8 +39,8 @@ export class RequestHandler {
     return this._request?.body;
   }
 
-  get method(): string {
-    return this._request!.method;
+  get method(): any {
+    return this._request?.method;
   }
 
   /**
@@ -48,7 +48,7 @@ export class RequestHandler {
    *
    * THIS WILL ONLY BE CALLED WHEN THERE IS A TOKEN!!!
    */
-  get token(): string {
-    return this.headers.authorization!.split(' ')[1];
+  get token(): any {
+    return this.headers.authorization?.split(' ')[1];
   }
 }

@@ -2,8 +2,8 @@ import { Connection } from '../../Config';
 import { Client } from 'pg';
 import { compare } from 'bcrypt';
 
-import { UserResponse, UserModel } from '@Models';
-import { IUser } from '@Interfaces';
+import { UserResponse, UserModel } from '../../Models';
+import { IUser } from '../../Interfaces';
 
 export class LoginService {
   private static _client: Client = Connection.client;

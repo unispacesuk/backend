@@ -1,7 +1,7 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import * as dir from 'node-dir';
 import 'reflect-metadata';
-import {routeMetaData} from "./MethodDecorator";
+import { routeMetaData } from './MethodDecorator';
 
 export const ApiRoute: Router = Router();
 
@@ -24,12 +24,12 @@ export function generateApiRoute(path: string) {
 let apis: string[] = [];
 export async function registerApis(path: string): Promise<any> {
   apis = getApis(path);
-  apis.forEach((api ) => {
+  apis.forEach((api) => {
     console.log(api);
     // console.log(Reflect.getMetadata('api', api));
   });
 }
 
 function getApis(path: string): string[] {
-  return dir.files(path, {sync: true}).filter(p => p.includes('Test.ts'));
+  return dir.files(path, { sync: true }).filter((p) => p.includes('Test.ts'));
 }

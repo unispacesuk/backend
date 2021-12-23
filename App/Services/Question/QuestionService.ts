@@ -1,5 +1,5 @@
-import { UserService } from '@Services/User/UserService';
-import { request } from '@Requests';
+import { UserService } from '../User/UserService';
+import { request } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { Client } from 'pg';
 import { IQuestionModel, QuestionModel } from '../../Models/QuestionModel';

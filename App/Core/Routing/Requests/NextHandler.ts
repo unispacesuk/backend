@@ -1,4 +1,4 @@
-import {NextFunction} from "express";
+import { NextFunction } from 'express';
 
 export class NextHandler {
   _next: NextFunction = (): NextFunction => {

@@ -1,8 +1,8 @@
 import { sign, verify } from 'jsonwebtoken';
 import { Config } from '../../Config';
-import { request, response } from '@Requests';
-import { middleware } from '@Decorators';
-import { IJwtPayload } from '../../Interfaces/IJwtPayload';
+import { request, response } from '../../Core/Routing';
+import { middleware } from '../../Core/Decorators';
+import { IJwtPayload } from '../../Interfaces';
 
 /**
  * This is the authentication middleware

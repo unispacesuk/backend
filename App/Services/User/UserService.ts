@@ -1,5 +1,5 @@
-import { AuthenticationService as authService } from '@Services/Auth/AuthenticationService';
-import { IJwtPayload } from '@Interfaces';
+import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
+import { IJwtPayload } from '../../Interfaces';
 
 export class UserService {
   /**
