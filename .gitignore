@@ -7,3 +7,5 @@
 .env.prod
 
 /dist
+
+*/**/populate.sh
