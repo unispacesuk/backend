@@ -3,6 +3,7 @@ import { Config } from '../../Config';
 import { request, response } from '../../Core/Routing';
 import { middleware } from '../../Core/Decorators';
 import { IJwtPayload } from '../../Interfaces';
+import { UserModel } from '../../Models';
 
 /**
  * This is the authentication middleware
@@ -13,7 +14,7 @@ export class AuthenticationService {
   private static _config = new Config();
 
   // TODO: Something wrong with the model. please fix
-  static generateToken(data: any): string {
+  static generateToken(data: UserModel): string {
     this.token = sign(data, this._config.secret, {
       algorithm: 'HS256',
       expiresIn: '5 days',
@@ -25,7 +26,7 @@ export class AuthenticationService {
   public static verifyToken(token: string): Promise<IJwtPayload | undefined> {
     return new Promise((resolve, reject) => {
       verify(token, this._config.secret, (error, payload) => {
-        if (error) reject(error);
+        if (error) return reject(error);
         resolve(<IJwtPayload>payload);
       });
     });
@@ -39,9 +40,16 @@ export class AuthenticationService {
     const token: string | undefined = request().headers?.authorization?.split(' ')[1];
 
     if (!token)
-      return response().status(200).send({
-        code: 400,
+      return response().status(400).send({
         reason: 'no authorization token provided',
       });
+
+    try {
+      await AuthenticationService.verifyToken(token);
+    } catch (error) {
+      return response().status(400).send({
+        message: 'invalid token signature',
+      });
+    }
   }
 }
