@@ -4,9 +4,9 @@ Collection of API endpoints for logging and testing purposes.
 
 ***
 
-## Authentication
+## AuthenticationController
 
-#### Login
+#### LoginController
 
 ```http
   POST /auth/login
@@ -16,7 +16,7 @@ Collection of API endpoints for logging and testing purposes.
   //example response
 ```
 ***
-#### Register
+#### RegisterController
 
 ```http
   POST /auth/register
@@ -73,25 +73,31 @@ Collection of API endpoints for logging and testing purposes.
 ```typescript
 request()
 response()
-// these two functions allow us to use request and response without having to repeat everytime on the function call
-
-doLogin(req: Request, res: Response)
-// becomes
-doLogin()
+/**
+ * These are two global methods that will allow us to access the
+ * Request and Response interfaces from express. These also include all
+ * methods present in those interfaces and they allow us to abstract
+ * requests and responses and make the code more beautiful.
+ */
 ```
 ***
 ```typescript
 @middleware()
-// This decorator registers a function as a middleware
-// It will run the next() function automatically, we just write the logic
-// A middleware can also be registered in a separate class and called as a function when building the route
+/**
+ * This decorator registers a function as a middleware.
+ * It will run the next() function automatically, we just write the logic.
+ * A middleware can also be registered in a separate class
+ * and called as a function when building the route.
+ */
 ```
 ***
 ```typescript
 @route()
-// Use this decorator to register something as a route
-// It will not "generate" a route but make use of a response sender.
-// All we do on the controller method is return the body response
+/**
+ * We can use this decorator to register a route. At the moment we just use it
+ * to register a "controller" route and allows us to not have to repeat
+ * request and response parameters on the "controller" methods.
+ */
 
 interface IResponse {
   code: number;

@@ -6,7 +6,7 @@ import { route } from '../../Core/Decorators';
 /**
  * All endpoints related to register
  */
-export class Register extends Route {
+export class RegisterController extends Route {
   constructor() {
     super();
     this.createRoute({

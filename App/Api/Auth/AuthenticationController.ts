@@ -7,7 +7,7 @@ import { request, response, Route } from '../../Core/Routing';
 /**
  * Dont think this route will get used so often... But still keep it here
  */
-export class Authentication extends Route {
+export class AuthenticationController extends Route {
   constructor() {
     super();
     this.createRoute({

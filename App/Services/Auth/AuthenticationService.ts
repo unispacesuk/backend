@@ -32,7 +32,7 @@ export class AuthenticationService {
   }
 
   /**
-   * Authentication middleware method
+   * AuthenticationController middleware method
    */
   @middleware()
   public static async authenticate() {

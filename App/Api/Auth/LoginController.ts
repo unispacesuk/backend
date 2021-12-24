@@ -7,7 +7,7 @@ import { IResponse } from '../../Interfaces';
 /**
  * All endpoints related to login
  */
-export class Login extends Route {
+export class LoginController extends Route {
   constructor() {
     super();
     this.createRoute({

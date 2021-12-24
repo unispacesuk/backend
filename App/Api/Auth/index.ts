@@ -1,19 +1,19 @@
 import { Router } from 'express';
-import { Login } from './Login';
-import { Register } from './Register';
-import { Authentication } from './Authentication';
+import { LoginController } from './LoginController';
+import { RegisterController } from './RegisterController';
+import { AuthenticationController } from './AuthenticationController';
 
 const Auth: Router = Router();
 export { Auth };
 
 /**
- * Authentication Endpoints
- *  - Login
- *  - Register
+ * AuthenticationController Endpoints
+ *  - LoginController
+ *  - RegisterController
  *  - JWT Auth
  */
 Auth.use('/auth', [
-  new Login().route,
-  new Register().route,
-  new Authentication().route
+  new LoginController().route,
+  new RegisterController().route,
+  new AuthenticationController().route
 ]);

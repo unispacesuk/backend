@@ -2,7 +2,7 @@ import {data} from './Data/data';
 import {Config} from "../App/Config";
 import {PoolClient, Pool} from "pg";
 
-describe('Register a user', () => {
+describe('RegisterController a user', () => {
 
   const user = data.user;
   let pgPool: Pool;

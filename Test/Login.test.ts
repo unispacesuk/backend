@@ -1,17 +1,17 @@
-import {Login} from "../App/Api/Auth/Login";
+import {LoginController} from "../App/Api/Auth/LoginController";
 import {Router} from "express";
 
 /**
- * Login route tests
+ * LoginController route tests
  */
-describe('Login route tests', () => {
-  let login: Login;
+describe('LoginController route tests', () => {
+  let login: LoginController;
 
   beforeAll(() => {
-    login = new Login();
+    login = new LoginController();
   });
 
-  it('Login to be initiated', () => {
+  it('LoginController to be initiated', () => {
     expect(login).toBeTruthy();
   });
 
