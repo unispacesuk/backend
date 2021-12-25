@@ -25,7 +25,9 @@ export class AuthenticationService {
 
   public static verifyToken(token: string): Promise<IJwtPayload | undefined> {
     return new Promise((resolve, reject) => {
-      verify(token, this._config.secret, (error, payload) => {
+      verify(token, this._config.secret, {
+        algorithms: ['HS256'],
+      }, (error, payload) => {
         if (error) return reject(error);
         resolve(<IJwtPayload>payload);
       });
@@ -38,6 +40,7 @@ export class AuthenticationService {
   @middleware()
   public static async authenticate() {
     const token: string | undefined = request().headers?.authorization?.split(' ')[1];
+    let payload;
 
     if (!token)
       return response().status(400).send({
@@ -45,11 +48,13 @@ export class AuthenticationService {
       });
 
     try {
-      await AuthenticationService.verifyToken(token);
+      payload = await AuthenticationService.verifyToken(token);
     } catch (error) {
       return response().status(400).send({
-        message: 'invalid token signature',
+        message: 'invalid token',
       });
     }
+
+    console.log(payload);
   }
 }
