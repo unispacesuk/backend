@@ -1,4 +1,4 @@
-import {JsonWebTokenError, sign, verify} from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { Config } from '../../Config';
 import { request, response } from '../../Core/Routing';
 import { Middleware } from '../../Core/Decorators';
@@ -14,7 +14,7 @@ export class AuthenticationService {
   private static _config = new Config();
 
   // TODO: Something wrong with the model. please fix
-  public static generateToken(data: UserModel): string {
+  static generateToken(data: UserModel): string {
     this.token = sign(data, this._config.secret, {
       algorithm: 'HS256',
       expiresIn: '5 days',
@@ -25,7 +25,9 @@ export class AuthenticationService {
 
   public static verifyToken(token: string): Promise<IJwtPayload | undefined> {
     return new Promise((resolve, reject) => {
-      verify(token, this._config.secret, (error, payload) => {
+      verify(token, this._config.secret, {
+        algorithms: ['HS256'],
+      }, (error, payload) => {
         if (error) return reject(error.message);
         resolve(<IJwtPayload>payload);
       });
@@ -38,6 +40,7 @@ export class AuthenticationService {
   @Middleware()
   public static async authenticate() {
     const token: string | undefined = request().headers?.authorization?.split(' ')[1];
+    let payload;
 
     if (!token)
       return response().status(400).send({
@@ -45,11 +48,13 @@ export class AuthenticationService {
       });
 
     try {
-      await AuthenticationService.verifyToken(token);
+      payload = await AuthenticationService.verifyToken(token);
     } catch (error) {
       return response().status(400).send({
         message: error,
       });
     }
+
+    console.log(payload);
   }
 }
