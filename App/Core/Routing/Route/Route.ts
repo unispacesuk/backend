@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { middleware } from '../../Decorators';
+import { Middleware } from '../../Decorators';
 
 interface RouteOptions {
   method: string;
@@ -20,7 +20,7 @@ export class Route {
     ]);
   }
 
-  @middleware()
+  @Middleware()
   voidMiddleware() {
     // why? why not?
   }

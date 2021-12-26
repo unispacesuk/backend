@@ -1,5 +1,5 @@
 import {get} from "../../Core/Decorators/MethodDecorator";
-import {Controller} from "../../Core/Decorators/ApiDecorator";
+import {Controller} from "../../Core/Decorators/ControllerDecorator";
 
 @Controller('/b')
 export default class Board {

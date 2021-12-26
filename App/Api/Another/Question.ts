@@ -1,4 +1,4 @@
-import {Controller} from "../../Core/Decorators/ApiDecorator";
+import {Controller} from "../../Core/Decorators/ControllerDecorator";
 import {get} from "../../Core/Decorators/MethodDecorator";
 
 @Controller('/q')

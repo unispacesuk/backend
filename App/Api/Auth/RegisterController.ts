@@ -1,24 +1,14 @@
 import { RegisterService } from '../../Services/Auth/RegisterService';
 import { IResponse, IUser } from '../../Interfaces';
-import { request, Route } from '../../Core/Routing';
-import { route } from '../../Core/Decorators';
-import { Controller } from '../../Core/Decorators/ApiDecorator';
+import { request } from '../../Core/Routing';
+import { Controller, post } from '../../Core/Decorators';
 
 /**
  * All endpoints related to register
  */
 @Controller('/auth')
-export class RegisterController extends Route {
-  constructor() {
-    super();
-    this.createRoute({
-      method: 'post',
-      path: '/register',
-      controller: this.doRegister,
-    });
-  }
-
-  @route()
+export class RegisterController {
+  @post('/register')
   async doRegister(): Promise<IResponse> {
     const user: IUser = request().body;
 

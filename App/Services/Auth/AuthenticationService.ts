@@ -1,7 +1,7 @@
-import { sign, verify } from 'jsonwebtoken';
+import {JsonWebTokenError, sign, verify} from 'jsonwebtoken';
 import { Config } from '../../Config';
 import { request, response } from '../../Core/Routing';
-import { middleware } from '../../Core/Decorators';
+import { Middleware } from '../../Core/Decorators';
 import { IJwtPayload } from '../../Interfaces';
 import { UserModel } from '../../Models';
 
@@ -14,7 +14,7 @@ export class AuthenticationService {
   private static _config = new Config();
 
   // TODO: Something wrong with the model. please fix
-  static generateToken(data: UserModel): string {
+  public static generateToken(data: UserModel): string {
     this.token = sign(data, this._config.secret, {
       algorithm: 'HS256',
       expiresIn: '5 days',
@@ -26,7 +26,7 @@ export class AuthenticationService {
   public static verifyToken(token: string): Promise<IJwtPayload | undefined> {
     return new Promise((resolve, reject) => {
       verify(token, this._config.secret, (error, payload) => {
-        if (error) return reject(error);
+        if (error) return reject(error.message);
         resolve(<IJwtPayload>payload);
       });
     });
@@ -35,7 +35,7 @@ export class AuthenticationService {
   /**
    * AuthenticationController middleware method
    */
-  @middleware()
+  @Middleware()
   public static async authenticate() {
     const token: string | undefined = request().headers?.authorization?.split(' ')[1];
 
@@ -48,7 +48,7 @@ export class AuthenticationService {
       await AuthenticationService.verifyToken(token);
     } catch (error) {
       return response().status(400).send({
-        message: 'invalid token signature',
+        message: error,
       });
     }
   }
