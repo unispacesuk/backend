@@ -2,10 +2,12 @@ import { RegisterService } from '../../Services/Auth/RegisterService';
 import { IResponse, IUser } from '../../Interfaces';
 import { request, Route } from '../../Core/Routing';
 import { route } from '../../Core/Decorators';
+import { Controller } from '../../Core/Decorators/ApiDecorator';
 
 /**
  * All endpoints related to register
  */
+@Controller('/auth')
 export class RegisterController extends Route {
   constructor() {
     super();

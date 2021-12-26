@@ -4,9 +4,11 @@ import { UserModel } from '../../Models';
 import { request, Route } from '../../Core/Routing';
 import { route } from '../../Core/Decorators';
 import { IResponse } from '../../Interfaces';
+import { Controller } from '../../Core/Decorators/ApiDecorator';
 /**
  * All endpoints related to login
  */
+@Controller('/auth')
 export class LoginController extends Route {
   constructor() {
     super();

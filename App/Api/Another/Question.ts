@@ -1,8 +1,7 @@
-import {api} from "../../Core/Decorators/ApiDecorator";
+import {Controller} from "../../Core/Decorators/ApiDecorator";
 import {get} from "../../Core/Decorators/MethodDecorator";
-import {request} from "../../Core/Routing";
 
-@api('/q')
+@Controller('/q')
 export default class Question {
 
   @get('/get/:id')

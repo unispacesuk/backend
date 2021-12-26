@@ -1,7 +1,7 @@
 import {get} from "../../Core/Decorators/MethodDecorator";
-import {api} from "../../Core/Decorators/ApiDecorator";
+import {Controller} from "../../Core/Decorators/ApiDecorator";
 
-@api('/b')
+@Controller('/b')
 export default class Board {
   @get('/board')
   getBoard() {
