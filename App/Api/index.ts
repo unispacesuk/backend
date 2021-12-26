@@ -1,10 +1,10 @@
 import { Express, Router } from 'express';
 import { LoginController } from './Auth/LoginController';
 import { RegisterController } from './Auth/RegisterController';
-import 'reflect-metadata';
 import { AuthenticationController } from './Auth/AuthenticationController';
 import { QuestionController } from './Question/QuestionController';
-import { Middleware } from '../Core/Decorators';
+import { RolesController } from './Roles/RolesController';
+import 'reflect-metadata';
 
 export class Api {
   app: Express;
@@ -22,7 +22,13 @@ export class Api {
    * @private
    */
   private static getControllers(): any[] {
-    return [LoginController, RegisterController, AuthenticationController, QuestionController];
+    return [
+      LoginController,
+      RegisterController,
+      AuthenticationController,
+      QuestionController,
+      RolesController,
+    ];
   }
 
   public registerControllers(): Api {
@@ -33,12 +39,13 @@ export class Api {
       // this.apiRoutes.use(path, Controller.route);
 
       Reflect.getMetadata('method', controller).forEach((route: any) => {
-        // @ts-ignore
-        group[route.method].apply(group, [
-          route.path,
-          route.middlewares ? route.middlewares : this.voidMiddleware,
-          route.target,
-        ]);
+        if (route.middlewares) {
+          // @ts-ignore
+          group[route.method].apply(group, [route.path, route.middlewares, route.target]);
+        } else {
+          // @ts-ignore
+          group[route.method].apply(group, [route.path, route.target]);
+        }
       });
 
       this.apiRoutes.use(path, group);
@@ -49,11 +56,6 @@ export class Api {
 
   public registerRoutes() {
     this.app.use('/', this.apiRoutes);
-  }
-
-  @Middleware()
-  voidMiddleware() {
-    // why? why not?
   }
 
   // get mainRoutes(): Router {

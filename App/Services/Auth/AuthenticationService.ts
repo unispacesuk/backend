@@ -1,7 +1,7 @@
 import { sign, verify } from 'jsonwebtoken';
 import { Config } from '../../Config';
 import { request, response } from '../../Core/Routing';
-import { middleware } from '../../Core/Decorators';
+import { Middleware } from '../../Core/Decorators';
 import { IJwtPayload } from '../../Interfaces';
 import { UserModel } from '../../Models';
 
@@ -28,7 +28,7 @@ export class AuthenticationService {
       verify(token, this._config.secret, {
         algorithms: ['HS256'],
       }, (error, payload) => {
-        if (error) return reject(error);
+        if (error) return reject(error.message);
         resolve(<IJwtPayload>payload);
       });
     });
@@ -37,7 +37,7 @@ export class AuthenticationService {
   /**
    * AuthenticationController middleware method
    */
-  @middleware()
+  @Middleware()
   public static async authenticate() {
     const token: string | undefined = request().headers?.authorization?.split(' ')[1];
     let payload;
@@ -51,7 +51,7 @@ export class AuthenticationService {
       payload = await AuthenticationService.verifyToken(token);
     } catch (error) {
       return response().status(400).send({
-        message: 'invalid token',
+        message: error,
       });
     }
 
