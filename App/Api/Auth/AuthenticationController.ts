@@ -1,12 +1,14 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { request, response, Route } from '../../Core/Routing';
+import { Controller } from '../../Core/Decorators/ApiDecorator';
 
 // TODO: verify the current token exp and reject if already expired
 
 /**
  * Dont think this route will get used so often... But still keep it here
  */
+@Controller('/auth')
 export class AuthenticationController extends Route {
   constructor() {
     super();

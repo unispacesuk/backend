@@ -5,7 +5,9 @@ import { route } from '../../Core/Decorators';
 import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
+import { Controller } from '../../Core/Decorators/ApiDecorator';
 
+@Controller('/question')
 export class QuestionController extends Route {
   constructor() {
     super();
@@ -181,14 +183,15 @@ export class QuestionController extends Route {
     }
 
     try {
-      (await QuestionService.deleteQuestion()) ?
-        response = 'question deleted' : response = 'could not delete the question';
+      (await QuestionService.deleteQuestion())
+        ? (response = 'question deleted')
+        : (response = 'could not delete the question');
     } catch (error) {
       return {
         code: 400,
         body: {
           message: error,
-        }
+        },
       };
     }
 

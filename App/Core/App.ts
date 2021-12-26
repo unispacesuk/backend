@@ -32,7 +32,8 @@ export default class App {
   }
 
   public initialiseRoutes(): App {
-    this._express.use('/', new Api().mainRoutes);
+    // this._express.use('/', new Api().mainRoutes);
+    new Api(this._express).registerControllers().registerRoutes();
     return this;
   }
 

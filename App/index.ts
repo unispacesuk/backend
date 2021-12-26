@@ -5,6 +5,9 @@ const app: App = new App();
 (async () => {
     await app.tryConnection().then((r) => {
       console.log(r);
-      app.setMiddlewares().initialiseRoutes().RunServer();
+      app
+        .setMiddlewares()
+        .initialiseRoutes()
+        .RunServer();
     });
 })();
