@@ -1,7 +1,7 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { request, response, Route } from '../../Core/Routing';
-import { Controller } from '../../Core/Decorators/ApiDecorator';
+import { request, response } from '../../Core/Routing';
+import { Controller, post } from '../../Core/Decorators';
 
 // TODO: verify the current token exp and reject if already expired
 
@@ -9,16 +9,8 @@ import { Controller } from '../../Core/Decorators/ApiDecorator';
  * Dont think this route will get used so often... But still keep it here
  */
 @Controller('/auth')
-export class AuthenticationController extends Route {
-  constructor() {
-    super();
-    this.createRoute({
-      method: 'post',
-      path: '/authenticate',
-      controller: this.authenticate,
-    });
-  }
-
+export class AuthenticationController {
+  @post('/authenticate')
   async authenticate() {
     const { authorization } = request().headers;
     const token = authorization?.split(' ')[1];

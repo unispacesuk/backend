@@ -1,59 +1,48 @@
-import { request, Route } from '../../Core/Routing';
+import { request } from '../../Core/Routing';
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { QuestionService } from '../../Services/Question/QuestionService';
-import { route } from '../../Core/Decorators';
 import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
-import { Controller } from '../../Core/Decorators/ApiDecorator';
+import { Controller, post, get, patch, remove } from '../../Core/Decorators';
 
 @Controller('/question')
-export class QuestionController extends Route {
-  constructor() {
-    super();
-    this.createRoute({
-      method: 'get',
-      path: '/get/all',
-      controller: this.getAll,
-      middlewares: [authService.authenticate],
-    });
-    this.createRoute({
-      method: 'get',
-      path: '/get/:id',
-      controller: this.getOne,
-      middlewares: [authService.authenticate],
-    });
-    this.createRoute({
-      method: 'get',
-      path: '/get/user/:userId',
-      controller: this.getAll,
-      middlewares: [authService.authenticate],
-    });
-    this.createRoute({
-      method: 'post',
-      path: '/post',
-      controller: this.postNew,
-      middlewares: [authService.authenticate],
-    });
-    // this can be patch or put... we send the id as part of the body 🤔
-    this.createRoute({
-      method: 'patch',
-      path: '/update',
-      controller: this.update,
-      middlewares: [authService.authenticate],
-    });
-    this.createRoute({
-      method: 'delete',
-      path: '/delete/:id',
-      controller: this.deleteQuestion,
-      middlewares: [authService.authenticate],
-    });
+export class QuestionController {
+  /**
+   * Get all questions
+   * TODO: REFACTOR THE ERROR HANDLING HERE
+   */
+  @get('/get/all', [authService.authenticate])
+  async getAll(): Promise<IResponse> {
+    const response = await QuestionService.getAll().catch((error) => console.log(error));
+
+    return {
+      code: 200,
+      body: {
+        response,
+      },
+    };
+  }
+
+  /**
+   * Get all from user
+   */
+  @get('/get/user/:userId', [authService.authenticate])
+  async getAllFromUser() {
+    const response = await QuestionService.getAll().catch((error) => console.log(error));
+
+    return {
+      code: 200,
+      body: {
+        response,
+      },
+    };
   }
 
   /**
    * Get one question
    */
-  @route()
+  @get('/get/:id', [authService.authenticate])
   async getOne(): Promise<IResponse> {
     const { id } = request().parameters;
     // const id = request<'dddd'>('id');
@@ -85,25 +74,9 @@ export class QuestionController extends Route {
   }
 
   /**
-   * Get all questions
-   * TODO: REFACTOR THE ERROR HANDLING HERE
-   */
-  @route()
-  async getAll(): Promise<IResponse> {
-    const response = await QuestionService.getAll().catch((error) => console.log(error));
-
-    return {
-      code: 200,
-      body: {
-        response,
-      },
-    };
-  }
-
-  /**
    * Post a new question
    */
-  @route()
+  @post('/post', [authService.authenticate])
   async postNew(): Promise<IResponse> {
     let question;
 
@@ -131,7 +104,7 @@ export class QuestionController extends Route {
    * Update question
    * Note: only the owner / staff / admin / mod will be able to update the questions.
    */
-  @route()
+  @patch('/update', [authService.authenticate])
   async update(): Promise<IResponse> {
     let question;
 
@@ -169,7 +142,7 @@ export class QuestionController extends Route {
   /**
    * Delete a question
    */
-  @route()
+  @remove('/delete/:id', [authService.authenticate])
   async deleteQuestion(): Promise<IResponse> {
     let response;
     // userCanEdit() or userIdStaff()

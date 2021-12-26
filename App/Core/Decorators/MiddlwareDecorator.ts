@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from 'express';
  *  until we set it as a middleware as a route though.
  *  When we do that, then it will run as a middleware and go next() normally. SIIUUUUU
  */
-export function middleware() {
+export function Middleware() {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value;
     descriptor.value = async function (req: Request, res: Response, next: NextFunction) {

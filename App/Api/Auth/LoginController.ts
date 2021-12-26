@@ -1,25 +1,15 @@
 import { LoginService } from '../../Services/Auth/LoginService';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { UserModel } from '../../Models';
-import { request, Route } from '../../Core/Routing';
-import { route } from '../../Core/Decorators';
+import { request } from '../../Core/Routing';
 import { IResponse } from '../../Interfaces';
-import { Controller } from '../../Core/Decorators/ApiDecorator';
+import { Controller, post } from '../../Core/Decorators';
 /**
  * All endpoints related to login
  */
 @Controller('/auth')
-export class LoginController extends Route {
-  constructor() {
-    super();
-    this.createRoute({
-      method: 'post',
-      path: '/login',
-      controller: this.doLogin,
-    });
-  }
-
-  @route()
+export class LoginController {
+  @post('/login')
   async doLogin(): Promise<IResponse> {
     /*
     This seems confusing, but,
