@@ -4,6 +4,7 @@ import { RegisterController } from './Auth/RegisterController';
 import 'reflect-metadata';
 import { AuthenticationController } from './Auth/AuthenticationController';
 import { QuestionController } from './Question/QuestionController';
+import { RolesController } from './Roles/RolesController';
 
 export class Api {
   app: Express;
@@ -26,6 +27,7 @@ export class Api {
       RegisterController,
       AuthenticationController,
       QuestionController,
+      RolesController,
     ];
   }
 

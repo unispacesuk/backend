@@ -3,7 +3,9 @@ import { Route } from '../../Core/Routing';
 import { IResponse } from '../../Interfaces';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { RolesService } from '../../Services/Roles/RolesService';
+import { Controller } from '../../Core/Decorators/ApiDecorator';
 
+@Controller('/role')
 export class RolesController extends Route {
   constructor() {
     super();
@@ -22,7 +24,6 @@ export class RolesController extends Route {
    */
   @route()
   private async setRole(): Promise<IResponse> {
-
     return {
       code: 200,
       body: {
