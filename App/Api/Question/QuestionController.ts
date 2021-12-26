@@ -4,7 +4,7 @@ import { QuestionService } from '../../Services/Question/QuestionService';
 import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
-import { Controller, post, get, patch, remove } from '../../Core/Decorators';
+import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
 
 @Controller('/question')
 export class QuestionController {
@@ -12,7 +12,7 @@ export class QuestionController {
    * Get all questions
    * TODO: REFACTOR THE ERROR HANDLING HERE
    */
-  @get('/get/all', [authService.authenticate])
+  @Get('/get/all', [authService.authenticate])
   async getAll(): Promise<IResponse> {
     const response = await QuestionService.getAll().catch((error) => console.log(error));
 
@@ -27,7 +27,7 @@ export class QuestionController {
   /**
    * Get all from user
    */
-  @get('/get/user/:userId', [authService.authenticate])
+  @Get('/get/user/:userId', [authService.authenticate])
   async getAllFromUser() {
     const response = await QuestionService.getAll().catch((error) => console.log(error));
 
@@ -42,7 +42,7 @@ export class QuestionController {
   /**
    * Get one question
    */
-  @get('/get/:id', [authService.authenticate])
+  @Get('/get/:id', [authService.authenticate])
   async getOne(): Promise<IResponse> {
     const { id } = request().parameters;
     // const id = request<'dddd'>('id');
@@ -76,7 +76,7 @@ export class QuestionController {
   /**
    * Post a new question
    */
-  @post('/post', [authService.authenticate])
+  @Post('/post', [authService.authenticate])
   async postNew(): Promise<IResponse> {
     let question;
 
@@ -104,7 +104,7 @@ export class QuestionController {
    * Update question
    * Note: only the owner / staff / admin / mod will be able to update the questions.
    */
-  @patch('/update', [authService.authenticate])
+  @Patch('/update', [authService.authenticate])
   async update(): Promise<IResponse> {
     let question;
 
@@ -142,7 +142,7 @@ export class QuestionController {
   /**
    * Delete a question
    */
-  @remove('/delete/:id', [authService.authenticate])
+  @Delete('/delete/:id', [authService.authenticate])
   async deleteQuestion(): Promise<IResponse> {
     let response;
     // userCanEdit() or userIdStaff()

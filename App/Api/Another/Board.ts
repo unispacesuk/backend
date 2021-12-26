@@ -1,9 +1,9 @@
-import {get} from "../../Core/Decorators/MethodDecorator";
+import {Get} from "../../Core/Decorators/MethodDecorator";
 import {Controller} from "../../Core/Decorators/ControllerDecorator";
 
 @Controller('/b')
 export default class Board {
-  @get('/board')
+  @Get('/board')
   getBoard() {
 
     return {

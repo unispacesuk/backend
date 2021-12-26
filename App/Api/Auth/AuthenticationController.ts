@@ -1,7 +1,7 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { request, response } from '../../Core/Routing';
-import { Controller, post } from '../../Core/Decorators';
+import { Controller, Post } from '../../Core/Decorators';
 
 // TODO: verify the current token exp and reject if already expired
 
@@ -10,7 +10,7 @@ import { Controller, post } from '../../Core/Decorators';
  */
 @Controller('/auth')
 export class AuthenticationController {
-  @post('/authenticate')
+  @Post('/authenticate')
   async authenticate() {
     const { authorization } = request().headers;
     const token = authorization?.split(' ')[1];

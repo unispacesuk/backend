@@ -1,7 +1,7 @@
 import { IResponse } from '../../Interfaces';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { RolesService } from '../../Services/Roles/RolesService';
-import { Controller, post } from '../../Core/Decorators';
+import { Controller, Post } from '../../Core/Decorators';
 
 @Controller('/role')
 export class RolesController {
@@ -10,7 +10,7 @@ export class RolesController {
    * The token of the user setting the role will be used to verify the permissions.
    * @private
    */
-  @post('/set', [AuthService.authenticate])
+  @Post('/set', [AuthService.authenticate])
   private async setRole(): Promise<IResponse> {
     return {
       code: 200,

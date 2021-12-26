@@ -1,67 +1,49 @@
 import { response } from '../Routing';
-import 'reflect-metadata';
 import { IResponse } from '../../Interfaces';
-
-/**
- * We will use a @route() decorator to generate "routes"
- * This will allow us to just return a body from the controller function and the decorator
- *  will handle the response.
- */
-export function route() {
-  return prepareRoute();
-}
-
-function prepareRoute() {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const original = descriptor.value;
-    descriptor.value = async () => {
-      const body: IResponse = await original.call();
-      response().status(body.code).send(body.body);
-    };
-
-    return descriptor;
-  };
-}
-
-// WILL MAYBE NEED THIS IN THE FUTURE
-export interface routeMetaData {
-  path: string;
-  method: string;
-  middlewares?: (() => void)[];
-  target: () => void;
-}
+import { IRouteMetaData } from '../../Interfaces/IRouteMetaData';
+import 'reflect-metadata';
 
 // type for the main http decorator
 type HttpDecorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
 
-export function get(path: string, middlewares?: (() => void)[]): HttpDecorator {
+export function Get(path: string, middlewares?: (() => void)[]): HttpDecorator {
   return httpRequest('get', path, middlewares);
 }
 
-export function post(path: string, middlewares?: (() => void)[]): HttpDecorator {
+export function Post(path: string, middlewares?: (() => void)[]): HttpDecorator {
   return httpRequest('post', path, middlewares);
 }
 
-export function patch(path: string, middlewares?: (() => void)[]): HttpDecorator {
+export function Patch(path: string, middlewares?: (() => void)[]): HttpDecorator {
   return httpRequest('patch', path, middlewares);
 }
 
-export function put(path: string, middlewares?: (() => void)[]): HttpDecorator {
+export function Put(path: string, middlewares?: (() => void)[]): HttpDecorator {
   return httpRequest('put', path, middlewares);
 }
 
 /**
  * delete is a reserved keyword.
- * to do a delete request we do @remove()
+ * to do a delete request we do @Remove() or @Eliminate() or @Delete()
  * @param path
  * @param middlewares
  */
-export function remove(path: string, middlewares?: (() => void)[]): HttpDecorator {
+export function Remove(path: string, middlewares?: (() => void)[]): HttpDecorator {
+  return httpRequest('delete', path, middlewares);
+}
+export function Eliminate(path: string, middlewares?: (() => void)[]): HttpDecorator {
+  return httpRequest('delete', path, middlewares);
+}
+export function Delete(path: string, middlewares?: (() => void)[]): HttpDecorator {
   return httpRequest('delete', path, middlewares);
 }
 
-export function head(path: string, middlewares?: (() => void)[]): HttpDecorator {
+export function Head(path: string, middlewares?: (() => void)[]): HttpDecorator {
   return httpRequest('head', path, middlewares);
+}
+
+export function Options(path: string, middlewares?: (() => void)[]): HttpDecorator {
+  return httpRequest('options', path, middlewares);
 }
 
 export function httpRequest(
@@ -76,7 +58,7 @@ export function httpRequest(
       response().status(body.code).send(body.body);
     };
 
-    const meta: routeMetaData = {
+    const routeMetaData: IRouteMetaData = {
       path: path,
       method: method,
       middlewares: middlewares,
@@ -87,7 +69,7 @@ export function httpRequest(
     if (!Reflect.hasMetadata('method', target.constructor)) {
       Reflect.defineMetadata('method', metaDataList, target.constructor);
     }
-    metaDataList.push(meta);
+    metaDataList.push(routeMetaData);
     Reflect.defineMetadata('method', metaDataList, target.constructor);
 
     return descriptor;

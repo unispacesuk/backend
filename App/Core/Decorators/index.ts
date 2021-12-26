@@ -1,3 +1,3 @@
 export { Controller } from './ControllerDecorator';
 export { Middleware } from './MiddlwareDecorator';
-export { route, get, post, patch, remove } from './MethodDecorator';
+export { Get, Post, Patch, Put, Eliminate, Remove, Delete, Head, Options } from './MethodDecorator';

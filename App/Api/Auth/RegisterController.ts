@@ -1,14 +1,14 @@
 import { RegisterService } from '../../Services/Auth/RegisterService';
 import { IResponse, IUser } from '../../Interfaces';
 import { request } from '../../Core/Routing';
-import { Controller, post } from '../../Core/Decorators';
+import { Controller, Post } from '../../Core/Decorators';
 
 /**
  * All endpoints related to register
  */
 @Controller('/auth')
 export class RegisterController {
-  @post('/register')
+  @Post('/register')
   async doRegister(): Promise<IResponse> {
     const user: IUser = request().body;
 

@@ -4,6 +4,7 @@ import { RegisterController } from './Auth/RegisterController';
 import { AuthenticationController } from './Auth/AuthenticationController';
 import { QuestionController } from './Question/QuestionController';
 import { RolesController } from './Roles/RolesController';
+import { IRouteMetaData } from '../Interfaces/IRouteMetaData';
 import 'reflect-metadata';
 
 export class Api {
@@ -33,22 +34,20 @@ export class Api {
 
   public registerControllers(): Api {
     Api.getControllers().forEach((controller) => {
-      const group: Router = Router();
+      const group: { [n: string]: any } = Router();
       // const Controller = new controller();
       const path = Reflect.getMetadata('controller', controller);
       // this.apiRoutes.use(path, Controller.route);
 
-      Reflect.getMetadata('method', controller).forEach((route: any) => {
+      Reflect.getMetadata('method', controller).forEach((route: IRouteMetaData) => {
         if (route.middlewares) {
-          // @ts-ignore
           group[route.method].apply(group, [route.path, route.middlewares, route.target]);
         } else {
-          // @ts-ignore
           group[route.method].apply(group, [route.path, route.target]);
         }
       });
 
-      this.apiRoutes.use(path, group);
+      this.apiRoutes.use(path, <Router>group);
     });
 
     return this;

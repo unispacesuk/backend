@@ -3,13 +3,13 @@ import { AuthenticationService as AuthService } from '../../Services/Auth/Authen
 import { UserModel } from '../../Models';
 import { request } from '../../Core/Routing';
 import { IResponse } from '../../Interfaces';
-import { Controller, post } from '../../Core/Decorators';
+import { Controller, Post } from '../../Core/Decorators';
 /**
  * All endpoints related to login
  */
 @Controller('/auth')
 export class LoginController {
-  @post('/login')
+  @Post('/login')
   async doLogin(): Promise<IResponse> {
     /*
     This seems confusing, but,
