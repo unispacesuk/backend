@@ -1,20 +1,15 @@
 import { Express, Router } from 'express';
-import { LoginController } from './Auth/LoginController';
-import { RegisterController } from './Auth/RegisterController';
-import { AuthenticationController } from './Auth/AuthenticationController';
-import { QuestionController } from './Question/QuestionController';
-import { RolesController } from './Roles/RolesController';
 import { IRouteMetaData } from '../Interfaces/IRouteMetaData';
+import { files } from 'node-dir';
 import 'reflect-metadata';
+import * as path from 'path';
 
 export class Api {
-  app: Express;
-  apiRoutes: Router = Router();
+  static app: Express;
+  static apiRoutes: Router = Router();
 
   constructor(app: Express) {
-    this.app = app;
-    // this.apiRoutes.use(Auth);
-    // this.apiRoutes.use(Question);
+    Api.app = app;
   }
 
   /**
@@ -22,24 +17,34 @@ export class Api {
    * That can be achieved by reading all the files in the Api (to be renamed Controllers) folder.
    * @private
    */
-  private static getControllers(): any[] {
-    return [
-      LoginController,
-      RegisterController,
-      AuthenticationController,
-      QuestionController,
-      RolesController,
-    ];
+  private static async getControllers(): Promise<any[]> {
+    const fs = files(path.join(__dirname), { sync: true });
+    const controllers: any[] = [];
+
+    for (const c of fs) {
+      if (c.includes('Controller')) {
+        controllers.push(await import(c));
+      }
+    }
+
+    return controllers;
   }
 
-  public registerControllers(): Api {
-    Api.getControllers().forEach((controller) => {
+  /**
+   * TODO: Maybe this needs some refactoring 🤔
+   * Look horrible but it works alright
+   */
+  public async registerControllers(): Promise<Api> {
+    const controllers: any[] = await Api.getControllers();
+    for (const controller of controllers) {
+      // (await Api.getControllers()).forEach((controller) => {
       const group: { [n: string]: any } = Router();
       // const Controller = new controller();
-      const path = Reflect.getMetadata('controller', controller);
+      const c = Object.values(controller)[0];
+      const path = Reflect.getMetadata('controller', <object>c);
       // this.apiRoutes.use(path, Controller.route);
 
-      Reflect.getMetadata('method', controller).forEach((route: IRouteMetaData) => {
+      Reflect.getMetadata('method', <object>c).forEach((route: IRouteMetaData) => {
         if (route.middlewares) {
           group[route.method].apply(group, [route.path, route.middlewares, route.target]);
         } else {
@@ -47,17 +52,14 @@ export class Api {
         }
       });
 
-      this.apiRoutes.use(path, <Router>group);
-    });
+      Api.apiRoutes.use(path, <Router>group);
+      // });
+    }
 
     return this;
   }
 
-  public registerRoutes() {
-    this.app.use('/', this.apiRoutes);
+  public static registerRoutes() {
+    Api.app.use('/', Api.apiRoutes);
   }
-
-  // get mainRoutes(): Router {
-  //   return this.apiRoutes;
-  // }
 }
