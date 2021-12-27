@@ -1,4 +1,4 @@
 export { IResponse } from './IResponse';
-export { MoreRequest } from './MoreRequest';
+export { IRequest } from './IRequest';
 export { IJwtPayload } from './IJwtPayload';
 export { IUser } from './IUser';

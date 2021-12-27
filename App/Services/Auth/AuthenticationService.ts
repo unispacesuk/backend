@@ -1,7 +1,7 @@
 import { sign, verify } from 'jsonwebtoken';
 import { Config } from '../../Config';
 import { request, response } from '../../Core/Routing';
-import { Middleware } from '../../Core/Decorators';
+import { Middleware, Next } from '../../Core/Decorators';
 import { IJwtPayload } from '../../Interfaces';
 import { UserModel } from '../../Models';
 
@@ -25,9 +25,7 @@ export class AuthenticationService {
 
   public static verifyToken(token: string): Promise<IJwtPayload | undefined> {
     return new Promise((resolve, reject) => {
-      verify(token, this._config.secret, {
-        algorithms: ['HS256'],
-      }, (error, payload) => {
+      verify(token, this._config.secret, { algorithms: ['HS256'] }, (error, payload) => {
         if (error) return reject(error.message);
         resolve(<IJwtPayload>payload);
       });
@@ -55,6 +53,10 @@ export class AuthenticationService {
       });
     }
 
-    console.log(payload);
+    request().data({
+      id: payload?._id,
+    });
+
+    Next();
   }
 }
