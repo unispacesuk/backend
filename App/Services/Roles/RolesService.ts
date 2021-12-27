@@ -13,8 +13,7 @@ export class RolesService {
   public static async isUserAdmin() {
     const { id } = await request().Data();
     Connection.client.query(
-      `SELECT * FROM user_roles
-          WHERE user_id = $1 AND role_id = $2`,
+      `SELECT * FROM user_roles WHERE user_id = $1 AND role_id = $2`,
       [id, 1],
       async (error, result) => {
         if (error) return error.message;

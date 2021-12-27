@@ -24,11 +24,10 @@ export class RegisterService {
 
     // create the new role
     // every user will always be added as a new normal user then if they need a role an admin will add one
-    await this._client.query(
-      `INSERT INTO user_roles (user_id, role_id)
-    VALUES ($1, $2)`,
-      [newUser.rows[0]._id, 3]
-    );
+    await this._client.query(`INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2)`, [
+      newUser.rows[0]._id,
+      3,
+    ]);
 
     return newUser;
   }
