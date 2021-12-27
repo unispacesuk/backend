@@ -2,7 +2,7 @@
 
 Collection of API endpoints for logging and testing purposes.
 
-***
+---
 
 ## AuthenticationController
 
@@ -13,9 +13,11 @@ Collection of API endpoints for logging and testing purposes.
 ```
 
 ```javascript
-  //example response
+//example response
 ```
-***
+
+---
+
 #### RegisterController
 
 ```http
@@ -23,10 +25,13 @@ Collection of API endpoints for logging and testing purposes.
 ```
 
 ```javascript
-  //example response
+//example response
 ```
-***
+
+---
+
 ## Questions
+
 #### Post new question
 
 ```http
@@ -34,9 +39,11 @@ Collection of API endpoints for logging and testing purposes.
 ```
 
 ```javascript
-  //example response
+//example response
 ```
-***
+
+---
+
 #### Get one question
 
 ```http
@@ -44,9 +51,11 @@ Collection of API endpoints for logging and testing purposes.
 ```
 
 ```javascript
-  //example response
+//example response
 ```
-***
+
+---
+
 #### Get all questions
 
 ```http
@@ -54,9 +63,11 @@ Collection of API endpoints for logging and testing purposes.
 ```
 
 ```javascript
-  //example response
+//example response
 ```
-***
+
+---
+
 #### Get a users questions
 
 ```http
@@ -64,43 +75,7 @@ Collection of API endpoints for logging and testing purposes.
 ```
 
 ```javascript
-  //example response
+//example response
 ```
 
-***
-
-### Decorators and More
-```typescript
-request()
-response()
-/**
- * These are two global methods that will allow us to access the
- * Request and Response interfaces from express. These also include all
- * methods present in those interfaces and they allow us to abstract
- * requests and responses and make the code more beautiful.
- */
-```
-***
-```typescript
-@middleware()
-/**
- * This decorator registers a function as a middleware.
- * It will run the next() function automatically, we just write the logic.
- * A middleware can also be registered in a separate class
- * and called as a function when building the route.
- */
-```
-***
-```typescript
-@route()
-/**
- * We can use this decorator to register a route. At the moment we just use it
- * to register a "controller" route and allows us to not have to repeat
- * request and response parameters on the "controller" methods.
- */
-
-interface IResponse {
-  code: number;
-  body: object;
-}
-```
+---
