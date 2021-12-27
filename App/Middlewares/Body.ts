@@ -3,7 +3,7 @@
  * This allows to keep a log of all bodies ever send to the server for security purposes.
  * Later I will add way to log this to a file / table on the database.
  */
-import { Middleware } from '../Core/Decorators';
+import { Middleware, Next } from '../Core/Decorators';
 import { request } from '../Core/Routing';
 
 export class BodyMiddleware {
@@ -13,8 +13,7 @@ export class BodyMiddleware {
   @Middleware()
   public printBody() {
     const methods: string[] = ['POST', 'PUT', 'PATCH'];
-    if (methods.includes(request().method)) {
-
+    if (methods.includes(request().method) && request().body) {
       const privates = ['not_username', 'password', 'token'];
       const body = request().body;
       // privates.map(p => {
@@ -24,5 +23,7 @@ export class BodyMiddleware {
 
       console.log(body);
     }
+
+    Next();
   }
 }

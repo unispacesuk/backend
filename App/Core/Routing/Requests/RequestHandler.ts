@@ -1,18 +1,32 @@
-import { Request } from 'express';
 import { IncomingHttpHeaders } from 'http2';
+import { IRequest } from '../../../Interfaces';
 
 /**
  * Request constructor
  */
 export class RequestHandler {
-  _request: Request | undefined;
+  _request: IRequest | undefined;
 
-  constructor(request: Request | undefined) {
+  constructor(request: IRequest | undefined) {
     this._request = request;
   }
 
   get headers() {
     return <IncomingHttpHeaders>this._request?.headers;
+  }
+
+  /**
+   * Setter to set any custom data that we want to pass from the middlewares.
+   * @param args
+   */
+  data(args: { [key: string]: any }) {
+    for (const arg in args) {
+      this._request![arg] = args[arg];
+    }
+  }
+
+  async Data(): Promise<any> {
+    return this._request;
   }
 
   /**
