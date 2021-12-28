@@ -64,10 +64,12 @@ interface IResponse {
 ```typescript
 import { Middleware, Next } from "./App/Core/Decorators";
 
-@Middleware()
-function middleware() {
-  // some logic here
-  Next();
+class Example {
+  @Middleware()
+  static middleware() {
+    // some logic here
+    Next();
+  }
 }
 
 /**
