@@ -2,8 +2,6 @@ import {IResponse} from '../../Interfaces';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { RolesService } from '../../Services/Roles/RolesService';
 import { Controller, Post } from '../../Core/Decorators';
-import {NextFunction} from "express";
-import {request} from "../../Core/Routing";
 
 @Controller('/roles')
 export class RolesController {
