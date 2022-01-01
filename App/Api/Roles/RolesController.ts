@@ -3,7 +3,7 @@ import { AuthenticationService as AuthService } from '../../Services/Auth/Authen
 import { RolesService } from '../../Services/Roles/RolesService';
 import { Controller, Post } from '../../Core/Decorators';
 
-@Controller('/roles')
+@Controller('/role')
 export class RolesController {
   /**
    * We will send a body with the user id and the role to set the user to.

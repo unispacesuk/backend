@@ -1,4 +1,4 @@
-import { request } from '../../Core/Routing';
+import { param, request } from '../../Core/Routing';
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { QuestionService } from '../../Services/Question/QuestionService';
 import { IResponse } from '../../Interfaces';
@@ -44,8 +44,7 @@ export class QuestionController {
    */
   @Get('/get/:id', [authService.authenticate])
   async getOne(): Promise<IResponse> {
-    const { id } = request().parameters;
-    // const id = request<'dddd'>('id');
+    const { id } = param();
     let response;
 
     // looks weird I know. but it is only because we can either get:
@@ -181,7 +180,7 @@ export class QuestionController {
 async function userCanUpdate(): Promise<boolean> {
   const currentUser = await UserService.getUserId(request().token);
   const { userId } = <IQuestionModel>(
-    await QuestionService.getQuestion(request().body._id || request().parameters.id)
+    await QuestionService.getQuestion(request().body._id || param('id'))
   );
 
   return currentUser === userId;

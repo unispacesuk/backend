@@ -1,5 +1,5 @@
 import { UserService } from '../User/UserService';
-import { request } from '../../Core/Routing';
+import { request, param, query } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { Client } from 'pg';
 import { IQuestionModel, QuestionModel } from '../../Models/QuestionModel';
@@ -54,26 +54,26 @@ export class QuestionService {
    */
   public static async getAll(): Promise<IQuestionModel> {
     const values: string[] = []; // empty array for the values to use prepared statement
-    let query = 'SELECT * FROM questions ';
+    let _query = 'SELECT * FROM questions ';
 
-    const criteria = this.filtering(request().query);
+    const criteria = this.filtering(query());
 
     if (criteria.userId) {
       values.push(criteria.userId);
-      query += ` WHERE user_id = $${values.length}`;
+      _query += ` WHERE user_id = $${values.length}`;
     }
 
     if (!criteria.orderBy) {
-      query += ' ORDER BY created_at DESC';
+      _query += ' ORDER BY created_at DESC';
     } else {
       values.push(criteria.orderBy);
-      query += ` ORDER BY $${values.length}`;
+      _query += ` ORDER BY $${values.length}`;
     }
 
     !criteria.sort ? ` DESC` : ` ${criteria.sort}`; // set DESC by default if no sort is set
 
     return new Promise((resolve, reject) => {
-      this.conn.query(query, [...values], (error, result) => {
+      this.conn.query(_query, [...values], (error, result) => {
         if (error) return reject(error);
         resolve(<IQuestionModel>result.rows.map((q) => QuestionModel(q)));
       });
@@ -120,7 +120,7 @@ export class QuestionService {
    * TODO: MAKE SURE THAT THE USER OWNS THE QUESTION OR OVERRIDE IF ADMIN/MOD/STAFF
    */
   public static async deleteQuestion(): Promise<boolean | Error> {
-    const { id } = request().parameters;
+    const { id } = param();
     const userId = await UserService.getUserId(request().token);
 
     return new Promise((resolve, reject) => {
@@ -142,8 +142,8 @@ export class QuestionService {
     const criteria: ICriteria = {};
 
     // if a userId is present
-    if (request().parameters.userId) {
-      criteria.userId = request().parameters.userId;
+    if (param('userId')) {
+      criteria.userId = param('userId');
     }
 
     // if sortBy is present

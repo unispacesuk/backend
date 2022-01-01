@@ -15,9 +15,9 @@ Backend for Unispaces.
 #### Request and Response
 
 ```typescript
-import { request, response } from './App/Core/Routing'
-import { Controller, Post } from './App/Core/Decorators'
-import { IResponse } from "./App/Interfaces";
+import { request, response } from './App/Core/Routing';
+import { Controller, Post } from './App/Core/Decorators';
+import { IResponse } from './App/Interfaces';
 
 @Controller('/example')
 export class Example {
@@ -29,16 +29,16 @@ export class Example {
     return {
       code: 200,
       body: {
-        m: 'post example'
-      }
-    }
+        m: 'post example',
+      },
+    };
   }
-  
+
   @Get('/get')
   getExample() {
     // some logic here
     return response().status(200).send({
-      m: 'get example'
+      m: 'get example',
     });
   }
 }
@@ -61,8 +61,9 @@ interface IResponse {
 ---
 
 #### @Middleware()
+
 ```typescript
-import { Middleware, Next } from "./App/Core/Decorators";
+import { Middleware, Next } from './App/Core/Decorators';
 
 class Example {
   @Middleware()
@@ -82,8 +83,9 @@ class Example {
 ---
 
 #### @Controller()
+
 ```typescript
-import { Controller } from "./App/Core/Decorators";
+import { Controller } from './App/Core/Decorators';
 
 @Controller('/user')
 export class User {
@@ -103,7 +105,7 @@ export class User {
 #### Method routes
 
 ```typescript
-import { Controller, Get, Post, Put, Patch, Delete } from "./App/Core/Decorators";
+import { Controller, Get, Post, Put, Patch, Delete } from './App/Core/Decorators';
 
 @Controller('/example')
 export class Example {
@@ -111,22 +113,22 @@ export class Example {
   getExample() {
     // some logic here
   }
-  
+
   @Post('/post')
   postExample() {
     // some logic here
   }
-  
+
   @Put('/put')
   putExample() {
     // some logic here
   }
-  
+
   @Patch('/patch')
   patchExample() {
     // some logic here
   }
-  
+
   @Delete('/delete')
   deleteExample() {
     // some logic here
@@ -139,11 +141,13 @@ export class Example {
  * We just set the decorator with the path before the function and the code will do the rest.
  */
 ```
+
 Now we think, what if we want to set a middleware to always run when making a
 request to a certain route? <br>
 Say we define a middleware `authenticate()` because we want only logged-in users to access our app.
+
 ```typescript
-import { Controller, Get, Middleware, Next } from "./App/Core/Decorators";
+import { Controller, Get, Middleware, Next } from './App/Core/Decorators';
 
 // define a service or a class for the middlewares
 class AuthService {
@@ -163,6 +167,32 @@ export class Example {
   @Get('/get', [AuthService.authenticate])
   getExample() {
     // some logic here
+  }
+}
+```
+---
+#### Url Queries and Parameters
+
+To get queries and parameters from the url we have two helper methods to make it much simpler and organised.
+
+```typescript
+import { param, query } from './App/Core/Routing';
+
+@Controller('/example')
+export class Example {
+  @Get('/get/:id') // example.com/example/get/50?username=ricdotnet
+  getExample() {
+    /**
+     * We can get the parameters and query values using two different ways.
+     * Detructuring and direct fetching.
+     */
+    const { id } = param();
+    console.log(id); // 50
+    console.log(param('id')); // 50
+
+    const { username } = query();
+    console.log(username); // ricdotnet
+    console.log(query('username')); // ricdotnet
   }
 }
 ```

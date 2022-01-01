@@ -24,3 +24,17 @@ export { request };
 export function response(): ResponseHandler {
   return RequestContext.response();
 }
+
+/**
+ * We use this method to retrieve a parameter from the url
+ * @param p
+ */
+function param(p = 'all') {
+  return request().parameters(p);
+}
+export { param };
+
+function query(q = 'all') {
+  return request().query(q);
+}
+export { query };
