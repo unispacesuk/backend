@@ -47,7 +47,7 @@ export default class App {
     });
   }
 
-  public RunServer(): App {
+  public runServer(): App {
     this._express.listen(this._config.port, () => {
       console.log(`Server is up and running on port: ${this._config.port}`);
     });
