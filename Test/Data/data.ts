@@ -1,5 +1,6 @@
 export const data = {
   "user": {
+    "id": 1,
     "username": "uncleric",
     "not_username": "12345",
     "email": "email@email.com",
