@@ -144,7 +144,7 @@ export class QuestionController {
   @Delete('/delete/:id', [authService.authenticate])
   async deleteQuestion(): Promise<IResponse> {
     let response;
-    // userCanEdit() or userIdStaff()
+    // userCanEdit() or userIsStaff()
     if (!(await userCanUpdate())) {
       return {
         code: 400,
@@ -171,6 +171,22 @@ export class QuestionController {
       code: 200,
       body: {
         message: response,
+      },
+    };
+  }
+
+  /**
+   * Add an answer
+   */
+  @Post('/answer/:id', [authService.authenticate])
+  async addAnswer(): Promise<IResponse> {
+    // const { id } = param();
+    // console.log(id);
+    console.log(await QuestionService.addAnswer());
+    return {
+      code: 200,
+      body: {
+        message: 'answered',
       },
     };
   }

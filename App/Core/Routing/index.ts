@@ -29,12 +29,12 @@ export function response(): ResponseHandler {
  * We use this method to retrieve a parameter from the url
  * @param p
  */
-function param(p = 'all') {
+function param<T>(p = 'all'): T {
   return request().parameters(p);
 }
 export { param };
 
-function query(q = 'all') {
+function query<T>(q = 'all'): T {
   return request().query(q);
 }
 export { query };

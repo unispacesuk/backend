@@ -53,6 +53,8 @@ export class AuthenticationService {
       });
     }
 
+    // this will add the id on the request object then we will be able to access it globally
+    //    it will be refreshed on every request though...
     request().data({
       id: payload?._id,
     });

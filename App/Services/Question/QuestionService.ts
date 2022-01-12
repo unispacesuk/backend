@@ -84,7 +84,7 @@ export class QuestionService {
    * Update question
    */
   public static async updateQuestion(): Promise<IQuestionModel> {
-    const {_id, title, content} = request().body;
+    const { _id, title, content } = request().body;
     const userId = <string>await UserService.getUserId(request().token); // can cast to string :poggers:
 
     const values: string[] = [];
@@ -103,7 +103,7 @@ export class QuestionService {
 
     // values.length-1 because we are adding two items on the array and we want two different indexes
     values.push(_id, userId);
-    query += ` WHERE _id = $${values.length-1} AND user_id = $${values.length} RETURNING *`;
+    query += ` WHERE _id = $${values.length - 1} AND user_id = $${values.length} RETURNING *`;
     return new Promise((resolve, reject) => {
       this.conn.query(query, [...values], (error, result) => {
         if (error) return reject(error);
@@ -124,12 +124,15 @@ export class QuestionService {
     const userId = await UserService.getUserId(request().token);
 
     return new Promise((resolve, reject) => {
-      this.conn.query('DELETE FROM questions WHERE _id = $1 AND user_id = $2',
-        [id, userId], (error, result) => {
+      this.conn.query(
+        'DELETE FROM questions WHERE _id = $1 AND user_id = $2',
+        [id, userId],
+        (error, result) => {
           if (error) return reject(error);
           if (result.rowCount === 0) return resolve(false);
           resolve(true);
-        });
+        }
+      );
     });
   }
 
@@ -159,5 +162,15 @@ export class QuestionService {
     }
 
     return criteria;
+  }
+
+  /**
+   * Add an answer to the question
+   */
+  public static async addAnswer(): Promise<any> {
+    const { id } = param();
+    const { rows } = await this.conn.query('select * from questions where _id = $1', [id]);
+    const answers: any[] = [rows[0].answers, request().body];
+    await this.conn.query('UPDATE questions SET answers = $1', [answers]);
   }
 }
