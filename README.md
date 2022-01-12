@@ -170,6 +170,19 @@ export class Example {
   }
 }
 ```
+
+We can also define controller middlewares. These will run to every route defined inside the controller.
+
+```typescript
+import { Controller } from './App/Core/Decorators';
+
+// Just like method middlewares, we define the controller middlewares as an array of functions
+@Controller('/user', [AuthService.authenticate])
+export class User {
+  // controller routes and logic
+}
+```
+
 ---
 #### Url Queries and Parameters
 
