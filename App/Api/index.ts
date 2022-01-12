@@ -1,5 +1,6 @@
 import { Express, Router } from 'express';
 import { IRouteMetaData } from '../Interfaces/IRouteMetaData';
+import { IController } from '../Interfaces/IController';
 import { files } from 'node-dir';
 import 'reflect-metadata';
 import * as path from 'path';
@@ -41,7 +42,7 @@ export class Api {
       const group: { [n: string]: any } = Router();
       // const Controller = new controller();
       const c = Object.values(controller)[0];
-      const path = Reflect.getMetadata('controller', <object>c);
+      const controllerData: IController = Reflect.getMetadata('controller', <object>c);
       // this.apiRoutes.use(path, Controller.route);
 
       Reflect.getMetadata('method', <object>c).forEach((route: IRouteMetaData) => {
@@ -52,7 +53,14 @@ export class Api {
         }
       });
 
-      Api.apiRoutes.use(path, <Router>group);
+      // This will register a global middleware defined on the @Controller decorator
+      if (controllerData.middlewares) {
+        Api.apiRoutes.use(controllerData.path, controllerData.middlewares, <Router>group);
+      } else {
+        Api.apiRoutes.use(controllerData.path, <Router>group);
+      }
+
+      // Api.apiRoutes.use(controllerData.path, <Router>group);
       // });
     }
 
