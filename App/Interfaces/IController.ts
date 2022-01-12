@@ -1,4 +1,4 @@
 export interface IController {
   path: string;
-  target: () => void;
+  middlewares?: ((key: string) => void)[] | undefined;
 }
