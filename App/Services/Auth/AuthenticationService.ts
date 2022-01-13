@@ -3,7 +3,7 @@ import { Config } from '../../Config';
 import { request, response } from '../../Core/Routing';
 import { Middleware, Next } from '../../Core/Decorators';
 import { IJwtPayload } from '../../Interfaces';
-import { UserModel } from '../../Models';
+import { IUser } from '../../Interfaces';
 
 /**
  * This is the authentication middleware
@@ -14,7 +14,7 @@ export class AuthenticationService {
   private static _config = new Config();
 
   // TODO: Something wrong with the model. please fix
-  static generateToken(data: UserModel): string {
+  static generateToken(data: IUser): string {
     this.token = sign(data, this._config.secret, {
       algorithm: 'HS256',
       expiresIn: '5 days',

@@ -4,7 +4,7 @@ import { RequestHandler, ResponseHandler } from '../index';
 // export type RequestRoute = (req: Request, res: Response, next: NextFunction) => any;
 
 export class RequestContext {
-  static _request: Request | undefined;
+  static _request: Request;
   static _response: Response | undefined;
 
   /**
