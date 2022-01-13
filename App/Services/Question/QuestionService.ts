@@ -163,14 +163,4 @@ export class QuestionService {
 
     return criteria;
   }
-
-  /**
-   * Add an answer to the question
-   */
-  public static async addAnswer(): Promise<any> {
-    const { id } = param();
-    const { rows } = await this.conn.query('select * from questions where _id = $1', [id]);
-    const answers: any[] = [rows[0].answers, request().body];
-    await this.conn.query('UPDATE questions SET answers = $1', [answers]);
-  }
 }

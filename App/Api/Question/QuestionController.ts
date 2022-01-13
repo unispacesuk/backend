@@ -174,22 +174,6 @@ export class QuestionController {
       },
     };
   }
-
-  /**
-   * Add an answer
-   */
-  @Post('/answer/:id', [authService.authenticate])
-  async addAnswer(): Promise<IResponse> {
-    // const { id } = param();
-    // console.log(id);
-    console.log(await QuestionService.addAnswer());
-    return {
-      code: 200,
-      body: {
-        message: 'answered',
-      },
-    };
-  }
 }
 
 // check if the user is allowed to delete the question

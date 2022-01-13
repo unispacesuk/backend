@@ -11,7 +11,7 @@ export class RolesService {
 
   @Middleware()
   public static async isUserAdmin() {
-    const { id } = await request().Data();
+    const id = await request().data('id');
     Connection.client.query(
       `SELECT * FROM user_roles WHERE user_id = $1 AND role_id = $2`,
       [id, 1],

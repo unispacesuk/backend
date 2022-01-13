@@ -67,7 +67,7 @@ CREATE TABLE answers (
     -- _id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     _id INTEGER NOT NULL DEFAULT NEXTVAL('ANSWERS_ID_AI'),
     user_id INTEGER REFERENCES users (_id),
-    question_id INTEGER REFERENCES answers (_id),
+    question_id INTEGER REFERENCES questions (_id),
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     -- last_updated TIMESTAMP NULL,

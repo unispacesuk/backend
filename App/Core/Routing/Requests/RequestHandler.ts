@@ -5,28 +5,38 @@ import { IRequest } from '../../../Interfaces';
  * Request constructor
  */
 export class RequestHandler {
-  _request: IRequest | undefined;
+  _request: IRequest;
 
-  constructor(request: IRequest | undefined) {
+  constructor(request: IRequest) {
     this._request = request;
   }
 
   get headers() {
-    return <IncomingHttpHeaders>this._request?.headers;
+    return <IncomingHttpHeaders>this._request.headers;
   }
 
   /**
    * Setter to set any custom data that we want to pass from the middlewares.
-   * @param args
+   * @param arg
    */
-  data(args: { [key: string]: any }) {
-    for (const arg in args) {
-      this._request![arg] = args[arg];
+  // setData(args: { [key: string]: any }) {
+  //   for (const arg in args) {
+  //     this._request![arg] = args[arg];
+  //   }
+  // }
+  //
+  // getData(key: string) {
+  //   return this._request![key];
+  // }
+  data<T>(arg: string | {[key: string]: any}): T | void {
+    if (typeof arg === "object") {
+        for (const a in arg) {
+          this._request[a] = arg[a];
+        }
+        return;
     }
-  }
 
-  async Data(): Promise<any> {
-    return this._request;
+    return this._request[arg];
   }
 
   /**
