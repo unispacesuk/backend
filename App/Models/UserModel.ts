@@ -1,5 +1,7 @@
-export interface UserModel {
-  _id: number;
+import { IUser } from '../Interfaces';
+
+interface IUserModel {
+  id: string;
   username: string;
   not_username?: string;
   email: string;
@@ -7,10 +9,10 @@ export interface UserModel {
   last_name?: string;
 }
 
-export function UserResponse(data: UserModel): UserModel {
+export function UserModel(data: IUser): IUserModel {
   return {
-    _id: data._id,
+    id: data._id,
     username: data.username,
-    email: data.email
+    email: data.email,
   };
 }

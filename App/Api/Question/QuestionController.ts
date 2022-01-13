@@ -144,7 +144,7 @@ export class QuestionController {
   @Delete('/delete/:id')
   async deleteQuestion(): Promise<IResponse> {
     let response;
-    // userCanEdit() or userIdStaff()
+    // userCanEdit() or userIsStaff()
     if (!(await userCanUpdate())) {
       return {
         code: 400,
