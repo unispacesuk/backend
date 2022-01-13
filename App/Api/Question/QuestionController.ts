@@ -5,6 +5,7 @@ import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
 import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
+import Question from "../Another/Question";
 
 @Controller('/question', [authService.authenticate])
 export class QuestionController {
@@ -77,18 +78,19 @@ export class QuestionController {
    */
   @Post('/post')
   async postNew(): Promise<IResponse> {
-    let question;
-
-    try {
-      question = await QuestionService.postQuestion();
-    } catch (error) {
-      return {
-        code: 400,
-        body: {
-          message: error,
-        },
-      };
-    }
+    // let question;
+    //
+    // try {
+    //   question = await QuestionService.postQuestion();
+    // } catch (error) {
+    //   return {
+    //     code: 400,
+    //     body: {
+    //       message: error,
+    //     },
+    //   };
+    // }
+    const question = await QuestionService.postQuestion().catch((e) => console.log(e));
 
     return {
       code: 200,
@@ -105,7 +107,7 @@ export class QuestionController {
    */
   @Patch('/update')
   async update(): Promise<IResponse> {
-    let question;
+    // let question;
 
     // userCanEdit() or userIdStaff()
     if (!(await userCanUpdate())) {
@@ -117,17 +119,18 @@ export class QuestionController {
       };
     }
 
-    try {
-      question = await QuestionService.updateQuestion();
-    } catch (error) {
-      console.log(error);
-      return {
-        code: 400,
-        body: {
-          message: error,
-        },
-      };
-    }
+    // try {
+    //   question = await QuestionService.updateQuestion();
+    // } catch (error) {
+    //   console.log(error);
+    //   return {
+    //     code: 400,
+    //     body: {
+    //       message: error,
+    //     },
+    //   };
+    // }
+    const question = await QuestionService.updateQuestion().catch((e) => console.log(e));
 
     return {
       code: 200,
@@ -143,7 +146,7 @@ export class QuestionController {
    */
   @Delete('/delete/:id')
   async deleteQuestion(): Promise<IResponse> {
-    let response;
+    // let response;
     // userCanEdit() or userIsStaff()
     if (!(await userCanUpdate())) {
       return {
@@ -154,18 +157,19 @@ export class QuestionController {
       };
     }
 
-    try {
-      (await QuestionService.deleteQuestion())
-        ? (response = 'question deleted')
-        : (response = 'could not delete the question');
-    } catch (error) {
-      return {
-        code: 400,
-        body: {
-          message: error,
-        },
-      };
-    }
+    // try {
+    //   (await QuestionService.deleteQuestion())
+    //     ? (response = 'question deleted')
+    //     : (response = 'could not delete the question');
+    // } catch (error) {
+    //   return {
+    //     code: 400,
+    //     body: {
+    //       message: error,
+    //     },
+    //   };
+    // }
+    const response = await QuestionService.deleteQuestion().catch((e) => console.log(e));
 
     return {
       code: 200,

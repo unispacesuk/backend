@@ -10,7 +10,7 @@ export class AnswerController {
    */
   @Post('/add/:id')
   async addAnswer(): Promise<IResponse> {
-    await AnswerService.addAnswer();
+    await AnswerService.addAnswer().catch((e) => console.log(e));
     return {
       code: 200,
       body: {
@@ -24,7 +24,7 @@ export class AnswerController {
    */
   @Get('/get/:id')
   async getAnswers(): Promise<IResponse> {
-    const answers = await AnswerService.getAnswers();
+    const answers = await AnswerService.getAnswers().catch((e) => console.log(e));
     return {
       code: 200,
       body: {
