@@ -5,7 +5,7 @@ import { RequestHandler, ResponseHandler } from '../index';
 
 export class RequestContext {
   static _request: Request;
-  static _response: Response | undefined;
+  static _response: Response;
 
   /**
    * Initiate a middleware for the decorators
