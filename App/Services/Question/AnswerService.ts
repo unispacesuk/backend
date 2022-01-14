@@ -12,7 +12,7 @@ export class AnswerService {
   public static async addAnswer(): Promise<boolean> {
     const userId = request().data<number>('userId');
     const { id } = param();
-    const { content } = request().body;
+    const { content } = request().body();
     await this.conn.query(
       'INSERT INTO answers (user_id, question_id, content) VALUES ($1, $2, $3)',
       [userId, id, content]

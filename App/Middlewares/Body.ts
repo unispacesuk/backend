@@ -15,7 +15,7 @@ export class BodyMiddleware {
     const methods: string[] = ['POST', 'PUT', 'PATCH'];
     if (methods.includes(request().method) && request().body) {
       const privates = ['not_username', 'password', 'token'];
-      const body = request().body;
+      const body = request().body();
       // privates.map(p => {
       //   if (body[p])
       //     body[p] = '***';

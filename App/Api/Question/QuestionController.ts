@@ -182,9 +182,9 @@ export class QuestionController {
 
 // check if the user is allowed to delete the question
 async function userCanUpdate(): Promise<boolean> {
-  const currentUser = await UserService.getUserId(request().token);
+  const currentUser = await UserService.getUserId(request().token());
   const { userId } = <IQuestionModel>(
-    await QuestionService.getQuestion(request().body._id || param('id'))
+    await QuestionService.getQuestion(request().body('_id') || param('id'))
   );
 
   return currentUser === userId;

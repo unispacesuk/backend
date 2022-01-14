@@ -17,8 +17,8 @@ export class ResponseHandler {
     return this;
   }
 
-  send(body: object) {
-    if (!this._response?.headersSent) this._response?.status(this._code).send(body);
+  send(body: object, code?: number) {
+    if (!this._response?.headersSent) this._response?.status(this._code | code!).send(body);
     return this;
   }
 

@@ -10,7 +10,7 @@ import { Controller, Post } from '../../Core/Decorators';
 export class RegisterController {
   @Post('/register')
   async doRegister(): Promise<IResponse> {
-    const user: IUser = request().body;
+    const user: IUser = request().body();
 
     // username has to be larger than 5 characters
     if (user.username.length <= 5) {

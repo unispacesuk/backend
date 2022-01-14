@@ -1,10 +1,5 @@
-import { BaseInterface } from '../Interfaces/BaseInterface';
 import { BaseModel } from './BaseModel';
-
-interface ICategory extends BaseInterface {
-  title: string;
-  description: string;
-}
+import { ICategory } from '../Interfaces/ICategory';
 
 interface ICategoryModel extends BaseModel {
   title: string;

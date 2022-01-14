@@ -45,13 +45,17 @@ export class Api {
       const controllerData: IController = Reflect.getMetadata('controller', <object>c);
       // this.apiRoutes.use(path, Controller.route);
 
-      Reflect.getMetadata('method', <object>c).forEach((route: IRouteMetaData) => {
-        if (route.middlewares) {
-          group[route.method].apply(group, [route.path, route.middlewares, route.target]);
-        } else {
-          group[route.method].apply(group, [route.path, route.target]);
-        }
-      });
+      // This
+      const methodRoutes = Reflect.getMetadata('method', <object>c);
+      if (methodRoutes) {
+        methodRoutes.forEach((route: IRouteMetaData) => {
+          if (route.middlewares) {
+            group[route.method].apply(group, [route.path, route.middlewares, route.target]);
+          } else {
+            group[route.method].apply(group, [route.path, route.target]);
+          }
+        });
+      }
 
       // This will register a global middleware defined on the @Controller decorator
       if (controllerData.middlewares) {

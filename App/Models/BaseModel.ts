@@ -1,6 +1,6 @@
 export interface BaseModel {
-  id: string;
+  id?: string;
   userId?: string;
-  createdAt: string;
+  createdAt?: string;
   lastUpdated?: string;
 }
