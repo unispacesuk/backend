@@ -37,7 +37,8 @@ export class AuthenticationService {
    */
   @Middleware()
   public static async authenticate() {
-    const token: string | undefined = request().headers?.authorization?.split(' ')[1];
+    // const token: string | undefined = request().headers().authorization.split(' ')[1];
+    const token: string = request().token();
     let payload;
 
     if (!token)

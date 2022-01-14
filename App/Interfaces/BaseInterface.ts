@@ -1,6 +1,6 @@
-export interface BaseInterface {
-  _id?: string;
-  user_id?: string;
-  created_at?: string;
-  last_updated?: string;
+export interface BaseInterface<T = string> {
+  _id?: T;
+  user_id?: T;
+  created_at?: T;
+  last_updated?: T;
 }
