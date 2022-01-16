@@ -4,6 +4,7 @@ import { Api } from '../Api';
 import * as morgan from 'morgan';
 import { BodyMiddleware } from '../Middlewares/Body';
 import { RequestContext } from './Routing';
+import * as cors from 'cors';
 
 export default class App {
   private _express: express.Express;
@@ -20,6 +21,7 @@ export default class App {
 
   public setMiddlewares(): App {
     this._express.use(express.json());
+    this._express.use(cors());
     this._express.use(morgan('dev'));
 
     // initiate a middleware for requests

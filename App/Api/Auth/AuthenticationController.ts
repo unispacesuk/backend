@@ -12,7 +12,7 @@ import { Controller, Post } from '../../Core/Decorators';
 export class AuthenticationController {
   @Post('/authenticate')
   async authenticate() {
-    const { authorization } = request().headers;
+    const { authorization } = request().headers();
     const token = authorization?.split(' ')[1];
 
     if (!token)

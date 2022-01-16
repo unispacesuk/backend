@@ -1,4 +1,4 @@
-import { BaseInterface } from '../Interfaces/BaseInterface';
+import { BaseInterface } from '../Interfaces';
 import { BaseModel } from './BaseModel';
 
 interface IReply extends BaseInterface {

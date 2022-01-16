@@ -1,8 +1,9 @@
 import { Client } from 'pg';
 import { Connection } from '../../Config';
-import { ICategory } from '../../Interfaces/ICategory';
+import { ICategory } from '../../Interfaces';
 import { request } from '../../Core/Routing';
-import { CategoryModel } from '../../Models/CategoryModel';
+import { CategoryModel } from '../../Models';
+import { BoardService } from './BoardService';
 
 export class CategoryService {
   static conn: Client = Connection.client;
@@ -17,8 +18,7 @@ export class CategoryService {
     );
 
     // if for some reason the db does not return anything we do not want this to break
-    if (rows.length > 0)
-      return Promise.resolve(CategoryModel(rows[0]));
+    if (rows.length > 0) return Promise.resolve(CategoryModel(rows[0]));
   }
 
   public static async getAllCategories() {
@@ -28,6 +28,33 @@ export class CategoryService {
       return Promise.resolve([]);
     }
 
-    return Promise.resolve(rows.map((c) => CategoryModel(c)));
+    return Promise.all(
+      rows.map(async (c: ICategory) => {
+        c.boards = await BoardService.getAllBoards(c._id);
+        return CategoryModel(c);
+      })
+    );
+    // return Promise.resolve(rows.map((c) => CategoryModel(c)));
+  }
+
+  // public static async getAllCategoriesAndBoards() {
+  //   const { rows } = await this.conn.query(
+  //     'SELECT ' +
+  //       'board_categories._id AS cat_id, ' +
+  //       'board_categories.title AS cat_title, ' +
+  //       'board_categories.description AS cat_description, ' +
+  //       'board_boards.*' +
+  //       'FROM board_categories JOIN board_boards ON board_categories._id = board_boards.board_category_id;'
+  //   );
+  //
+  //   return Promise.resolve(rows);
+  // }
+
+  /**
+   * Check if category exists
+   */
+  public static async categoryExists(id: number) {
+    const { rows } = await this.conn.query('SELECT * FROM board_categories WHERE _id = $1', [id]);
+    return Promise.resolve(rows.length);
   }
 }

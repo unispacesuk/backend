@@ -37,19 +37,22 @@ export class AuthenticationService {
    */
   @Middleware()
   public static async authenticate() {
-    // const token: string | undefined = request().headers().authorization.split(' ')[1];
-    const token: string = request().token();
+    let token: string | undefined = request().headers().authorization;
+    // const token: string = request().token();
     let payload;
 
-    if (!token)
-      return response().status(400).send({
+    if (!token) {
+      return response().status(401).send({
         reason: 'no authorization token provided',
       });
+    }
+
+    token = token.split(' ')[1];
 
     try {
       payload = await AuthenticationService.verifyToken(token);
     } catch (error) {
-      return response().status(400).send({
+      return response().status(401).send({
         message: error,
       });
     }

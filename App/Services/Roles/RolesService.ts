@@ -26,7 +26,7 @@ export class RolesService {
 
     // result will always have a result but needs to be asserted anyway
     if (result!.rowCount === 0) {
-      response().send({
+      return response().send({
         message: 'not enough permissions'
       }, 401);
     }

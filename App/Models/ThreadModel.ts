@@ -1,5 +1,5 @@
 import { BaseModel } from './BaseModel';
-import { BaseInterface } from '../Interfaces/BaseInterface';
+import { BaseInterface } from '../Interfaces';
 
 interface IThread extends BaseInterface {
   board_category_id: string;
