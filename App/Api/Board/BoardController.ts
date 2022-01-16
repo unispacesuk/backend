@@ -1,9 +1,10 @@
 import { Controller, Get, Post } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { RolesService } from '../../Services/Roles/RolesService';
-import { request, respond } from '../../Core/Routing';
+import { param, request, respond } from '../../Core/Routing';
 import { IBoard, IResponse } from '../../Interfaces';
 import { BoardService } from '../../Services/Board/BoardService';
+import { ThreadService } from '../../Services/Board/ThreadService';
 
 @Controller('/board', [AuthService.authenticate])
 export class BoardController {
@@ -24,5 +25,13 @@ export class BoardController {
     const boards = await BoardService.getAllBoards();
 
     return respond({ boards }, 200);
+  }
+
+  @Get('/:board')
+  async getAllFromBoard(): Promise<IResponse> {
+    const { board } = param();
+    const threads = await ThreadService.getAllThreads(board);
+
+    return respond({ threads }, 200);
   }
 }

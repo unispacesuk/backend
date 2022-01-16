@@ -109,7 +109,7 @@ CREATE TABLE board_threads (
     user_id INTEGER NOT NULL REFERENCES users (_id),
     board_boards_id INTEGER NOT NULL REFERENCES board_boards (_id),
     title VARCHAR (255) NOT NULL,
-    description TEXT NOT NULL,
+    content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
     PRIMARY KEY (_id)

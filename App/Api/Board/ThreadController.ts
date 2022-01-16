@@ -2,12 +2,14 @@ import { Controller, Get, Post, Patch } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { IResponse } from '../../Interfaces';
 import { respond } from '../../Core/Routing';
+import { ThreadService } from '../../Services/Board/ThreadService';
 
 @Controller('/thread', [AuthService.authenticate])
 export class ThreadController {
   @Post('/add')
   async addNewThread(): Promise<IResponse> {
-    return respond('added thread', 200);
+    const thread = await ThreadService.createNewThread();
+    return respond({ thread }, 200);
   }
 
   @Get('/all')
