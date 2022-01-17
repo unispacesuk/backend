@@ -33,6 +33,7 @@ export class BoardService {
 
   /**
    * Fetch all boards from a category
+   * @param category
    */
   public static async getAllBoards(category?: number) {
     // const { category } = param<Body>();
@@ -50,8 +51,6 @@ export class BoardService {
       b.threads = await this.getCountOfThreads(b._id);
       return BoardModel(b);
     }));
-
-    // return Promise.resolve(rows.map((b) => BoardModel(b)));
   }
 
   /**

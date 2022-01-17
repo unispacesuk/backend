@@ -5,12 +5,14 @@ interface IThread extends BaseInterface {
   board_category_id: string;
   title: string;
   description: string;
+  username?: string;
 }
 
 interface IThreadModel extends BaseModel {
   boardCategoryId: string;
   title: string;
   description: string;
+  username?: string;
 }
 
 export function ThreadModel(data: IThread): IThreadModel {
@@ -22,5 +24,6 @@ export function ThreadModel(data: IThread): IThreadModel {
     description: data.description,
     createdAt: data.created_at,
     lastUpdated: data.last_updated,
+    username: data.username,
   };
 }

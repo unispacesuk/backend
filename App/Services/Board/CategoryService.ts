@@ -12,15 +12,20 @@ export class CategoryService {
     const userId = request().data<string>('userId');
     const { title, description }: ICategory = request().body<ICategory>();
 
-    const { rows } = await this.conn.query(
-      'INSERT INTO board_categories (user_id, title, description) VALUES ($1, $2, $3) RETURNING *',
-      [userId, title, description]
-    );
-
-    // if for some reason the db does not return anything we do not want this to break
-    if (rows.length > 0) return Promise.resolve(CategoryModel(rows[0]));
+    return new Promise((resolve, reject) => {
+      this.conn.query(
+        'INSERT INTO board_categories (user_id, title, description) VALUES ($1, $2, $3) RETURNING *',
+        [userId, title, description], (error, result) => {
+         if (error) reject(error);
+         resolve(CategoryModel(result.rows[0]));
+        });
+    });
   }
 
+  /**
+   * Here we fetch the data and we need Promise.all() to wait for the map to finish fetching
+   *  data for each category.
+   */
   public static async getAllCategories() {
     const { rows } = await this.conn.query('SELECT * FROM board_categories');
 
@@ -34,7 +39,6 @@ export class CategoryService {
         return CategoryModel(c);
       })
     );
-    // return Promise.resolve(rows.map((c) => CategoryModel(c)));
   }
 
   // public static async getAllCategoriesAndBoards() {
