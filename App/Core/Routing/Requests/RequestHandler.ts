@@ -1,6 +1,10 @@
 import { IncomingHttpHeaders } from 'http2';
 import { IRequest } from '../../../Interfaces';
 
+interface IncomingHeaders extends IncomingHttpHeaders {
+  authorization: string;
+}
+
 /**
  * Request constructor
  */
@@ -11,8 +15,8 @@ export class RequestHandler {
     this._request = request;
   }
 
-  get headers() {
-    return <IncomingHttpHeaders>this._request.headers;
+  headers() {
+    return <IncomingHeaders>this._request.headers;
   }
 
   /**
@@ -28,7 +32,7 @@ export class RequestHandler {
   // getData(key: string) {
   //   return this._request![key];
   // }
-  data<T>(arg: string | {[key: string]: any}): T | void {
+  data<T>(arg?: string | {[key: string]: T}): T | void {
     if (typeof arg === "object") {
         for (const a in arg) {
           this._request[a] = arg[a];
@@ -36,7 +40,8 @@ export class RequestHandler {
         return;
     }
 
-    return this._request[arg];
+    if (arg)
+      return this._request[arg];
   }
 
   /**
@@ -44,8 +49,8 @@ export class RequestHandler {
    *  to destructure an object in the route method.
    */
   parameters(p: string): any {
-    if (p === 'all') return this._request?.params;
-    return this._request?.params[p];
+    if (p === 'all') return this._request.params;
+    return this._request.params[p];
   }
 
   /**
@@ -53,20 +58,20 @@ export class RequestHandler {
    * api.unispaces.uk/endpoint?key=value&key=value&key=value
    */
   query(q: string): any {
-    if (q === 'all') return this._request?.query;
-    return this._request?.query[q];
+    if (q === 'all') return this._request.query;
+    return this._request.query[q];
   }
 
   /**
    * Return the request body
    * TODO: maybe make it not return anything if there is no body 🤔
    */
-  get body(): object | any {
-    return this._request?.body;
+  body<T>(key?: string): T {
+    return this._request.body || this._request.body[key!];
   }
 
-  get method(): any {
-    return this._request?.method;
+  method(): string {
+    return this._request.method;
   }
 
   /**
@@ -74,7 +79,8 @@ export class RequestHandler {
    *
    * THIS WILL ONLY BE CALLED WHEN THERE IS A TOKEN!!!
    */
-  get token(): any {
-    return this.headers.authorization?.split(' ')[1];
+  token() {
+    return this.headers().authorization.split(' ')[1];
+    // return this.headers.authorization.split(' ')[1];
   }
 }

@@ -51,7 +51,7 @@ CREATE SEQUENCE QUESTIONS_ID_AI;
 CREATE TABLE questions (
     -- _id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     _id INTEGER NOT NULL DEFAULT NEXTVAL('QUESTIONS_ID_AI'),
-    user_id INTEGER REFERENCES users (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
     title VARCHAR (255) NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
@@ -66,7 +66,7 @@ CREATE SEQUENCE ANSWERS_ID_AI;
 CREATE TABLE answers (
     -- _id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     _id INTEGER NOT NULL DEFAULT NEXTVAL('ANSWERS_ID_AI'),
-    user_id INTEGER REFERENCES users (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
     question_id INTEGER REFERENCES questions (_id),
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
@@ -77,4 +77,53 @@ ALTER SEQUENCE ANSWERS_ID_AI OWNED BY answers._id;
 -- INSERT INTO questions (_id, user_id, title, content) VALUES (gen_random_uuid(), 1, 'The first question', 'This will be the question content here. Text should allow for long texts....')
 -- UPDATE questions SET answers = '{"1":"first answer"}' WHERE _id='ff3cc520-47c6-4048-901b-05a9b11ca760';
 
--- boards table
+-- boards tables
+CREATE SEQUENCE BOARD_CATEGORIES_ID_AI;
+CREATE TABLE board_categories (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('BOARD_CATEGORIES_ID_AI'),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
+    title VARCHAR (255) NOT NULL,
+    description TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+    last_updated TIMESTAMP NULL,
+    PRIMARY KEY (_id)
+);
+ALTER SEQUENCE BOARD_CATEGORIES_ID_AI OWNED BY board_categories._id;
+
+CREATE SEQUENCE BOARD_BOARDS_ID_AI;
+CREATE TABLE board_boards (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('BOARD_BOARDS_ID_AI'),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
+    board_category_id INTEGER NOT NULL REFERENCES board_categories (_id),
+    title VARCHAR (255) NOT NULL,
+    description TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+    last_updated TIMESTAMP NULL,
+    PRIMARY KEY (_id)
+);
+ALTER SEQUENCE BOARD_BOARDS_ID_AI OWNED BY board_boards._id;
+
+CREATE SEQUENCE BOARD_THREADS_ID_AI;
+CREATE TABLE board_threads (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('BOARD_THREADS_ID_AI'),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
+    board_boards_id INTEGER NOT NULL REFERENCES board_boards (_id),
+    title VARCHAR (255) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+    last_updated TIMESTAMP NULL,
+    PRIMARY KEY (_id)
+);
+ALTER SEQUENCE BOARD_THREADS_ID_AI OWNED BY board_threads._id;
+
+CREATE SEQUENCE BOARD_THREAD_REPLIES_ID_AI;
+CREATE TABLE board_thread_replies (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('BOARD_THREAD_REPLIES_ID_AI'),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
+    board_thread_id INTEGER NOT NULL REFERENCES board_threads (_id),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+    last_updated TIMESTAMP NULL,
+    PRIMARY KEY (_id)
+);
+ALTER SEQUENCE BOARD_THREAD_REPLIES_ID_AI OWNED BY board_thread_replies._id;

@@ -12,7 +12,7 @@ export class LoginController {
   async doLogin(): Promise<IResponse> {
 
     // TODO: any? no
-    const user: any = await LoginService.findUser(request().body);
+    const user: any = await LoginService.findUser(request().body());
 
     if (!user)
       return {

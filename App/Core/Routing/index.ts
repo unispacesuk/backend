@@ -1,6 +1,7 @@
 import { RequestHandler } from './Requests/RequestHandler';
 import { RequestContext } from './Requests/RequestContext';
 import { ResponseHandler } from './Requests/ResponseHandler';
+import {IResponse} from "../../Interfaces";
 
 export { RequestContext };
 export { RequestHandler };
@@ -21,8 +22,18 @@ function request(): RequestHandler {
 // }
 export { request };
 
-export function response(): ResponseHandler {
+function response(): ResponseHandler {
   return RequestContext.response();
+}
+export { response };
+
+export function respond(body: string | object, code: number): IResponse {
+  return {
+    code: code,
+    body: {
+      body
+    }
+  };
 }
 
 /**
