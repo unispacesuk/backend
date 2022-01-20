@@ -5,7 +5,6 @@ import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
 import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
-import Question from "../Another/Question";
 
 @Controller('/question', [authService.authenticate])
 export class QuestionController {

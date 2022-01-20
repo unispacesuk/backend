@@ -1,6 +1,6 @@
 import { Express, Router } from 'express';
-import { IRouteMetaData } from '../Interfaces/IRouteMetaData';
-import { IController } from '../Interfaces/IController';
+import { IRouteMetaData } from '../Interfaces';
+import { IController } from '../Interfaces';
 import { files } from 'node-dir';
 import 'reflect-metadata';
 import * as path from 'path';
