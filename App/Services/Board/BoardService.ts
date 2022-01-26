@@ -33,10 +33,9 @@ export class BoardService {
 
   /**
    * Fetch all boards from a category
-   * @param category
    */
-  public static async getAllBoards(category?: number) {
-    // const { category } = param<Body>();
+  public static async getAllBoards(category: number) {
+    // const { category } = param();
     //
     // if ((await CategoryService.categoryExists(category)) === 0) {
     //   return response().send({ error: 'category does not exist' }, 401).end();

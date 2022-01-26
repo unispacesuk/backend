@@ -22,7 +22,8 @@ export class BoardController {
 
   @Get('/get/all/:category')
   async getAllBoards(): Promise<IResponse> {
-    const boards = await BoardService.getAllBoards();
+    const { category } = param();
+    const boards = await BoardService.getAllBoards(category);
 
     return respond({ boards }, 200);
   }

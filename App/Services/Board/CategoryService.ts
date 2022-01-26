@@ -39,6 +39,7 @@ export class CategoryService {
         return CategoryModel(c);
       })
     );
+    // return Promise.resolve(rows.map((c: ICategory) => CategoryModel(c)));
   }
 
   // public static async getAllCategoriesAndBoards() {
