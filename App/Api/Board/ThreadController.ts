@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch } from '../../Core/Decorators';
+import { Controller, Get, Post, Patch, Delete } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { IResponse } from '../../Interfaces';
 import { respond } from '../../Core/Routing';
@@ -6,10 +6,25 @@ import { ThreadService } from '../../Services/Board/ThreadService';
 
 @Controller('/thread', [AuthService.authenticate])
 export class ThreadController {
+  @Get('/:id')
+  async getThread(): Promise<IResponse> {
+    const thread = await ThreadService.getThread();
+    return respond({thread}, 200);
+  }
+
   @Post('/add')
   async addNewThread(): Promise<IResponse> {
     const thread = await ThreadService.createNewThread();
     return respond({ thread }, 200);
+  }
+
+  /**
+   * To delete only owner or admins!!!!
+    */
+  @Delete('/:id')
+  async deleteThread(): Promise<IResponse> {
+    await ThreadService.deleteThread();
+    return respond({ message: 'Thread Deleted' }, 200);
   }
 
   @Get('/all')
