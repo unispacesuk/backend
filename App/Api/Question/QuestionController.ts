@@ -1,4 +1,4 @@
-import { param, request } from '../../Core/Routing';
+import { param, request, respond } from '../../Core/Routing';
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { QuestionService } from '../../Services/Question/QuestionService';
 import { IResponse } from '../../Interfaces';
@@ -12,22 +12,23 @@ export class QuestionController {
    * Get all questions
    * TODO: REFACTOR THE ERROR HANDLING HERE
    */
-  @Get('/get/all')
+  @Get('/all')
   async getAll(): Promise<IResponse> {
-    const response = await QuestionService.getAll().catch((error) => console.log(error));
+    const questions = await QuestionService.getAll().catch((error) => console.log(error));
 
-    return {
-      code: 200,
-      body: {
-        response,
-      },
-    };
+    return respond({ questions }, 200);
+    // return {
+    //   code: 200,
+    //   body: {
+    //     response,
+    //   },
+    // };
   }
 
   /**
    * Get all from user
    */
-  @Get('/get/user/:userId')
+  @Get('/user/:userId')
   async getAllFromUser() {
     const response = await QuestionService.getAll().catch((error) => console.log(error));
 
@@ -42,7 +43,7 @@ export class QuestionController {
   /**
    * Get one question
    */
-  @Get('/get/:id')
+  @Get('/:id')
   async getOne(): Promise<IResponse> {
     const { id } = param();
     let response;
@@ -75,20 +76,8 @@ export class QuestionController {
   /**
    * Post a new question
    */
-  @Post('/post')
+  @Post('/')
   async postNew(): Promise<IResponse> {
-    // let question;
-    //
-    // try {
-    //   question = await QuestionService.postQuestion();
-    // } catch (error) {
-    //   return {
-    //     code: 400,
-    //     body: {
-    //       message: error,
-    //     },
-    //   };
-    // }
     const question = await QuestionService.postQuestion().catch((e) => console.log(e));
 
     return {
@@ -104,7 +93,7 @@ export class QuestionController {
    * Update question
    * Note: only the owner / staff / admin / mod will be able to update the questions.
    */
-  @Patch('/update')
+  @Patch('/')
   async update(): Promise<IResponse> {
     // let question;
 
@@ -143,7 +132,7 @@ export class QuestionController {
   /**
    * Delete a question
    */
-  @Delete('/delete/:id')
+  @Delete('/:id')
   async deleteQuestion(): Promise<IResponse> {
     // let response;
     // userCanEdit() or userIsStaff()

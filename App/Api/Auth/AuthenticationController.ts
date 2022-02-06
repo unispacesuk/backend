@@ -1,7 +1,8 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { request, response } from '../../Core/Routing';
+import { request, respond, response } from '../../Core/Routing';
 import { Controller, Post } from '../../Core/Decorators';
+import { IResponse } from '../../Interfaces';
 
 // TODO: verify the current token exp and reject if already expired
 
@@ -32,5 +33,14 @@ export class AuthenticationController {
     }
 
     response().status(200).send({ payload });
+  }
+
+  // refactor later on
+  @Post('/isadmin')
+  async isAdmin(): Promise<IResponse> {
+    const { authorization } = request().headers();
+    console.log(authorization);
+
+    return respond({ message: 'hi' }, 200);
   }
 }

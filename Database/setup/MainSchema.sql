@@ -53,9 +53,10 @@ CREATE TABLE questions (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('QUESTIONS_ID_AI'),
     user_id INTEGER NOT NULL REFERENCES users (_id),
     title VARCHAR (255) NOT NULL,
-    content TEXT NOT NULL,
+    description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
+    tags TEXT[] NULL,
     -- last_replied on
     PRIMARY KEY (_id)
 );
