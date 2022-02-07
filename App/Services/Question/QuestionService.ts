@@ -9,6 +9,7 @@ interface ICriteria {
   orderBy?: string;
   sort?: string;
   page?: number;
+  tag?: string;
 }
 
 export class QuestionService {
@@ -55,13 +56,18 @@ export class QuestionService {
    */
   public static async getAll(): Promise<IQuestionModel> {
     const values: string[] = []; // empty array for the values to use prepared statement
-    let _query = 'SELECT * FROM questions ';
+    let _query = 'SELECT * FROM questions';
 
     const criteria = this.filtering(query());
 
     if (criteria.userId) {
       values.push(criteria.userId);
       _query += ` WHERE user_id = $${values.length}`;
+    }
+
+    if (criteria.tag) {
+      values.push(criteria.tag);
+      _query += ` WHERE $${values.length}=ANY(tags)`;
     }
 
     if (!criteria.orderBy) {
@@ -148,6 +154,12 @@ export class QuestionService {
     // if a userId is present
     if (param('userId')) {
       criteria.userId = param('userId');
+    }
+
+    // if filtering by tag
+    // there is a hotfix here. if it breaks I think of another solution quick... should be good anyway
+    if (options.tag !== 'undefined') {
+      criteria.tag = query<string>('tag');
     }
 
     // if sortBy is present

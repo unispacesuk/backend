@@ -17,12 +17,6 @@ export class QuestionController {
     const questions = await QuestionService.getAll().catch((error) => console.log(error));
 
     return respond({ questions }, 200);
-    // return {
-    //   code: 200,
-    //   body: {
-    //     response,
-    //   },
-    // };
   }
 
   /**
