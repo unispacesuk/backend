@@ -47,6 +47,8 @@ export class Api {
 
       // This
       const methodRoutes = Reflect.getMetadata('method', <object>c);
+      // the next if statement is to make sure the booter does not crash if a controller has no methods
+      // UNI-29
       if (methodRoutes) {
         methodRoutes.forEach((route: IRouteMetaData) => {
           if (route.middlewares) {

@@ -4,8 +4,8 @@ import { IResponse } from '../../Interfaces';
 
 @Controller('/test')
 export class TestController {
-  @Get('/hi')
-  async testMethod(): Promise<IResponse> {
-    return respond({ m: 'hello there' }, 200);
-  }
+  // @Get('/hi')
+  // async testMethod(): Promise<IResponse> {
+  //   return respond({ m: 'hello there' }, 200);
+  // }
 }
