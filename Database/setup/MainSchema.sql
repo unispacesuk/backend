@@ -154,3 +154,12 @@ CREATE TABLE blog_comments (
   content TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT now()
 );
+
+-- events table
+CREATE SEQUENCE EVENTS_ID_AI;
+CREATE TABLE events (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('EVENTS_ID_AI'),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
+    type VARCHAR (100) NOT NULL,
+    created_at TIMESTAMP DEFAULT now()
+);
