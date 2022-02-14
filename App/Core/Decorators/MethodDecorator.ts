@@ -2,23 +2,24 @@ import { response } from '../Routing';
 import { IResponse } from '../../Interfaces';
 import { IRouteMetaData } from '../../Interfaces/IRouteMetaData';
 import 'reflect-metadata';
+import {RequestHandler} from "express";
 
 // type for the main http decorator
 type HttpDecorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
 
-export function Get(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Get(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('get', path, middlewares);
 }
 
-export function Post(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Post(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('post', path, middlewares);
 }
 
-export function Patch(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Patch(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('patch', path, middlewares);
 }
 
-export function Put(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Put(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('put', path, middlewares);
 }
 
@@ -28,28 +29,28 @@ export function Put(path: string, middlewares?: ((arg?: any) => any)[]): HttpDec
  * @param path
  * @param middlewares
  */
-export function Remove(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Remove(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('delete', path, middlewares);
 }
-export function Eliminate(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Eliminate(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('delete', path, middlewares);
 }
-export function Delete(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Delete(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('delete', path, middlewares);
 }
 
-export function Head(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Head(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('head', path, middlewares);
 }
 
-export function Options(path: string, middlewares?: ((arg?: any) => any)[]): HttpDecorator {
+export function Options(path: string, middlewares?: RequestHandler<any>[]): HttpDecorator {
   return httpRequest('options', path, middlewares);
 }
 
 export function httpRequest(
   method: string,
   path: string,
-  middlewares?: ((arg?: any) => any)[] | undefined
+  middlewares?: RequestHandler<any>[] | undefined
 ): HttpDecorator {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value;

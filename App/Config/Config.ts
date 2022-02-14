@@ -1,4 +1,5 @@
 import { config as dotenv } from 'dotenv';
+import * as multer from "multer";
 
 dotenv();
 
@@ -20,5 +21,16 @@ export class Config {
 
   get secret(): string {
     return this.SECRET;
+  }
+
+  static storage(folder: string): multer.StorageEngine {
+    return multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, 'uploads/' + folder);
+      },
+      filename: function (req, file, cb) {
+        cb(null, file.originalname);
+      }
+    });
   }
 }

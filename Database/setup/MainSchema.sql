@@ -21,6 +21,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT now(),
     last_login TIMESTAMP NULL,
     last_updated TIMESTAMP NULL, -- maybe make it now()? because we just created the account and means last edit was now?
+    avatar VARCHAR (255),
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE USERS_ID_AI OWNED BY users._id;

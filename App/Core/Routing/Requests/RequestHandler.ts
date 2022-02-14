@@ -74,6 +74,10 @@ export class RequestHandler {
     return this._request.method;
   }
 
+  file() {
+    return this._request.file;
+  }
+
   /**
    * We use this to get the token from the headers once it gets validated by the auth middleware
    *
