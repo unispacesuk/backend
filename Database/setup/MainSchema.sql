@@ -59,6 +59,7 @@ CREATE TABLE questions (
     last_updated TIMESTAMP NULL,
     tags TEXT[] NULL,
     last_replied_on TIMESTAMP NULL,
+    active BOOLEAN DEFAULT true,
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE QUESTIONS_ID_AI OWNED BY questions._id;
@@ -144,17 +145,19 @@ CREATE TABLE blog_posts (
     PRIMARY KEY (_id)
     -- views ?
 );
+ALTER SEQUENCE BLOG_POSTS_ID_AI OWNED BY blog_posts._id;
 
 -- blog post comments
 CREATE SEQUENCE BLOG_COMMENTS_ID_AI;
 CREATE TABLE blog_comments (
-  -- _id INTEGER NOT NULL DEFAULT NEXTVAL('BLOG_COMMENTS_ID_AI'),
+  _id INTEGER NOT NULL DEFAULT NEXTVAL('BLOG_COMMENTS_ID_AI'),
   user_id INTEGER NOT NULL REFERENCES users (_id),
   blog_post INTEGER NOT NULL REFERENCES blog_posts (_id),
   content TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT now(),
   PRIMARY KEY (_id)
 );
+ALTER SEQUENCE BLOG_COMMENTS_ID_AI OWNED BY blog_comments._id;
 
 -- events table
 CREATE SEQUENCE EVENTS_ID_AI;
@@ -165,3 +168,4 @@ CREATE TABLE events (
     created_at TIMESTAMP DEFAULT now(),
     PRIMARY KEY (_id)
 );
+ALTER SEQUENCE EVENTS_ID_AI OWNED BY events._id;

@@ -10,6 +10,7 @@ interface ICriteria {
   sort?: string;
   page?: number;
   tag?: string;
+  keyword?: string;
 }
 
 export class QuestionService {
@@ -55,19 +56,28 @@ export class QuestionService {
    * This method will also run when getting questions relative to a single user.
    */
   public static async getAll(): Promise<IQuestionModel> {
-    const values: string[] = []; // empty array for the values to use prepared statement
-    let _query = 'SELECT * FROM questions';
+    const values: (string | boolean)[] = []; // empty array for the values to use prepared statement
+    let _query = 'SELECT * FROM questions ' +
+      'WHERE active=($1)';
+    values.push(true);
 
     const criteria = this.filtering(query());
 
     if (criteria.userId) {
       values.push(criteria.userId);
-      _query += ` WHERE user_id = $${values.length}`;
+      _query += ` AND user_id = $${values.length}`;
+    }
+
+    if (criteria.keyword) {
+      // values.push(criteria.keyword);
+      _query += ` AND title LIKE '%${criteria.keyword}%'`;
+      _query += ` OR '${criteria.keyword}'=ANY(tags)`;
+      _query += ` OR description LIKE '%${criteria.keyword}%'`;
     }
 
     if (criteria.tag) {
       values.push(criteria.tag);
-      _query += ` WHERE $${values.length}=ANY(tags)`;
+      _query += ` AND $${values.length}=ANY(tags)`;
     }
 
     if (!criteria.orderBy) {
@@ -81,7 +91,9 @@ export class QuestionService {
 
     return new Promise((resolve, reject) => {
       this.conn.query(_query, [...values], (error, result) => {
-        if (error) return reject(error);
+        if (error) {
+          return reject(error);
+        }
         resolve(<IQuestionModel>result.rows.map((q) => QuestionModel(q)));
       });
     });
@@ -172,6 +184,10 @@ export class QuestionService {
     // desc will be default
     if (options.sort) {
       criteria.sort = options.sort;
+    }
+
+    if (options.keyword) {
+      criteria.keyword = options.keyword;
     }
 
     return criteria;

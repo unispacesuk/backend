@@ -37,6 +37,7 @@ export class QuestionController {
 
   /**
    * Get one question
+   * TODO: Refactor
    */
   @Get('/:id')
   async getOne(): Promise<IResponse> {
@@ -106,26 +107,19 @@ export class QuestionController {
       };
     }
 
-    // try {
-    //   question = await QuestionService.updateQuestion();
-    // } catch (error) {
-    //   console.log(error);
-    //   return {
-    //     code: 400,
-    //     body: {
-    //       message: error,
-    //     },
-    //   };
-    // }
-    const question = await QuestionService.updateQuestion().catch((e) => console.log(e));
+    const question = await QuestionService.updateQuestion().catch((e) => {
+      console.log(e);
+      return respond({
+        error: e
+      }, 400);
+    });
 
-    return {
-      code: 200,
-      body: {
-        message: 'question updated',
-        question,
-      },
-    };
+    await addEvent('EDIT_QUESTION').catch((e) => console.log(e));
+
+    return respond({
+      message: 'question updated',
+      question,
+    }, 200);
   }
 
   /**
