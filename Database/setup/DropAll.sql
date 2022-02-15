@@ -3,6 +3,7 @@
  Use this for tests only!
  */
 
+DROP TABLE events;
 DROP TABLE board_thread_replies;
 DROP TABLE board_threads;
 DROP TABLE board_boards;

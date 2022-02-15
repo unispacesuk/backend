@@ -152,7 +152,8 @@ CREATE TABLE blog_comments (
   user_id INTEGER NOT NULL REFERENCES users (_id),
   blog_post INTEGER NOT NULL REFERENCES blog_posts (_id),
   content TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT now()
+  created_at TIMESTAMP DEFAULT now(),
+  PRIMARY KEY (_id)
 );
 
 -- events table
@@ -161,5 +162,6 @@ CREATE TABLE events (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('EVENTS_ID_AI'),
     user_id INTEGER NOT NULL REFERENCES users (_id),
     type VARCHAR (100) NOT NULL,
-    created_at TIMESTAMP DEFAULT now()
+    created_at TIMESTAMP DEFAULT now(),
+    PRIMARY KEY (_id)
 );

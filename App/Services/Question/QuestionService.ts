@@ -128,7 +128,7 @@ export class QuestionService {
    */
   public static async deleteQuestion(): Promise<boolean | Error> {
     const { id } = param();
-    const userId = await UserService.getUserId(request().token());
+    const userId = request().data('userId');
 
     return new Promise((resolve, reject) => {
       this.conn.query(

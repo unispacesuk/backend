@@ -5,6 +5,7 @@ import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
 import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
+import { addEvent } from '../../Services/Util/Events';
 
 @Controller('/question', [authService.authenticate])
 export class QuestionController {
@@ -72,15 +73,19 @@ export class QuestionController {
    */
   @Post('/')
   async postNew(): Promise<IResponse> {
-    const question = await QuestionService.postQuestion().catch((e) => console.log(e));
+    const question = await QuestionService.postQuestion().catch((e) => {
+      return respond({ error: e }, 400);
+    });
 
-    return {
-      code: 200,
-      body: {
+    await addEvent('ADD_QUESTION').catch((e) => console.log(e));
+
+    return respond(
+      {
         message: 'question posted',
         question,
       },
-    };
+      200
+    );
   }
 
   /**
@@ -131,42 +136,23 @@ export class QuestionController {
     // let response;
     // userCanEdit() or userIsStaff()
     if (!(await userCanUpdate())) {
-      return {
-        code: 400,
-        body: {
-          message: 'you cannot delete this question',
-        },
-      };
+      respond({ error: 'You cannot delete this question.' }, 400);
     }
 
-    // try {
-    //   (await QuestionService.deleteQuestion())
-    //     ? (response = 'question deleted')
-    //     : (response = 'could not delete the question');
-    // } catch (error) {
-    //   return {
-    //     code: 400,
-    //     body: {
-    //       message: error,
-    //     },
-    //   };
-    // }
-    const response = await QuestionService.deleteQuestion().catch((e) => console.log(e));
+    const response = await QuestionService.deleteQuestion().catch((e) => {
+      return respond({ error: e }, 401);
+    });
 
-    return {
-      code: 200,
-      body: {
-        message: response,
-      },
-    };
+    return respond({ m: response }, 200);
   }
 }
 
 // check if the user is allowed to delete the question
-async function userCanUpdate(): Promise<boolean> {
-  const currentUser = await UserService.getUserId(request().token());
+async function userCanUpdate() {
+  // const currentUser = await UserService.getUserId(request().token());
+  const currentUser = await request().data('userId');
   const { userId } = <IQuestionModel>(
-    await QuestionService.getQuestion(request().body('_id') || param('id'))
+    await QuestionService.getQuestion(param('id'))
   );
 
   return currentUser === userId;
