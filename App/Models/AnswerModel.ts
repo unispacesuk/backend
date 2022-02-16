@@ -1,10 +1,12 @@
-import { IAnswer } from '../Interfaces/IAnswer';
+import { IAnswer } from '../Interfaces';
 
 interface IAnswerModel {
   id: string;
   userId: string;
   content: string;
   createdAt: Date;
+  username: string;
+  avatar: string;
 }
 
 export function AnswerModel(data: IAnswer): IAnswerModel {
@@ -13,5 +15,7 @@ export function AnswerModel(data: IAnswer): IAnswerModel {
     userId: data.user_id,
     content: data.content,
     createdAt: data.created_at,
+    username: data.username,
+    avatar: data.avatar,
   };
 }

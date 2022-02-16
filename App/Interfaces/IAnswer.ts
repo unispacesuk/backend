@@ -3,4 +3,6 @@ export interface IAnswer {
   user_id: string;
   content: string;
   created_at: Date;
+  username: string;
+  avatar: string;
 }

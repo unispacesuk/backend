@@ -5,8 +5,9 @@ interface IUserModel {
   username: string;
   not_username?: string;
   email: string;
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
+  avatar: string;
 }
 
 export function UserModel(data: IUser): IUserModel {
@@ -14,5 +15,8 @@ export function UserModel(data: IUser): IUserModel {
     id: data._id,
     username: data.username,
     email: data.email,
+    avatar: data.avatar,
+    firstName: data.first_name,
+    lastName: data.last_name,
   };
 }

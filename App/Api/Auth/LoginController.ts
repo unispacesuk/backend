@@ -1,6 +1,6 @@
 import { LoginService } from '../../Services/Auth/LoginService';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
-import { request } from '../../Core/Routing';
+import { request, respond } from '../../Core/Routing';
 import { IResponse } from '../../Interfaces';
 import { Controller, Post } from '../../Core/Decorators';
 /**
@@ -10,24 +10,25 @@ import { Controller, Post } from '../../Core/Decorators';
 export class LoginController {
   @Post('/login')
   async doLogin(): Promise<IResponse> {
-
     // TODO: any? no
     const user: any = await LoginService.findUser(request().body());
 
-    if (!user)
-      return {
-        code: 400,
-        body: {
-          message: 'incorrect details',
+    if (!user) {
+      return respond(
+        {
+          error: 'No user found with those details.',
         },
-      };
+        401
+      );
+    }
 
     const token = AuthService.generateToken(user);
-    return {
-      code: 200,
-      body: {
-        token: token,
+    return respond(
+      {
+        user,
+        token,
       },
-    };
+      200
+    );
   }
 }

@@ -42,31 +42,31 @@ export class QuestionController {
   @Get('/:id')
   async getOne(): Promise<IResponse> {
     const { id } = param();
-    let response;
 
     // looks weird I know. but it is only because we can either get:
     //  - an empty array
     //  - an array of Questions
     // string because we want to send a response as a string. we can also just send an empty array and write the response in the frontend
-    try {
-      response = <IQuestionModel[] | string>await QuestionService.getQuestion(id);
-    } catch (error) {
-      return {
-        code: 400,
-        body: {
-          message: 'no question found with that criteria',
-        },
-      };
-    }
-    // if 0 then say no question found
-    response.length === 0 ? (response = 'no question found with that id') : '';
+    // try {
+    const question = <IQuestionModel[] | string>await QuestionService.getQuestion(id).catch((e) => {
+      return respond({ error: e }, 400);
+    });
 
-    return {
-      code: 200,
-      body: {
-        response,
+    if (question.length === 0) {
+      respond(
+        {
+          m: 'no question found with that id',
+        },
+        200
+      );
+    }
+
+    return respond(
+      {
+        question,
       },
-    };
+      200
+    );
   }
 
   /**
@@ -109,17 +109,23 @@ export class QuestionController {
 
     const question = await QuestionService.updateQuestion().catch((e) => {
       console.log(e);
-      return respond({
-        error: e
-      }, 400);
+      return respond(
+        {
+          error: e,
+        },
+        400
+      );
     });
 
     await addEvent('EDIT_QUESTION').catch((e) => console.log(e));
 
-    return respond({
-      message: 'question updated',
-      question,
-    }, 200);
+    return respond(
+      {
+        message: 'question updated',
+        question,
+      },
+      200
+    );
   }
 
   /**
@@ -145,9 +151,7 @@ export class QuestionController {
 async function userCanUpdate() {
   // const currentUser = await UserService.getUserId(request().token());
   const currentUser = await request().data('userId');
-  const { userId } = <IQuestionModel>(
-    await QuestionService.getQuestion(param('id'))
-  );
+  const { userId } = <IQuestionModel>await QuestionService.getQuestion(param('id'));
 
   return currentUser === userId;
 }

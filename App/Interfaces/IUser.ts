@@ -8,4 +8,5 @@ export interface IUser {
   created_at: Date;
   last_updated: Date;
   last_login: Date;
+  avatar: string;
 }
