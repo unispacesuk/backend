@@ -1,6 +1,6 @@
 import { RegisterService } from '../../Services/Auth/RegisterService';
 import { IResponse, IUser } from '../../Interfaces';
-import { request } from '../../Core/Routing';
+import {request, respond} from '../../Core/Routing';
 import { Controller, Post } from '../../Core/Decorators';
 
 /**
@@ -14,32 +14,23 @@ export class RegisterController {
 
     // username has to be larger than 5 characters
     if (user.username.length <= 5) {
-      return {
-        code: 400,
-        body: {
-          message: 'username has to be larger than 5 characters',
-        },
-      };
+      return respond({
+        error: 'Username has to be larger than 5 characters.'
+      }, 401);
     }
 
     // password has to be larger than 8 characters
     if (user.not_username.length <= 8) {
-      return {
-        code: 400,
-        body: {
-          message: 'password has to be larger than 8 characters',
-        },
-      };
+      return respond({
+        error: 'Password has to be larger than 8 characters.'
+      }, 401);
     }
 
     // check for a valid email
     if (!user.email.match(/\w([a-z0-9_.-]+)(@)([a-z0-9_.-]+)[.]([a-z0-9]+)/g)) {
-      return <IResponse>{
-        code: 400,
-        body: {
-          message: 'your email is not a valid email',
-        },
-      };
+      return respond({
+        error: 'The email entered is not a valid email.'
+      }, 401);
     }
 
     // check if the username is already in the database
@@ -50,13 +41,9 @@ export class RegisterController {
       })
     );
     if (usernameExists.rows.length > 0)
-      return {
-        code: 400,
-        body: {
-          username: user.username,
-          message: 'username already registered',
-        },
-      };
+      return respond({
+        error: 'Username already registered.'
+      }, 401);
 
     // check if the email is already in the database
     const emailExists = await Promise.resolve(
@@ -66,30 +53,20 @@ export class RegisterController {
       })
     );
     if (emailExists.rows.length > 0)
-      return {
-        code: 400,
-        body: {
-          email: user.email,
-          message: 'email already registered',
-        },
-      };
+      return respond({
+        error: 'Email already registered.'
+      }, 401);
 
     // register the user or error is something is wrong
     try {
       await Promise.resolve(RegisterService.createUser(user));
-      return {
-        code: 200,
-        body: {
-          message: 'user registered successfully',
-        },
-      };
+      return respond({
+        message: 'Account successfully registered.\nPlease check your inbox for a confirmation email.'
+      }, 200);
     } catch (e) {
-      return {
-        code: 400,
-        body: {
-          message: 'something went wrong',
-        },
-      };
+      return respond({
+        error: 'Something went wrong.'
+      }, 400);
     }
   }
 }
