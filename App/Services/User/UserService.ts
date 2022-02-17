@@ -1,8 +1,12 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { IJwtPayload } from '../../Interfaces';
-import { response } from '../../Core/Routing';
+import { param, response } from '../../Core/Routing';
+import { Connection } from '../../Config';
+import { UserModel } from '../../Models';
 
 export class UserService {
+  private static _client = Connection.client;
+
   /**
    * Get the user id from the token
    */
@@ -15,6 +19,17 @@ export class UserService {
         message: error,
       });
     }
+  }
+
+  public static async getUserData() {
+    const userId = param('userId');
+
+    return new Promise((resolve, reject) => {
+      this._client.query('SELECT * FROM users WHERE _id = $1', [userId], (error, result) => {
+        if (error) return reject();
+        resolve(UserModel(result.rows[0]));
+      });
+    });
   }
 
   /**

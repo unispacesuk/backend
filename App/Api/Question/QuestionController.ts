@@ -1,7 +1,7 @@
 import { param, request, respond } from '../../Core/Routing';
 import {
   AuthenticationService as AuthService,
-  AuthenticationService as authService
+  AuthenticationService as authService,
 } from '../../Services/Auth/AuthenticationService';
 import { QuestionService } from '../../Services/Question/QuestionService';
 import { IResponse } from '../../Interfaces';
@@ -28,14 +28,22 @@ export class QuestionController {
    */
   @Get('/user/:userId')
   async getAllFromUser() {
-    const response = await QuestionService.getAll().catch((error) => console.log(error));
+    const questions = await QuestionService.getAll().catch((e) => {
+      console.log(e);
+      respond(
+        {
+          error: e,
+        },
+        400
+      );
+    });
 
-    return {
-      code: 200,
-      body: {
-        response,
+    return respond(
+      {
+        questions,
       },
-    };
+      200
+    );
   }
 
   /**
