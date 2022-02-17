@@ -3,6 +3,7 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { request, respond, response } from '../../Core/Routing';
 import { Controller, Post } from '../../Core/Decorators';
 import { IResponse } from '../../Interfaces';
+import { LoginService } from '../../Services/Auth/LoginService';
 
 // TODO: verify the current token exp and reject if already expired
 
@@ -19,20 +20,30 @@ export class AuthenticationController {
     if (!token)
       return response().status(200).send({ e: 'No token', m: 'No token sent on the request' });
 
-    let payload;
+    let payload: any;
     try {
       payload = await authService.verifyToken(token);
     } catch (e) {
       if (e instanceof TokenExpiredError) {
-        return response()
-          .status(200)
-          .send({ e: 'Token expired', m: 'The token used to authenticate is expired' });
+        return respond(
+          {
+            error: 'Token expired. Please login again.',
+          },
+          401
+        );
       } else {
         console.log(e);
       }
     }
 
-    response().status(200).send({ payload });
+    const user: any = await LoginService.getUserData(payload.id);
+
+    return respond(
+      {
+        user,
+      },
+      200
+    );
   }
 
   // refactor later on

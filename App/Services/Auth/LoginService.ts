@@ -30,4 +30,13 @@ export class LoginService {
       });
     });
   }
+
+  static async getUserData(id: string) {
+    return new Promise((resolve, reject) => {
+      this._client.query('SELECT * FROM users WHERE _id = $1', [id], (error, result) => {
+        if (error) return reject(error);
+        resolve(UserModel(result.rows[0]));
+      });
+    });
+  }
 }
