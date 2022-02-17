@@ -6,12 +6,12 @@ import { request, respond } from '../../Core/Routing';
 import { CategoryService } from '../../Services/Board/CategoryService';
 
 // This here will get all categories
-@Controller('/category', [AuthService.authenticate])
+@Controller('/category')
 export class CategoryController {
   /**
    * Post a category
    */
-  @Post('/add', [RolesService.isUserAdmin])
+  @Post('/add', [AuthService.authenticate, RolesService.isUserAdmin])
   async addNewCategory(): Promise<IResponse> {
     const body: ICategory = request().body<ICategory>();
     if (!body || !body.title || !body.description) {

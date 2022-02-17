@@ -1,5 +1,8 @@
 import { param, request, respond } from '../../Core/Routing';
-import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
+import {
+  AuthenticationService as AuthService,
+  AuthenticationService as authService
+} from '../../Services/Auth/AuthenticationService';
 import { QuestionService } from '../../Services/Question/QuestionService';
 import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
@@ -7,7 +10,7 @@ import { UserService } from '../../Services/User/UserService';
 import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
 import { addEvent } from '../../Services/Util/Events';
 
-@Controller('/question', [authService.authenticate])
+@Controller('/question')
 export class QuestionController {
   /**
    * Get all questions
@@ -72,7 +75,7 @@ export class QuestionController {
   /**
    * Post a new question
    */
-  @Post('/')
+  @Post('/', [AuthService.authenticate])
   async postNew(): Promise<IResponse> {
     const question = await QuestionService.postQuestion().catch((e) => {
       return respond({ error: e }, 400);
@@ -93,7 +96,7 @@ export class QuestionController {
    * Update question
    * Note: only the owner / staff / admin / mod will be able to update the questions.
    */
-  @Patch('/')
+  @Patch('/', [AuthService.authenticate])
   async update(): Promise<IResponse> {
     // let question;
 
@@ -131,7 +134,7 @@ export class QuestionController {
   /**
    * Delete a question
    */
-  @Delete('/:id')
+  @Delete('/:id', [AuthService.authenticate])
   async deleteQuestion(): Promise<IResponse> {
     // let response;
     // userCanEdit() or userIsStaff()

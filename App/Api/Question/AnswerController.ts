@@ -4,12 +4,12 @@ import { IResponse } from '../../Interfaces';
 import { AnswerService } from '../../Services/Question/AnswerService';
 import { respond } from '../../Core/Routing';
 
-@Controller('/answer', [AuthService.authenticate])
+@Controller('/answer')
 export class AnswerController {
   /**
    * Add an answer
    */
-  @Post('/:id')
+  @Post('/:id', [AuthService.authenticate])
   async addAnswer(): Promise<IResponse> {
     const answer = await AnswerService.addAnswer().catch((e) => {
       console.log(e);

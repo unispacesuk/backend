@@ -4,15 +4,15 @@ import { IResponse } from '../../Interfaces';
 import { respond } from '../../Core/Routing';
 import { ThreadService } from '../../Services/Board/ThreadService';
 
-@Controller('/thread', [AuthService.authenticate])
+@Controller('/thread')
 export class ThreadController {
   @Get('/:id')
   async getThread(): Promise<IResponse> {
     const thread = await ThreadService.getThread();
-    return respond({thread}, 200);
+    return respond({ thread }, 200);
   }
 
-  @Post('/add')
+  @Post('/add', [AuthService.authenticate])
   async addNewThread(): Promise<IResponse> {
     const thread = await ThreadService.createNewThread();
     return respond({ thread }, 200);
@@ -20,8 +20,8 @@ export class ThreadController {
 
   /**
    * To delete only owner or admins!!!!
-    */
-  @Delete('/:id')
+   */
+  @Delete('/:id', [AuthService.authenticate])
   async deleteThread(): Promise<IResponse> {
     await ThreadService.deleteThread();
     return respond({ message: 'Thread Deleted' }, 200);
@@ -37,17 +37,17 @@ export class ThreadController {
     return respond('all replies of a thread', 200);
   }
 
-  @Patch('/:thread')
+  @Patch('/:thread', [AuthService.authenticate])
   async editThread(): Promise<IResponse> {
     return respond('thread edited', 200);
   }
 
-  @Patch('/:thread/:reply')
+  @Patch('/:thread/:reply', [AuthService.authenticate])
   async editReply(): Promise<IResponse> {
     return respond('reply edited', 200);
   }
 
-  @Post('/add/:thread')
+  @Post('/add/:thread', [AuthService.authenticate])
   async addNewReply(): Promise<IResponse> {
     return respond('replied to a thread', 200);
   }

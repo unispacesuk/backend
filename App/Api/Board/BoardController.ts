@@ -6,9 +6,9 @@ import { IBoard, IResponse } from '../../Interfaces';
 import { BoardService } from '../../Services/Board/BoardService';
 import { ThreadService } from '../../Services/Board/ThreadService';
 
-@Controller('/board', [AuthService.authenticate])
+@Controller('/board')
 export class BoardController {
-  @Post('/add', [RolesService.isUserAdmin])
+  @Post('/add', [AuthService.authenticate, RolesService.isUserAdmin])
   async addNewBoard(): Promise<IResponse> {
     const body: IBoard = request().body();
     if (!body || !body.title || !body.description) {
