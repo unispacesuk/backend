@@ -17,8 +17,14 @@ export class AuthenticationController {
     const { authorization } = request().headers();
     const token = authorization?.split(' ')[1];
 
-    if (!token)
-      return response().status(200).send({ e: 'No token', m: 'No token sent on the request' });
+    if (!token) {
+      return respond(
+        {
+          error: 'No token provided on the request.',
+        },
+        400
+      );
+    }
 
     let payload: any;
     try {
@@ -33,6 +39,12 @@ export class AuthenticationController {
         );
       } else {
         console.log(e);
+        return respond(
+          {
+            error: 'Something went wrong.',
+          },
+          400
+        );
       }
     }
 

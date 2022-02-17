@@ -15,7 +15,9 @@ export class AuthenticationService {
 
   // TODO: Something wrong with the model. please fix
   static generateToken(data: IUser): string {
-    this.token = sign({ id: data._id, username: data.username }, this._config.secret, {
+    // @ts-ignore
+    const _id = data.id;
+    this.token = sign({ id: _id, username: data.username }, this._config.secret, {
       algorithm: 'HS256',
       expiresIn: '5 days',
     });
