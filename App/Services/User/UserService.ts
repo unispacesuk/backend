@@ -1,8 +1,9 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { IJwtPayload } from '../../Interfaces';
-import { param, response } from '../../Core/Routing';
+import {file, param, request, response} from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { UserModel } from '../../Models';
+import {data} from "../../../Test/Data/data";
 
 export class UserService {
   private static _client = Connection.client;
@@ -29,6 +30,19 @@ export class UserService {
         if (error) return reject();
         resolve(UserModel(result.rows[0]));
       });
+    });
+  }
+
+  public static async setUserAvatar() {
+    const userId = request().data('userId');
+
+    return new Promise((resolve, reject) => {
+      this._client.query('UPDATE users SET avatar = $1 WHERE _id = $2 RETURNING avatar',
+        [file()?.filename, userId],
+        (error, result) => {
+        if (error) return reject(error);
+        resolve(result.rows[0]);
+        });
     });
   }
 

@@ -59,8 +59,14 @@ export class UserController {
 
   @Post('/avatar', [AuthService.authenticate, upload.single('avatar')])
   async updateUserAvatar() {
-    console.log(file());
+    if (!file()) {
+      return respond({
+        error: 'No file uploaded.'
+      }, 400);
+    }
 
-    return respond({ d: 'done' }, 200);
+    const avatar = await UserService.setUserAvatar();
+
+    return respond({ avatar }, 200);
   }
 }

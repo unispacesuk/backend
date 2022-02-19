@@ -23,13 +23,15 @@ export class Config {
     return this.SECRET;
   }
 
+  // TODO: Better filename....
   static storage(folder: string): multer.StorageEngine {
     return multer.diskStorage({
       destination: function (req, file, cb) {
         cb(null, 'uploads/' + folder);
       },
       filename: function (req, file, cb) {
-        cb(null, file.originalname);
+        const ext = '.' + file.mimetype.split('/')[1];
+        cb(null, Date.now() + ext);
       }
     });
   }

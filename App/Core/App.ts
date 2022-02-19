@@ -23,6 +23,7 @@ export default class App {
     this._express.use(express.json());
     this._express.use(cors());
     this._express.use(morgan('dev'));
+    this._express.use('/avatar', express.static('uploads/avatars'));
 
     // initiate a middleware for requests
     // this will register a request, response, next object
