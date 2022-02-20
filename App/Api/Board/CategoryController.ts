@@ -15,7 +15,7 @@ export class CategoryController {
   async addNewCategory(): Promise<IResponse> {
     const body: ICategory = request().body<ICategory>();
     if (!body || !body.title || !body.description) {
-      return respond('fill all details', 401);
+      return respond({ m: 'fill all details' }, 401);
     }
 
     // returns the added category

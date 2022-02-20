@@ -12,7 +12,7 @@ export class BoardController {
   async addNewBoard(): Promise<IResponse> {
     const body: IBoard = request().body();
     if (!body || !body.title || !body.description) {
-      return respond('fill all details', 400);
+      return respond({ m: 'fill all details' }, 400);
     }
 
     const board = await BoardService.createNewBoard();

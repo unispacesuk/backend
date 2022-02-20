@@ -29,26 +29,26 @@ export class ThreadController {
 
   @Get('/all')
   async getAllThreads(): Promise<IResponse> {
-    return respond('all threads', 200);
+    return respond({ m: 'all threads' }, 200);
   }
 
   @Get('/all/:thread')
   async getAllReplies(): Promise<IResponse> {
-    return respond('all replies of a thread', 200);
+    return respond({ m: 'all replies of a thread' }, 200);
   }
 
   @Patch('/:thread', [AuthService.authenticate])
   async editThread(): Promise<IResponse> {
-    return respond('thread edited', 200);
+    return respond({ m: 'thread edited' }, 200);
   }
 
   @Patch('/:thread/:reply', [AuthService.authenticate])
   async editReply(): Promise<IResponse> {
-    return respond('reply edited', 200);
+    return respond({ m: 'reply edited' }, 200);
   }
 
   @Post('/add/:thread', [AuthService.authenticate])
   async addNewReply(): Promise<IResponse> {
-    return respond('replied to a thread', 200);
+    return respond({ m: 'replied to a thread' }, 200);
   }
 }
