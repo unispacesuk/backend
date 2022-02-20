@@ -12,6 +12,7 @@ export interface IQuestionModel {
   createdAt?: Date;
   lastUpdated?: Date;
   tags?: [];
+  votes: number;
 }
 
 export function QuestionModel(data: IQuestionModel): IQuestionModel {
@@ -24,5 +25,6 @@ export function QuestionModel(data: IQuestionModel): IQuestionModel {
     createdAt: data.created_at,
     lastUpdated: data.last_updated,
     tags: data.tags,
+    votes: data.votes,
   };
 }

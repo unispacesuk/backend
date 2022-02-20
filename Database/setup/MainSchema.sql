@@ -60,6 +60,7 @@ CREATE TABLE questions (
     tags TEXT[] NULL,
     last_replied_on TIMESTAMP NULL,
     active BOOLEAN DEFAULT true,
+    votes INTEGER DEFAULT 0,
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE QUESTIONS_ID_AI OWNED BY questions._id;

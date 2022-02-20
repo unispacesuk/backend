@@ -1,6 +1,6 @@
 import { sign, verify } from 'jsonwebtoken';
 import { Config } from '../../Config';
-import { request, response } from '../../Core/Routing';
+import { request, respond } from '../../Core/Routing';
 import { Middleware, Next } from '../../Core/Decorators';
 import { IJwtPayload } from '../../Interfaces';
 import { IUser } from '../../Interfaces';
@@ -44,9 +44,7 @@ export class AuthenticationService {
     let payload;
 
     if (!token) {
-      return response().status(401).send({
-        reason: 'no authorization token provided',
-      });
+      return respond({ error: 'No Authorization token provided.' }, 401);
     }
 
     token = token.split(' ')[1];
@@ -54,9 +52,7 @@ export class AuthenticationService {
     try {
       payload = await AuthenticationService.verifyToken(token);
     } catch (error) {
-      return response().status(401).send({
-        message: error,
-      });
+      return respond({ error: error }, 401);
     }
 
     // this will add the id on the request object then we will be able to access it globally

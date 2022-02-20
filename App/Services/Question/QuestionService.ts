@@ -3,6 +3,7 @@ import { request, param, query } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { Client } from 'pg';
 import { IQuestionModel, QuestionModel } from '../../Models/QuestionModel';
+import { rejects } from 'assert';
 
 interface ICriteria {
   userId?: string;
@@ -55,10 +56,9 @@ export class QuestionService {
    * Get all questions.
    * This method will also run when getting questions relative to a single user.
    */
-  public static async getAll(): Promise<IQuestionModel> {
+  public static async getAll(): Promise<IQuestionModel | IQuestionModel[]> {
     const values: (string | boolean)[] = []; // empty array for the values to use prepared statement
-    let _query = 'SELECT * FROM questions ' +
-      'WHERE active=($1)';
+    let _query = 'SELECT * FROM questions ' + 'WHERE active=($1)';
     values.push(true);
 
     const criteria = this.filtering(query());
@@ -94,7 +94,7 @@ export class QuestionService {
         if (error) {
           return reject(error);
         }
-        resolve(<IQuestionModel>result.rows.map((q) => QuestionModel(q)));
+        resolve(result.rows.map((q) => QuestionModel(q)));
       });
     });
   }
@@ -150,6 +150,25 @@ export class QuestionService {
           if (error) return reject(error);
           if (result.rowCount === 0) return resolve(false);
           resolve(true);
+        }
+      );
+    });
+  }
+
+  public static async voteForQuestion() {
+    const { id } = param();
+    const { type } = param();
+
+    const action = (type === 'up') ? '+' : '-';
+
+    return new Promise<void>((resolve, reject) => {
+      this.conn.query(
+        'UPDATE questions SET votes = votes' +
+        `${action} 1 WHERE _id = $1 returning *`,
+        [id],
+        (error, result) => {
+          if (error) return reject(error);
+          resolve();
         }
       );
     });

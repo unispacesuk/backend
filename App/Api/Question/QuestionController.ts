@@ -1,8 +1,5 @@
 import { param, request, respond } from '../../Core/Routing';
-import {
-  AuthenticationService as AuthService,
-  AuthenticationService as authService,
-} from '../../Services/Auth/AuthenticationService';
+import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { QuestionService } from '../../Services/Question/QuestionService';
 import { IResponse } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
@@ -155,6 +152,15 @@ export class QuestionController {
     });
 
     return respond({ m: response }, 200);
+  }
+
+  // Vote on the question
+  @Post('/:id/vote/:type', [AuthService.authenticate])
+  async doVote() {
+
+    await QuestionService.voteForQuestion();
+
+    return respond({ m: 'voted' }, 200);
   }
 }
 

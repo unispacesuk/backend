@@ -31,6 +31,7 @@ export class AnswerController {
 
   /**
    * Get all answers
+   * @id is the id of the question that we want the answers for
    */
   @Get('/all/:id')
   async getAnswers(): Promise<IResponse> {
@@ -50,6 +51,11 @@ export class AnswerController {
       },
       200
     );
+  }
+
+  @Post('/:id/maketop')
+  async makeTopQuestion() {
+    return respond({ m: 'made top' }, 200);
   }
 
   // TODO: upvote and downvote
