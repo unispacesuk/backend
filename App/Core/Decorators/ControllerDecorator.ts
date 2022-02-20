@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IController } from '../../Interfaces/IController';
+import { IController } from '../../Interfaces';
 
 /**
  * This will allow us to register a controller route (api.unispaces.uk/controller/....)

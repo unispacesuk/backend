@@ -1,22 +1,28 @@
 import { Controller, Get, Post } from '../../Core/Decorators';
-import {request, respond} from '../../Core/Routing';
-import { IResponse } from '../../Interfaces';
+import { request, respond } from '../../Core/Routing';
 
-import * as multer from "multer";
-import {Config} from "../../Config";
-import {AuthenticationService} from "../../Services/Auth/AuthenticationService";
-const upload = multer({ storage: Config.storage('avatars') });
+import {TestService} from "../../Services/Test/TestService";
+import 'reflect-metadata';
 
 @Controller('/test')
 export class TestController {
-  // @Get('/hi')
-  // async testMethod(): Promise<IResponse> {
-  //   return respond({ m: 'hello there' }, 200);
-  // }
-  @Post('/upload', [upload.single('avatar')])
-  async upload() {
-    console.log('uploaded');
-    console.log(request().file());
-    return respond({m: 'uploaded'}, 200);
+  @Get('/hi')
+  function() {
+
+    // const service = Reflect.getMetadata('injectable', TestService);
+    // const s2: TestService = new service.target.constructor;
+    // s2.testMethod();
+    // console.log(this.testService);
+    // this.testService.testMethod();
+
+    // s.testMethod();
+    // console.log(typeof this.service);
+    // const {target} = Reflect.getMetadata('injectable', TestService);
+    // const se = new s.constructor;
+    // console.log(target);
+    // target.testMethod();
+    // se.testMethod();
+
+    return respond({m: 'replied'}, 200);
   }
 }

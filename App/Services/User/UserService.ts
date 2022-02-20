@@ -3,7 +3,6 @@ import { IJwtPayload } from '../../Interfaces';
 import {file, param, request, response} from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { UserModel } from '../../Models';
-import {data} from "../../../Test/Data/data";
 
 export class UserService {
   private static _client = Connection.client;

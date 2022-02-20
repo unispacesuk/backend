@@ -1,8 +1,8 @@
 import { response } from '../Routing';
 import { IResponse } from '../../Interfaces';
-import { IRouteMetaData } from '../../Interfaces/IRouteMetaData';
+import { IRouteMetaData } from '../../Interfaces';
 import 'reflect-metadata';
-import {RequestHandler} from "express";
+import { RequestHandler } from 'express';
 
 // type for the main http decorator
 type HttpDecorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;

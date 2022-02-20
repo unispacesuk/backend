@@ -27,12 +27,10 @@ function response(): ResponseHandler {
 }
 export { response };
 
-export function respond(body: string | object, code: number): IResponse {
+export function respond(body: object, code: number): IResponse {
   return {
     code: code,
-    body: {
-      body,
-    },
+    body,
   };
 }
 

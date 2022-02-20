@@ -26,7 +26,8 @@
     "node-dir": "^0.1.17",
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
-    "ts-node": "^10.5.0"
+    "ts-node": "^10.5.0",
+    "typedi": "^0.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.4",
