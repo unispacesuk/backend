@@ -44,11 +44,15 @@ export class QuestionService {
    */
   public static async getQuestion(id: string): Promise<IQuestionModel | []> {
     return new Promise((resolve, reject) => {
-      this.conn.query('SELECT * FROM questions WHERE _id = $1', [id], (error, result) => {
-        if (error) return reject(error);
-        if (result.rows.length === 0) return resolve([]);
-        resolve(QuestionModel(result.rows[0]));
-      });
+      this.conn.query(
+        'SELECT questions.*, COUNT(DISTINCT answers._id) as answers FROM questions LEFT JOIN answers on questions._id = answers.question_id WHERE questions._id = $1 GROUP BY questions._id',
+        [id],
+        (error, result) => {
+          if (error) return reject(error);
+          if (result.rows.length === 0) return resolve([]);
+          resolve(QuestionModel(result.rows[0]));
+        }
+      );
     });
   }
 
@@ -58,7 +62,10 @@ export class QuestionService {
    */
   public static async getAll(): Promise<IQuestionModel | IQuestionModel[]> {
     const values: (string | boolean)[] = []; // empty array for the values to use prepared statement
-    let _query = 'SELECT * FROM questions ' + 'WHERE active=($1)';
+    let _query =
+      'SELECT questions.*, COUNT(DISTINCT answers._id) AS answers FROM questions ' +
+      'LEFT JOIN answers ON questions._id = answers.question_id ' +
+      'WHERE active=($1)';
     values.push(true);
 
     const criteria = this.filtering(query());
@@ -79,6 +86,7 @@ export class QuestionService {
       values.push(criteria.tag);
       _query += ` AND $${values.length}=ANY(tags)`;
     }
+    _query += ' GROUP BY questions._id';
 
     if (!criteria.orderBy) {
       _query += ' ORDER BY created_at DESC';
@@ -159,18 +167,47 @@ export class QuestionService {
     const { id } = param();
     const { type } = param();
 
-    const action = (type === 'up') ? '+' : '-';
+    // save vote to table... user and question and type
+    await QuestionService.saveVote(id, type);
+
+    const action = type === 'up' ? '+' : '-';
 
     return new Promise<void>((resolve, reject) => {
       this.conn.query(
-        'UPDATE questions SET votes = votes' +
-        `${action} 1 WHERE _id = $1 returning *`,
+        'UPDATE questions SET votes = votes' + `${action} 1 WHERE _id = $1 returning *`,
         [id],
         (error, result) => {
           if (error) return reject(error);
           resolve();
         }
       );
+    });
+  }
+  static async saveVote(id: string, type: string) {
+    const userId = request().data('userId');
+    return new Promise<void>((resolve, reject) => {
+      this.conn.query(
+        'INSERT INTO questions_votes (question_id, user_id, type) VALUES ($1, $2, $3)',
+        [id, userId, type],
+        (error) => {
+          if (error) return reject(error);
+          resolve();
+        }
+      );
+    });
+  }
+
+  public static async getVote() {
+    const { id } = param();
+    const userId = request().data('userId');
+
+    return new Promise<void>((resolve, reject) => {
+      this.conn.query('SELECT * FROM questions_votes WHERE question_id = $1 AND user_id = $2',
+        [id, userId], (error, result) => {
+          if (error) return reject(error);
+          if (result.rows.length === 0) return resolve();
+          resolve(result.rows[0]);
+        });
     });
   }
 

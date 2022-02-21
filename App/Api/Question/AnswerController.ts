@@ -53,9 +53,14 @@ export class AnswerController {
     );
   }
 
-  @Post('/:id/maketop')
+  @Post('/:id/makebest', [AuthService.authenticate])
   async makeTopQuestion() {
-    return respond({ m: 'made top' }, 200);
+    await AnswerService.markAsBest().catch((e) => {
+      console.log(e);
+      return respond({ error: e }, 400);
+    });
+
+    return respond({ message: 'done' }, 200);
   }
 
   // TODO: upvote and downvote

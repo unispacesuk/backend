@@ -35,6 +35,9 @@ export class LoginService {
     return new Promise((resolve, reject) => {
       this._client.query('SELECT * FROM users WHERE _id = $1', [id], (error, result) => {
         if (error) return reject(error);
+        if (result.rows.length === 0) {
+          return reject('No user found!');
+        }
         resolve(UserModel(result.rows[0]));
       });
     });

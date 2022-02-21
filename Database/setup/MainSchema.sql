@@ -58,12 +58,20 @@ CREATE TABLE questions (
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
     tags TEXT[] NULL,
-    last_replied_on TIMESTAMP NULL,
+    last_replied TIMESTAMP NULL,
     active BOOLEAN DEFAULT true,
     votes INTEGER DEFAULT 0,
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE QUESTIONS_ID_AI OWNED BY questions._id;
+
+-- question votes
+CREATE TABLE questions_votes (
+    question_id INTEGER NOT NULL REFERENCES questions (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
+    type VARCHAR (10) NOT NULL,
+    created_at TIMESTAMP DEFAULT now()
+);
 
 -- answers table
 CREATE SEQUENCE ANSWERS_ID_AI;
@@ -75,6 +83,7 @@ CREATE TABLE answers (
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
+    best BOOLEAN DEFAULT false,
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE ANSWERS_ID_AI OWNED BY answers._id;

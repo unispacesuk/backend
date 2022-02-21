@@ -48,7 +48,13 @@ export class AuthenticationController {
       }
     }
 
-    const user: any = await LoginService.getUserData(payload.id);
+    let user;
+    try {
+      user = await LoginService.getUserData(payload.id);
+    } catch (e) {
+      console.log(e);
+      return respond({ error: e }, 400);
+    }
 
     return respond(
       {

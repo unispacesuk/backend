@@ -57,6 +57,7 @@ export class QuestionController {
     // string because we want to send a response as a string. we can also just send an empty array and write the response in the frontend
     // try {
     const question = <IQuestionModel[] | string>await QuestionService.getQuestion(id).catch((e) => {
+      console.log(e);
       return respond({ error: e }, 400);
     });
 
@@ -82,16 +83,18 @@ export class QuestionController {
    */
   @Post('/', [AuthService.authenticate])
   async postNew(): Promise<IResponse> {
-    const question = await QuestionService.postQuestion().catch((e) => {
+    try {
+      await QuestionService.postQuestion();
+    } catch (e) {
       return respond({ error: e }, 400);
-    });
+    }
 
     await addEvent('ADD_QUESTION').catch((e) => console.log(e));
 
     return respond(
       {
         message: 'question posted',
-        question,
+        // question,
       },
       200
     );
@@ -157,10 +160,28 @@ export class QuestionController {
   // Vote on the question
   @Post('/:id/vote/:type', [AuthService.authenticate])
   async doVote() {
-
-    await QuestionService.voteForQuestion();
+    try {
+      await QuestionService.voteForQuestion();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: e }, 400);
+    }
 
     return respond({ m: 'voted' }, 200);
+  }
+
+  // get users vote if logged in
+  @Get('/myvote/:id', [AuthService.authenticate])
+  async getVote() {
+    let vote;
+    try {
+      vote = await QuestionService.getVote();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: e }, 400);
+    }
+
+    return respond({vote}, 200);
   }
 }
 
