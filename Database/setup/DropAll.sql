@@ -10,6 +10,7 @@ DROP TABLE board_thread_replies;
 DROP TABLE board_threads;
 DROP TABLE board_boards;
 DROP TABLE board_categories;
+DROP TABLE questions_votes;
 DROP TABLE answers;
 DROP TABLE questions;
 DROP TABLE user_roles;
