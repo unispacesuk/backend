@@ -7,6 +7,7 @@ interface IAnswerModel {
   createdAt: Date;
   username: string;
   avatar: string;
+  best: boolean;
 }
 
 export function AnswerModel(data: IAnswer): IAnswerModel {
@@ -17,5 +18,6 @@ export function AnswerModel(data: IAnswer): IAnswerModel {
     createdAt: data.created_at,
     username: data.username,
     avatar: data.avatar,
+    best: data.best,
   };
 }

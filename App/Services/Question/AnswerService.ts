@@ -53,16 +53,17 @@ export class AnswerService {
 
   /**
    * Mark one answer as best
+   * TODO: Make only owner or admin to mark as best.
    */
   public static async markAsBest() {
     const { id } = param();
+    // const userId = request().data('userId');
 
     return new Promise<void>((resolve, reject) => {
-      this.conn.query('UPDATE answers SET best = true WHERE _id = $1', [id],
-        (error) => {
-          if (error) return reject(error);
-          resolve();
-        });
+      this.conn.query('UPDATE answers SET best = true WHERE _id = $1', [id], (error) => {
+        if (error) return reject(error);
+        resolve();
+      });
     });
   }
 }

@@ -35,30 +35,23 @@ export class AnswerController {
    */
   @Get('/all/:id')
   async getAnswers(): Promise<IResponse> {
-    const answers = await AnswerService.getAnswers().catch((e) => {
-      console.log(e);
-      return respond(
-        {
-          error: e,
-        },
-        400
-      );
-    });
+    let answers;
+    try {
+      answers = await AnswerService.getAnswers();
+    } catch (e) {
+      return respond({ error: e }, 400);
+    }
 
-    return respond(
-      {
-        answers,
-      },
-      200
-    );
+    return respond({ answers }, 200);
   }
 
-  @Post('/:id/makebest', [AuthService.authenticate])
+  @Post('/:id/markbest', [AuthService.authenticate])
   async makeTopQuestion() {
-    await AnswerService.markAsBest().catch((e) => {
-      console.log(e);
+    try {
+      await AnswerService.markAsBest();
+    } catch (e) {
       return respond({ error: e }, 400);
-    });
+    }
 
     return respond({ message: 'done' }, 200);
   }

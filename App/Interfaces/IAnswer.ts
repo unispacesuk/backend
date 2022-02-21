@@ -5,4 +5,5 @@ export interface IAnswer {
   created_at: Date;
   username: string;
   avatar: string;
+  best: boolean;
 }
