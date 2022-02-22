@@ -4,10 +4,13 @@ import { Response } from 'express';
  * Response constructor
  */
 export class ResponseHandler {
-  _response: Response;
+  _response: Response | undefined;
   _code = 0;
 
-  constructor(response: Response) {
+  constructor(response: Response | undefined) {
+    if (response === undefined) {
+      return;
+    }
     this._response = response;
   }
 
@@ -18,11 +21,11 @@ export class ResponseHandler {
   }
 
   send(body: object, code?: number): this {
-    if (!this._response.headersSent) this._response.status(this._code | code!).send(body);
+    if (!this._response!.headersSent) this._response!.status(this._code | code!).send(body);
     return this;
   }
 
   end() {
-    return this._response.end();
+    return this._response!.end();
   }
 }

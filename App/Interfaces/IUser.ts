@@ -9,4 +9,5 @@ export interface IUser {
   last_updated: Date;
   last_login: Date;
   avatar: string;
+  role_id: number;
 }

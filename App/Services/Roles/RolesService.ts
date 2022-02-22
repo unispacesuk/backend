@@ -1,4 +1,4 @@
-import { request, response } from '../../Core/Routing';
+import { request, respond, response } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { Middleware, Next } from '../../Core/Decorators';
 import { QueryResult } from 'pg';
@@ -26,9 +26,7 @@ export class RolesService {
 
     // result will always have a result but needs to be asserted anyway
     if (result!.rowCount === 0) {
-      return response().send({
-        message: 'not enough permissions'
-      }, 401);
+      return respond({ error: 'not enough permissions' }, 400);
     }
 
     Next();

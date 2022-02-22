@@ -5,7 +5,7 @@ import { RequestHandler, ResponseHandler } from '../index';
 
 export class RequestContext {
   static _request: Request;
-  static _response: Response;
+  // _response: Response | undefined = undefined;
 
   /**
    * Initiate a middleware for the decorators
@@ -15,16 +15,23 @@ export class RequestContext {
    */
   initRouter(request: Request, response: Response, next: NextFunction) {
     RequestContext._request = request;
-    RequestContext._response = response;
 
     next();
   }
+
+  // initRequest(request: Request) {
+    // RequestContext._request = request;
+  // }
+
+  // initResponse(response: Response) {
+  //   this._response = response;
+  // }
 
   static request(): RequestHandler {
     return new RequestHandler(RequestContext._request);
   }
 
-  static response(): ResponseHandler {
-    return new ResponseHandler(RequestContext._response);
-  }
+  // response(): ResponseHandler {
+  //   return new ResponseHandler(this._response);
+  // }
 }

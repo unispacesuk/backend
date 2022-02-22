@@ -42,8 +42,8 @@ INSERT INTO roles (name) VALUES ('Default');
 
 -- user roles table (joint table users <-> roles)
 CREATE TABLE user_roles (
-    user_id SMALLINT NOT NULL REFERENCES users (_id),
-    role_id SMALLINT NOT NULL REFERENCES roles (_id),
+    user_id SMALLINT NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    role_id SMALLINT NOT NULL REFERENCES roles (_id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, role_id)
 );
 
@@ -52,7 +52,7 @@ CREATE SEQUENCE QUESTIONS_ID_AI;
 CREATE TABLE questions (
     -- _id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     _id INTEGER NOT NULL DEFAULT NEXTVAL('QUESTIONS_ID_AI'),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     title VARCHAR (255) NOT NULL,
     description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
@@ -67,8 +67,8 @@ ALTER SEQUENCE QUESTIONS_ID_AI OWNED BY questions._id;
 
 -- question votes
 CREATE TABLE questions_votes (
-    question_id INTEGER NOT NULL REFERENCES questions (_id),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
+    question_id INTEGER NOT NULL REFERENCES questions (_id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     type VARCHAR (10) NOT NULL,
     created_at TIMESTAMP DEFAULT now()
 );
@@ -78,8 +78,8 @@ CREATE SEQUENCE ANSWERS_ID_AI;
 CREATE TABLE answers (
     -- _id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     _id INTEGER NOT NULL DEFAULT NEXTVAL('ANSWERS_ID_AI'),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
-    question_id INTEGER REFERENCES questions (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    question_id INTEGER REFERENCES questions (_id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
@@ -93,7 +93,7 @@ ALTER SEQUENCE ANSWERS_ID_AI OWNED BY answers._id;
 CREATE SEQUENCE BOARD_CATEGORIES_ID_AI;
 CREATE TABLE board_categories (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('BOARD_CATEGORIES_ID_AI'),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     title VARCHAR (255) NOT NULL,
     description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
@@ -106,8 +106,8 @@ ALTER SEQUENCE BOARD_CATEGORIES_ID_AI OWNED BY board_categories._id;
 CREATE SEQUENCE BOARD_BOARDS_ID_AI;
 CREATE TABLE board_boards (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('BOARD_BOARDS_ID_AI'),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
-    board_category_id INTEGER NOT NULL REFERENCES board_categories (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    board_category_id INTEGER NOT NULL REFERENCES board_categories (_id) ON DELETE CASCADE,
     title VARCHAR (255) NOT NULL,
     description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
@@ -120,8 +120,8 @@ ALTER SEQUENCE BOARD_BOARDS_ID_AI OWNED BY board_boards._id;
 CREATE SEQUENCE BOARD_THREADS_ID_AI;
 CREATE TABLE board_threads (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('BOARD_THREADS_ID_AI'),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
-    board_boards_id INTEGER NOT NULL REFERENCES board_boards (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    board_boards_id INTEGER NOT NULL REFERENCES board_boards (_id) ON DELETE CASCADE,
     title VARCHAR (255) NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
@@ -134,8 +134,8 @@ ALTER SEQUENCE BOARD_THREADS_ID_AI OWNED BY board_threads._id;
 CREATE SEQUENCE BOARD_THREAD_REPLIES_ID_AI;
 CREATE TABLE board_thread_replies (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('BOARD_THREAD_REPLIES_ID_AI'),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
-    board_thread_id INTEGER NOT NULL REFERENCES board_threads (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    board_thread_id INTEGER NOT NULL REFERENCES board_threads (_id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
@@ -147,7 +147,7 @@ ALTER SEQUENCE BOARD_THREAD_REPLIES_ID_AI OWNED BY board_thread_replies._id;
 CREATE SEQUENCE BLOG_POSTS_ID_AI;
 CREATE TABLE blog_posts (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('BLOG_POSTS_ID_AI'),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     title VARCHAR (255) NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
@@ -161,8 +161,8 @@ ALTER SEQUENCE BLOG_POSTS_ID_AI OWNED BY blog_posts._id;
 CREATE SEQUENCE BLOG_COMMENTS_ID_AI;
 CREATE TABLE blog_comments (
   _id INTEGER NOT NULL DEFAULT NEXTVAL('BLOG_COMMENTS_ID_AI'),
-  user_id INTEGER NOT NULL REFERENCES users (_id),
-  blog_post INTEGER NOT NULL REFERENCES blog_posts (_id),
+  user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+  blog_post INTEGER NOT NULL REFERENCES blog_posts (_id) ON DELETE CASCADE,
   content TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT now(),
   PRIMARY KEY (_id)
@@ -173,7 +173,7 @@ ALTER SEQUENCE BLOG_COMMENTS_ID_AI OWNED BY blog_comments._id;
 CREATE SEQUENCE EVENTS_ID_AI;
 CREATE TABLE events (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('EVENTS_ID_AI'),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     type VARCHAR (100) NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     PRIMARY KEY (_id)

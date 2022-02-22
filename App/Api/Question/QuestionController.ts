@@ -15,7 +15,17 @@ export class QuestionController {
    */
   @Get('/all')
   async getAll(): Promise<IResponse> {
-    const questions = await QuestionService.getAll().catch((error) => console.log(error));
+    let questions;
+    try {
+      questions = await QuestionService.getAll();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: e }, 400);
+    }
+
+    if (questions === undefined) {
+      questions = [];
+    }
 
     return respond({ questions }, 200);
   }
@@ -110,33 +120,17 @@ export class QuestionController {
 
     // userCanEdit() or userIdStaff()
     if (!(await userCanUpdate())) {
-      return {
-        code: 400,
-        body: {
-          message: 'you cannot edit this question',
-        },
-      };
+      return respond({ error: 'you cannot edit this question' }, 400);
     }
 
     const question = await QuestionService.updateQuestion().catch((e) => {
       console.log(e);
-      return respond(
-        {
-          error: e,
-        },
-        400
-      );
+      return respond({ error: e }, 400);
     });
 
     await addEvent('EDIT_QUESTION').catch((e) => console.log(e));
 
-    return respond(
-      {
-        message: 'question updated',
-        question,
-      },
-      200
-    );
+    return respond({ message: 'question updated', question }, 200);
   }
 
   /**
@@ -150,11 +144,15 @@ export class QuestionController {
       respond({ error: 'You cannot delete this question.' }, 400);
     }
 
-    const response = await QuestionService.deleteQuestion().catch((e) => {
+    let response;
+    try {
+      response = await QuestionService.deleteQuestion();
+    } catch (e) {
+      console.log(e);
       return respond({ error: e }, 401);
-    });
+    }
 
-    return respond({ m: response }, 200);
+    return respond({ response }, 200);
   }
 
   // Vote on the question
@@ -181,7 +179,7 @@ export class QuestionController {
       return respond({ error: e }, 400);
     }
 
-    return respond({vote}, 200);
+    return respond({ vote }, 200);
   }
 }
 

@@ -4,6 +4,7 @@ import { ICategory } from '../../Interfaces';
 import { request } from '../../Core/Routing';
 import { CategoryModel } from '../../Models';
 import { BoardService } from './BoardService';
+import any = jasmine.any;
 
 export class CategoryService {
   static conn: Client = Connection.client;

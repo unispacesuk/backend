@@ -8,6 +8,7 @@ interface IUserModel {
   firstName?: string;
   lastName?: string;
   avatar: string;
+  roleId: number;
 }
 
 export function UserModel(data: IUser): IUserModel {
@@ -18,5 +19,6 @@ export function UserModel(data: IUser): IUserModel {
     avatar: data.avatar,
     firstName: data.first_name,
     lastName: data.last_name,
+    roleId: data.role_id,
   };
 }

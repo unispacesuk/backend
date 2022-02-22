@@ -22,8 +22,9 @@ function request(): RequestHandler {
 // }
 export { request };
 
-function response(): ResponseHandler {
-  return RequestContext.response();
+function response(): ResponseHandler | boolean {
+  // return RequestContext.response();
+  return true;
 }
 export { response };
 

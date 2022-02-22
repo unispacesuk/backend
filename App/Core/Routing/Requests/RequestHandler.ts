@@ -9,14 +9,17 @@ interface IncomingHeaders extends IncomingHttpHeaders {
  * Request constructor
  */
 export class RequestHandler {
-  _request: IRequest;
+  _request: IRequest | undefined;
 
-  constructor(request: IRequest) {
+  constructor(request: IRequest | undefined) {
+    if (request === undefined) {
+      return;
+    }
     this._request = request;
   }
 
   headers() {
-    return <IncomingHeaders>this._request.headers;
+    return <IncomingHeaders>this._request!.headers;
   }
 
   /**
@@ -35,13 +38,13 @@ export class RequestHandler {
   data<T>(arg?: string | {[key: string]: T}): T | void {
     if (typeof arg === "object") {
         for (const a in arg) {
-          this._request[a] = arg[a];
+          this._request![a] = arg[a];
         }
         return;
     }
 
     if (arg)
-      return this._request[arg];
+      return this._request![arg];
   }
 
   /**
@@ -49,8 +52,8 @@ export class RequestHandler {
    *  to destructure an object in the route method.
    */
   parameters(p: string): any {
-    if (p === 'all') return this._request.params;
-    return this._request.params[p];
+    if (p === 'all') return this._request!.params;
+    return this._request!.params[p];
   }
 
   /**
@@ -58,8 +61,8 @@ export class RequestHandler {
    * api.unispaces.uk/endpoint?key=value&key=value&key=value
    */
   query(q: string): any {
-    if (q === 'all') return this._request.query;
-    return this._request.query[q];
+    if (q === 'all') return this._request!.query;
+    return this._request!.query[q];
   }
 
   /**
@@ -67,15 +70,15 @@ export class RequestHandler {
    * TODO: maybe make it not return anything if there is no body 🤔
    */
   body<T>(key?: string): T {
-    return this._request.body || this._request.body[key!];
+    return this._request!.body || this._request!.body[key!];
   }
 
   method(): string {
-    return this._request.method;
+    return this._request!.method;
   }
 
   file() {
-    return this._request.file;
+    return this._request!.file;
   }
 
   /**

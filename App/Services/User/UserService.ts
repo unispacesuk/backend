@@ -1,6 +1,6 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { IJwtPayload } from '../../Interfaces';
-import {file, param, request, response} from '../../Core/Routing';
+import { file, param, request, respond } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { UserModel } from '../../Models';
 
@@ -15,9 +15,7 @@ export class UserService {
       const { _id } = <IJwtPayload>await authService.verifyToken(token);
       return _id;
     } catch (error) {
-      return response().status(400).send({
-        message: error,
-      });
+      return respond({ error }, 400);
     }
   }
 
@@ -36,12 +34,14 @@ export class UserService {
     const userId = request().data('userId');
 
     return new Promise((resolve, reject) => {
-      this._client.query('UPDATE users SET avatar = $1 WHERE _id = $2 RETURNING avatar',
+      this._client.query(
+        'UPDATE users SET avatar = $1 WHERE _id = $2 RETURNING avatar',
         [file()?.filename, userId],
         (error, result) => {
-        if (error) return reject(error);
-        resolve(result.rows[0]);
-        });
+          if (error) return reject(error);
+          resolve(result.rows[0]);
+        }
+      );
     });
   }
 

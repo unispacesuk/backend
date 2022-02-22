@@ -2,7 +2,7 @@ import { response } from '../Routing';
 import { IResponse } from '../../Interfaces';
 import { IRouteMetaData } from '../../Interfaces';
 import 'reflect-metadata';
-import { RequestHandler } from 'express';
+import {Response, NextFunction, RequestHandler} from 'express';
 
 // type for the main http decorator
 type HttpDecorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
@@ -54,9 +54,11 @@ export function httpRequest(
 ): HttpDecorator {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value;
-    descriptor.value = async () => {
+    descriptor.value = async (req: Request, res: Response, next: NextFunction) => {
       const body: IResponse = await original.call();
-      response().status(body.code).send(body.body);
+
+      // will handle the response here then decide later what to do 🤥
+      res.status(body.code).send(body.body);
     };
 
     const routeMetaData: IRouteMetaData = {

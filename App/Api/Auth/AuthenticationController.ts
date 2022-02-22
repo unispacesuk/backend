@@ -1,6 +1,6 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { request, respond, response } from '../../Core/Routing';
+import { request, respond } from '../../Core/Routing';
 import { Controller, Post } from '../../Core/Decorators';
 import { IResponse } from '../../Interfaces';
 import { LoginService } from '../../Services/Auth/LoginService';
@@ -18,12 +18,7 @@ export class AuthenticationController {
     const token = authorization?.split(' ')[1];
 
     if (!token) {
-      return respond(
-        {
-          error: 'No token provided on the request.',
-        },
-        400
-      );
+      return respond({ error: 'No token provided on the request.' }, 400);
     }
 
     let payload: any;
@@ -31,20 +26,10 @@ export class AuthenticationController {
       payload = await authService.verifyToken(token);
     } catch (e) {
       if (e instanceof TokenExpiredError) {
-        return respond(
-          {
-            error: 'Token expired. Please login again.',
-          },
-          401
-        );
+        return respond({ error: 'Token expired. Please login again.' }, 401);
       } else {
         console.log(e);
-        return respond(
-          {
-            error: 'Something went wrong.',
-          },
-          400
-        );
+        return respond({ error: 'Something went wrong.' }, 400);
       }
     }
 
@@ -56,12 +41,7 @@ export class AuthenticationController {
       return respond({ error: e }, 400);
     }
 
-    return respond(
-      {
-        user,
-      },
-      200
-    );
+    return respond({ user }, 200);
   }
 
   // refactor later on

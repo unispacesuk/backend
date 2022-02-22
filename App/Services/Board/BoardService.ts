@@ -1,5 +1,5 @@
 import { Connection } from '../../Config';
-import { param, request, response } from '../../Core/Routing';
+import { request, respond } from '../../Core/Routing';
 import { BoardModel } from '../../Models/BoardModel';
 import { CategoryService } from './CategoryService';
 import { IBoard } from '../../Interfaces';
@@ -21,7 +21,7 @@ export class BoardService {
     const { title, description, category } = request().body<Body>();
 
     if ((await CategoryService.categoryExists(category)) === 0) {
-      return response().send({ error: 'category does not exist' }, 401).end();
+      return respond({ error: 'cat does not exist' }, 401);
     }
 
     const { rows } = await this.conn.query(
@@ -34,22 +34,24 @@ export class BoardService {
   /**
    * Fetch all boards from a category
    */
-  public static async getAllBoards(category: number) {
+  public static async getAllBoards(category: number): Promise<any> {
     // const { category } = param();
     //
-    // if ((await CategoryService.categoryExists(category)) === 0) {
-    //   return response().send({ error: 'category does not exist' }, 401).end();
-    // }
+    if ((await CategoryService.categoryExists(category)) === 0) {
+      return respond({ error: 'cat does not exist' }, 401);
+    }
 
     const { rows } = await this.conn.query(
       'SELECT * FROM board_boards WHERE board_category_id = $1',
       [category]
     );
 
-    return Promise.all(rows.map(async (b: IBoard) => {
-      b.threads = await this.getCountOfThreads(b._id);
-      return BoardModel(b);
-    }));
+    return Promise.all(
+      rows.map(async (b: IBoard) => {
+        b.threads = await this.getCountOfThreads(b._id);
+        return BoardModel(b);
+      })
+    );
   }
 
   /**
