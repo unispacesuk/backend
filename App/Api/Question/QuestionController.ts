@@ -114,19 +114,21 @@ export class QuestionController {
    * Update question
    * Note: only the owner / staff / admin / mod will be able to update the questions.
    */
-  @Patch('/', [AuthService.authenticate])
+  @Patch('/:id', [AuthService.authenticate])
   async update(): Promise<IResponse> {
     // let question;
 
     // userCanEdit() or userIdStaff()
     if (!(await userCanUpdate())) {
-      return respond({ error: 'you cannot edit this question' }, 400);
+      return respond({ error: 'You cannot edit this question.' }, 400);
     }
 
-    const question = await QuestionService.updateQuestion().catch((e) => {
-      console.log(e);
+    let question;
+    try {
+      question = await QuestionService.updateQuestion();
+    } catch (e) {
       return respond({ error: e }, 400);
-    });
+    }
 
     await addEvent('EDIT_QUESTION').catch((e) => console.log(e));
 
@@ -150,6 +152,10 @@ export class QuestionController {
     } catch (e) {
       console.log(e);
       return respond({ error: e }, 401);
+    }
+
+    if (!response) {
+      return respond({ error: 'Could not delete the question.' }, 401);
     }
 
     return respond({ response }, 200);

@@ -3,7 +3,7 @@ import { request, param, query } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { Client } from 'pg';
 import { IQuestionModel, QuestionModel } from '../../Models/QuestionModel';
-import { rejects } from 'assert';
+import { UserRole } from '../../Interfaces';
 
 interface ICriteria {
   userId?: string;
@@ -111,8 +111,12 @@ export class QuestionService {
    * Update question
    */
   public static async updateQuestion(): Promise<IQuestionModel> {
-    const { _id, title, content } = request().body();
-    const userId = <string>await UserService.getUserId(request().token()); // can cast to string :poggers:
+    const { id } = param();
+    const { title, description } = request().body();
+    const userId = <string>request().data('userId');
+    // const userId = <string>await UserService.getUserId(request().token()); // can cast to string :poggers:
+
+    const userRole: UserRole = await UserService.getUserRole();
 
     const values: string[] = [];
 
@@ -120,17 +124,23 @@ export class QuestionService {
 
     if (title) {
       values.push(title);
-      query += `,title = $${values.length}`;
+      query += `, title = $${values.length}`;
     }
 
-    if (content) {
-      values.push(content);
-      query += `,content = $${values.length}`;
+    if (description) {
+      values.push(description);
+      query += `, description = $${values.length}`;
     }
 
-    // values.length-1 because we are adding two items on the array and we want two different indexes
-    values.push(_id, userId);
-    query += ` WHERE _id = $${values.length - 1} AND user_id = $${values.length} RETURNING *`;
+    values.push(id);
+    query += ` WHERE _id = $${values.length}`;
+
+    if (userRole.role_id !== 1) {
+      values.push(userId);
+      query += ` AND user_id = $${values.length}`;
+    }
+
+    query += ` RETURNING *`;
     return new Promise((resolve, reject) => {
       this.conn.query(query, [...values], (error, result) => {
         if (error) return reject(error);
@@ -150,16 +160,22 @@ export class QuestionService {
     const { id } = param();
     const userId = request().data('userId');
 
+    const userRole: UserRole = await UserService.getUserRole();
+
+    const params: any[] = [];
+    let query = 'DELETE FROM questions WHERE _id = $1';
+
+    if (userRole.role_id !== 1) {
+      params.push(userId);
+      query += ' AND user_id = $2';
+    }
+
     return new Promise((resolve, reject) => {
-      this.conn.query(
-        'DELETE FROM questions WHERE _id = $1 AND user_id = $2',
-        [id, userId],
-        (error, result) => {
-          if (error) return reject(error);
-          if (result.rowCount === 0) return resolve(false);
-          resolve(true);
-        }
-      );
+      this.conn.query(query, [id, ...params], (error, result) => {
+        if (error) return reject(error);
+        if (result.rowCount === 0) return resolve(false);
+        resolve(true);
+      });
     });
   }
 
@@ -202,12 +218,15 @@ export class QuestionService {
     const userId = request().data('userId');
 
     return new Promise<void>((resolve, reject) => {
-      this.conn.query('SELECT * FROM questions_votes WHERE question_id = $1 AND user_id = $2',
-        [id, userId], (error, result) => {
+      this.conn.query(
+        'SELECT * FROM questions_votes WHERE question_id = $1 AND user_id = $2',
+        [id, userId],
+        (error, result) => {
           if (error) return reject(error);
           if (result.rows.length === 0) return resolve();
           resolve(result.rows[0]);
-        });
+        }
+      );
     });
   }
 

@@ -7,6 +7,7 @@ export interface IQuestionModel {
   created_at?: Date;
   last_updated?: Date;
   last_replied?: Date;
+  active?: boolean;
   // interface for the response
   id?: string;
   userId?: number;
@@ -29,5 +30,6 @@ export function QuestionModel(data: IQuestionModel): IQuestionModel {
     lastReplied: data.last_replied,
     tags: data.tags,
     votes: data.votes,
+    active: data.active,
   };
 }

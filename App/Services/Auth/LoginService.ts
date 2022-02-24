@@ -41,7 +41,6 @@ export class LoginService {
           if (result.rows.length === 0) {
             return reject('No user found!');
           }
-          console.log(result.rows[0]);
           resolve(UserModel(result.rows[0]));
         }
       );

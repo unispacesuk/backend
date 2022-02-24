@@ -1,5 +1,5 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
-import { IJwtPayload } from '../../Interfaces';
+import {IJwtPayload, UserRole} from '../../Interfaces';
 import { file, param, request, respond } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { UserModel } from '../../Models';
@@ -47,10 +47,19 @@ export class UserService {
 
   /**
    * Get the user role using the id from the token
-   * @param token
    */
-  // public static async getUserRole(token: string) {
-  //   const { _id } = await this.getUserId(token);
-  //   return 'admin';
-  // }
+  public static async getUserRole(): Promise<UserRole> {
+    const userId = request().data('userId');
+
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        'SELECT role_id FROM user_roles WHERE user_id = $1',
+        [userId],
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.rows[0]);
+        }
+      );
+    });
+  }
 }

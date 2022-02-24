@@ -9,3 +9,7 @@ export { ICategory } from './ICategory';
 // export { IQuestion } from './IQuestion';
 export { IRouteMetaData } from './IRouteMetaData';
 export { IController } from './IController';
+
+export interface UserRole {
+  role_id: number;
+}
