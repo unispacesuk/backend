@@ -1,11 +1,12 @@
 import { param, request, respond } from '../../Core/Routing';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { QuestionService } from '../../Services/Question/QuestionService';
-import { IResponse } from '../../Interfaces';
+import {IResponse, IUser, UserRole} from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
 import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
 import { addEvent } from '../../Services/Util/Events';
+import {UserController} from "../User/UserController";
 
 @Controller('/question')
 export class QuestionController {
@@ -37,12 +38,7 @@ export class QuestionController {
   async getAllFromUser() {
     const questions = await QuestionService.getAll().catch((e) => {
       console.log(e);
-      respond(
-        {
-          error: e,
-        },
-        400
-      );
+      respond({ error: e }, 400);
     });
 
     return respond(
@@ -72,12 +68,7 @@ export class QuestionController {
     });
 
     if (question.length === 0) {
-      respond(
-        {
-          m: 'no question found with that id',
-        },
-        200
-      );
+      respond({ m: 'no question found with that id' }, 200);
     }
 
     return respond(
@@ -116,11 +107,12 @@ export class QuestionController {
    */
   @Patch('/:id', [AuthService.authenticate])
   async update(): Promise<IResponse> {
-    // let question;
+
+    const userRole: UserRole = await UserService.getUserRole();
 
     // userCanEdit() or userIdStaff()
-    if (!(await userCanUpdate())) {
-      return respond({ error: 'You cannot edit this question.' }, 400);
+    if (!await userCanUpdate() && userRole.role_id !== 1) {
+      return respond({ error: 'You cannot edit this question.' }, 401);
     }
 
     let question;
@@ -140,10 +132,12 @@ export class QuestionController {
    */
   @Delete('/:id', [AuthService.authenticate])
   async deleteQuestion(): Promise<IResponse> {
-    // let response;
+
+    const userRole: UserRole = await UserService.getUserRole();
+
     // userCanEdit() or userIsStaff()
-    if (!(await userCanUpdate())) {
-      respond({ error: 'You cannot delete this question.' }, 400);
+    if (!await userCanUpdate() && userRole.role_id !== 1) {
+      return respond({ error: 'You cannot delete this question.' }, 401);
     }
 
     let response;
