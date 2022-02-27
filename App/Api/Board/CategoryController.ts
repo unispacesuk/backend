@@ -1,4 +1,4 @@
-import { Controller, Post, Get } from '../../Core/Decorators';
+import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { RolesService } from '../../Services/Roles/RolesService';
 import { IResponse, ICategory } from '../../Interfaces';
@@ -11,7 +11,7 @@ export class CategoryController {
   /**
    * Post a category
    */
-  @Post('/add', [AuthService.authenticate, RolesService.isUserAdmin])
+  @Post('/', [AuthService.authenticate, RolesService.isUserAdmin])
   async addNewCategory(): Promise<IResponse> {
     const body: ICategory = request().body<ICategory>();
     if (!body || !body.title || !body.description) {
@@ -27,11 +27,44 @@ export class CategoryController {
   /**
    * Get all categories and boards for each category
    */
-  @Get('/all')
+  @Get('/')
   async getAllCategories(): Promise<IResponse> {
     // const categories = await CategoryService.getAllCategoriesAndBoards();
     const categories = await CategoryService.getAllCategories();
 
     return respond({ categories }, 200);
+  }
+
+  @Patch('/', [AuthService.authenticate, RolesService.isUserAdmin])
+  async saveCategory(): Promise<IResponse> {
+    try {
+      await CategoryService.saveCategory();
+    } catch (e) {
+      return respond({ error: e }, 400);
+    }
+
+    return respond({ m: 'success' }, 200);
+  }
+
+  @Delete('/:id', [AuthService.authenticate, RolesService.isUserAdmin])
+  async deleteCategory(): Promise<IResponse> {
+    try {
+      await CategoryService.deleteCategory();
+    } catch (e) {
+      return respond({ error: e }, 400);
+    }
+
+    return respond({ m: 'success' }, 200);
+  }
+
+  @Get('/duplicate/:id', [AuthService.authenticate, RolesService.isUserAdmin])
+  async duplicateCategory() {
+    try {
+      await CategoryService.duplicateCategory();
+    } catch (e) {
+      return respond({ error: e }, 400);
+    }
+
+    return respond({ m: 'success' }, 200);
   }
 }

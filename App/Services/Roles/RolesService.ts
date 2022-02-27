@@ -1,4 +1,4 @@
-import { request, respond, response } from '../../Core/Routing';
+import { request, respond } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { Middleware, Next } from '../../Core/Decorators';
 import { QueryResult } from 'pg';
