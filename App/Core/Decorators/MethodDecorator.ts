@@ -1,4 +1,3 @@
-import { response } from '../Routing';
 import { IResponse } from '../../Interfaces';
 import { IRouteMetaData } from '../../Interfaces';
 import 'reflect-metadata';

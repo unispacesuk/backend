@@ -1,0 +1,11 @@
+// add a new board to a category
+POST http://localhost:3000/board
+Authorization: Bearer
+Content-Type: application/json
+
+{ "title": "some title", "description": "some dec", "category": 101 }
+
+###
+
+// get the boards from a category
+GET http://localhost:3000/board/c/155

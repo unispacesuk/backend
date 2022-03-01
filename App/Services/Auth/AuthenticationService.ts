@@ -51,8 +51,8 @@ export class AuthenticationService {
 
     try {
       payload = await AuthenticationService.verifyToken(token);
-    } catch (error) {
-      return respond({ error: error }, 401);
+    } catch (e) {
+      return respond({ error: e }, 401);
     }
 
     // this will add the id on the request object then we will be able to access it globally

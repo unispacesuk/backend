@@ -8,7 +8,7 @@ import { ThreadService } from '../../Services/Board/ThreadService';
 
 @Controller('/board')
 export class BoardController {
-  @Post('/add', [AuthService.authenticate, RolesService.isUserAdmin])
+  @Post('/', [AuthService.authenticate, RolesService.isUserAdmin])
   async addNewBoard(): Promise<IResponse> {
     const body: IBoard = request().body();
     if (!body || !body.title || !body.description) {
@@ -20,7 +20,7 @@ export class BoardController {
     return respond({ board }, 200);
   }
 
-  @Get('/get/all/:category')
+  @Get('/c/:category')
   async getAllBoards(): Promise<IResponse> {
     const { category } = param();
     const boards = await BoardService.getAllBoards(category);

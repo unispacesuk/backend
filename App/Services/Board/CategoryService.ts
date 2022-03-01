@@ -85,19 +85,6 @@ export class CategoryService {
     });
   }
 
-  // public static async getAllCategoriesAndBoards() {
-  //   const { rows } = await this.conn.query(
-  //     'SELECT ' +
-  //       'board_categories._id AS cat_id, ' +
-  //       'board_categories.title AS cat_title, ' +
-  //       'board_categories.description AS cat_description, ' +
-  //       'board_boards.*' +
-  //       'FROM board_categories JOIN board_boards ON board_categories._id = board_boards.board_category_id;'
-  //   );
-  //
-  //   return Promise.resolve(rows);
-  // }
-
   /**
    * Check if category exists
    */

@@ -1,4 +1,5 @@
-import { NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import {IResponse} from "../../Interfaces";
 
 let goNext: NextFunction;
 
@@ -11,10 +12,14 @@ let goNext: NextFunction;
 export function Middleware() {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value;
-    descriptor.value = function (req: Request, res: Response, next: NextFunction) {
+    descriptor.value = async function (req: Request, res: Response, next: NextFunction) {
       // @ts-ignore
       goNext = next;
-      original.call(this, next);
+      const body: IResponse = await original.call(this, next);
+
+      if (body) {
+        res.status(body.code).send(body.body);
+      }
     };
 
     return descriptor;
