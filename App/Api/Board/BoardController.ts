@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '../../Core/Decorators';
+import { Controller, Get, Post, Delete, Patch } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { RolesService } from '../../Services/Roles/RolesService';
 import { param, request, respond } from '../../Core/Routing';
@@ -34,5 +34,27 @@ export class BoardController {
     const threads = await ThreadService.getAllThreads(board);
 
     return respond({ threads }, 200);
+  }
+
+  @Patch('/:board', [AuthService.authenticate, RolesService.isUserAdmin])
+  async editBoard() {
+    let response;
+    try {
+      response = await BoardService.editBoard();
+    } catch (e) {
+      return respond({ error: e }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
+
+  @Delete('/:board', [AuthService.authenticate, RolesService.isUserAdmin])
+  async deleteBoard(): Promise<IResponse> {
+    try {
+      await BoardService.deleteBoard();
+    } catch (e) {
+      return respond({ error: e }, 400);
+    }
+    return respond({ m: 'deleted' }, 200);
   }
 }

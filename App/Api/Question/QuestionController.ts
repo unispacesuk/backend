@@ -1,12 +1,11 @@
 import { param, request, respond } from '../../Core/Routing';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { QuestionService } from '../../Services/Question/QuestionService';
-import {IResponse, IUser, UserRole} from '../../Interfaces';
+import { IResponse, UserRole } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
 import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
 import { addEvent } from '../../Services/Util/Events';
-import {UserController} from "../User/UserController";
 
 @Controller('/question')
 export class QuestionController {
@@ -107,11 +106,10 @@ export class QuestionController {
    */
   @Patch('/:id', [AuthService.authenticate])
   async update(): Promise<IResponse> {
-
     const userRole: UserRole = await UserService.getUserRole();
 
     // userCanEdit() or userIdStaff()
-    if (!await userCanUpdate() && userRole.role_id !== 1) {
+    if (!(await userCanUpdate()) && userRole.role_id !== 1) {
       return respond({ error: 'You cannot edit this question.' }, 401);
     }
 
@@ -132,11 +130,10 @@ export class QuestionController {
    */
   @Delete('/:id', [AuthService.authenticate])
   async deleteQuestion(): Promise<IResponse> {
-
     const userRole: UserRole = await UserService.getUserRole();
 
     // userCanEdit() or userIsStaff()
-    if (!await userCanUpdate() && userRole.role_id !== 1) {
+    if (!(await userCanUpdate()) && userRole.role_id !== 1) {
       return respond({ error: 'You cannot delete this question.' }, 401);
     }
 

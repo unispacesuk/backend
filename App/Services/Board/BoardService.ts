@@ -1,5 +1,5 @@
 import { Connection } from '../../Config';
-import { request, respond } from '../../Core/Routing';
+import { param, request, respond } from '../../Core/Routing';
 import { BoardModel } from '../../Models/BoardModel';
 import { CategoryService } from './CategoryService';
 import { IBoard } from '../../Interfaces';
@@ -9,6 +9,8 @@ interface Body {
   description: string;
   category: number;
 }
+
+// TODO: any to be IBoard
 
 export class BoardService {
   static conn = Connection.client;
@@ -52,6 +54,37 @@ export class BoardService {
         return BoardModel(b);
       })
     );
+  }
+
+  public static async editBoard(): Promise<any> {
+    const board: number = param('board');
+    const { title, description } = request().body();
+
+    console.log(title, description);
+
+    return new Promise((resolve, reject) => {
+      this.conn.query(
+        'UPDATE board_boards SET title = $1, description = $2 WHERE _id = $3 RETURNING *',
+        [title, description, board],
+        (error, result) => {
+          if (error) return reject(error);
+          if (result.rows.length > 0) {
+            resolve(BoardModel(result.rows[0]));
+          }
+        }
+      );
+    });
+  }
+
+  public static async deleteBoard(): Promise<void> {
+    const board: number = param('board');
+
+    return new Promise((resolve, reject) => {
+      this.conn.query('DELETE FROM board_boards WHERE _id = $1', [board], (error) => {
+        if (error) return reject(error);
+        resolve();
+      });
+    });
   }
 
   /**
