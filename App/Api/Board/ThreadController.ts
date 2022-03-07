@@ -3,6 +3,8 @@ import { AuthenticationService as AuthService } from '../../Services/Auth/Authen
 import { IResponse } from '../../Interfaces';
 import { respond } from '../../Core/Routing';
 import { ThreadService } from '../../Services/Board/ThreadService';
+import { RolesService } from '../../Services/Roles/RolesService';
+import { UserService } from '../../Services/User/UserService';
 
 @Controller('/thread')
 export class ThreadController {
@@ -23,6 +25,11 @@ export class ThreadController {
    */
   @Delete('/:id', [AuthService.authenticate])
   async deleteThread(): Promise<IResponse> {
+    const thread: any = await ThreadService.getThread();
+    if (!RolesService.isUserAdmin && UserService.getUserId !== thread.id) {
+      return respond({ error: 'You cannot delete this thread.' }, 400);
+    }
+
     await ThreadService.deleteThread();
     return respond({ message: 'Thread Deleted' }, 200);
   }

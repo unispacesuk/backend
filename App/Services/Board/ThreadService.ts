@@ -13,10 +13,14 @@ export class ThreadService {
   static getThread() {
     const id: number = param<number>('id');
     return new Promise((resolve, reject) => {
-      this.conn.query('SELECT * FROM board_threads WHERE _id = $1', [id], (error, result) => {
-        if (error) return reject(error);
-        resolve(ThreadModel(result.rows[0]));
-      });
+      this.conn.query(
+        'SELECT threads.*, users.avatar, users.username FROM board_threads as threads JOIN users ON users._id = threads.user_id WHERE threads._id = $1',
+        [id],
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(ThreadModel(result.rows[0]));
+        }
+      );
     });
   }
 
@@ -68,14 +72,16 @@ export class ThreadService {
    */
   static async deleteThread() {
     const id = param<number>('id');
-    const userId = request().data<number>('userId');
 
     return new Promise<void>((resolve, reject) => {
-      this.conn.query('DELETE FROM board_threads WHERE _id = $1 AND user_id = $2',
-        [id, userId], (error) => {
+      this.conn.query(
+        'DELETE FROM board_threads WHERE _id = $1',
+        [id],
+        (error) => {
           if (error) return reject(error);
           resolve();
-        });
+        }
+      );
     });
   }
 
@@ -102,8 +108,5 @@ export class ThreadService {
   /**
    * Delete a reply
    */
-  static async deleteReply() {
-
-  }
-
+  static async deleteReply() {}
 }

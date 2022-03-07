@@ -6,6 +6,7 @@ interface IThread extends BaseInterface {
   title: string;
   content: string;
   username?: string;
+  avatar?: string;
 }
 
 interface IThreadModel extends BaseModel {
@@ -13,6 +14,7 @@ interface IThreadModel extends BaseModel {
   title: string;
   content: string;
   username?: string;
+  avatar?: string;
 }
 
 export function ThreadModel(data: IThread): IThreadModel {
@@ -25,5 +27,6 @@ export function ThreadModel(data: IThread): IThreadModel {
     createdAt: data.created_at,
     lastUpdated: data.last_updated,
     username: data.username,
+    avatar: data.avatar,
   };
 }

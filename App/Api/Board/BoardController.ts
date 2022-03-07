@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Patch } from '../../Core/Decorators';
+import { Controller, Delete, Get, Patch, Post } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { RolesService } from '../../Services/Roles/RolesService';
 import { param, request, respond } from '../../Core/Routing';
