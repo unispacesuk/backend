@@ -2,7 +2,7 @@ import { Controller, Get, Post } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { IResponse } from '../../Interfaces';
 import { AnswerService } from '../../Services/Question/AnswerService';
-import { respond } from '../../Core/Routing';
+import { param, respond } from '../../Core/Routing';
 
 @Controller('/answer')
 export class AnswerController {
@@ -11,22 +11,15 @@ export class AnswerController {
    */
   @Post('/:id', [AuthService.authenticate])
   async addAnswer(): Promise<IResponse> {
+    if (isNaN(param('id'))) {
+      return respond({ error: 'Invalid question id.' }, 400);
+    }
+
     const answer = await AnswerService.addAnswer().catch((e) => {
-      console.log(e);
-      respond(
-        {
-          error: e,
-        },
-        400
-      );
+      respond({ error: e }, 400);
     });
 
-    return respond(
-      {
-        answer,
-      },
-      200
-    );
+    return respond({ answer }, 200);
   }
 
   /**
@@ -35,6 +28,10 @@ export class AnswerController {
    */
   @Get('/all/:id')
   async getAnswers(): Promise<IResponse> {
+    if (isNaN(param('id'))) {
+      return respond({ error: 'Invalid question id.' }, 400);
+    }
+
     let answers;
     try {
       answers = await AnswerService.getAnswers();
@@ -47,6 +44,10 @@ export class AnswerController {
 
   @Post('/:id/markbest', [AuthService.authenticate])
   async makeTopQuestion() {
+    if (isNaN(param('id'))) {
+      return respond({ error: 'Invalid answer id.' }, 400);
+    }
+
     try {
       await AnswerService.markAsBest();
     } catch (e) {

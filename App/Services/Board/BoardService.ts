@@ -10,6 +10,19 @@ interface Body {
   category: number;
 }
 
+// temp
+interface BoardData {
+  boardTitle: string;
+  catTitle: string;
+}
+
+function BoardDataModel(data: any): BoardData {
+  return {
+    boardTitle: data.board_title,
+    catTitle: data.cat_title,
+  };
+}
+
 // TODO: any to be IBoard
 
 export class BoardService {
@@ -84,6 +97,21 @@ export class BoardService {
         if (error) return reject(error);
         resolve();
       });
+    });
+  }
+
+  public static async getBoardData(id: string) {
+    return new Promise((resolve, reject) => {
+      this.conn.query(
+        'SELECT board_categories.title as cat_title, board_boards.title as board_title FROM board_boards ' +
+          'LEFT JOIN board_categories ON board_categories._id = board_boards.board_category_id WHERE board_boards._id = $1',
+        [id],
+        (error, result) => {
+          if (error) return reject(error);
+          if (result.rows.length === 0) return resolve(0);
+          resolve(BoardDataModel(result.rows[0]));
+        }
+      );
     });
   }
 

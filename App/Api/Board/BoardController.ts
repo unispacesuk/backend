@@ -23,21 +23,49 @@ export class BoardController {
   @Get('/c/:category')
   async getAllBoards(): Promise<IResponse> {
     const { category } = param();
+
+    if (isNaN(category)) {
+      return respond({ error: 'Invalid category id.' }, 400);
+    }
+
     const boards = await BoardService.getAllBoards(category);
 
     return respond({ boards }, 200);
   }
 
+  // TODO: error response if the board does not exist or it will break
   @Get('/:board')
   async getAllFromBoard(): Promise<IResponse> {
     const { board } = param();
+
+    if (isNaN(board)) {
+      return respond({ error: 'Invalid board id.' }, 400);
+    }
+
     const threads = await ThreadService.getAllThreads(board);
+
+    // we need a fallback method to get the titles when the threads array is empty or non-existent
+    // this could replace the query later also
+    if (threads === 0) {
+      const boardData = await BoardService.getBoardData(board);
+
+      // if boardData is 0 the board does not exist. error
+      if (boardData === 0) {
+        return respond({ error: 'The board does not exist.' }, 400);
+      }
+
+      return respond({ boardData }, 200);
+    }
 
     return respond({ threads }, 200);
   }
 
   @Patch('/:board', [AuthService.authenticate, RolesService.isUserAdmin])
   async editBoard() {
+    if (isNaN(param('board'))) {
+      return respond({ error: 'Invalid board id.' }, 400);
+    }
+
     let response;
     try {
       response = await BoardService.editBoard();
@@ -50,6 +78,10 @@ export class BoardController {
 
   @Delete('/:board', [AuthService.authenticate, RolesService.isUserAdmin])
   async deleteBoard(): Promise<IResponse> {
+    if (isNaN(param('board'))) {
+      return respond({ error: 'Invalid board id.' }, 400);
+    }
+
     try {
       await BoardService.deleteBoard();
     } catch (e) {

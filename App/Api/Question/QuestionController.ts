@@ -11,7 +11,6 @@ import { addEvent } from '../../Services/Util/Events';
 export class QuestionController {
   /**
    * Get all questions
-   * TODO: REFACTOR THE ERROR HANDLING HERE
    */
   @Get('/all')
   async getAll(): Promise<IResponse> {
@@ -35,17 +34,16 @@ export class QuestionController {
    */
   @Get('/user/:userId')
   async getAllFromUser() {
+    if (isNaN(param('userId'))) {
+      return respond({ error: 'Invalid user id.' }, 400);
+    }
+
     const questions = await QuestionService.getAll().catch((e) => {
       console.log(e);
       respond({ error: e }, 400);
     });
 
-    return respond(
-      {
-        questions,
-      },
-      200
-    );
+    return respond({ questions }, 200);
   }
 
   /**
@@ -55,6 +53,10 @@ export class QuestionController {
   @Get('/:id')
   async getOne(): Promise<IResponse> {
     const { id } = param();
+
+    if (isNaN(id)) {
+      return respond({ error: 'Invalid question id.' }, 400);
+    }
 
     // looks weird I know. but it is only because we can either get:
     //  - an empty array
@@ -67,7 +69,7 @@ export class QuestionController {
     });
 
     if (question.length === 0) {
-      respond({ m: 'no question found with that id' }, 200);
+      respond({ m: 'No question found with that id.' }, 200);
     }
 
     return respond(
@@ -91,13 +93,7 @@ export class QuestionController {
 
     await addEvent('ADD_QUESTION').catch((e) => console.log(e));
 
-    return respond(
-      {
-        message: 'question posted',
-        // question,
-      },
-      200
-    );
+    return respond({ message: 'question posted' }, 200);
   }
 
   /**
@@ -107,6 +103,10 @@ export class QuestionController {
   @Patch('/:id', [AuthService.authenticate])
   async update(): Promise<IResponse> {
     const userRole: UserRole = await UserService.getUserRole();
+
+    if (isNaN(param('id'))) {
+      return respond({ error: 'Invalid question id.' }, 400);
+    }
 
     // userCanEdit() or userIdStaff()
     if (!(await userCanUpdate()) && userRole.role_id !== 1) {
@@ -132,6 +132,10 @@ export class QuestionController {
   async deleteQuestion(): Promise<IResponse> {
     const userRole: UserRole = await UserService.getUserRole();
 
+    if (isNaN(param('id'))) {
+      return respond({ error: 'Invalid questions id.' }, 400);
+    }
+
     // userCanEdit() or userIsStaff()
     if (!(await userCanUpdate()) && userRole.role_id !== 1) {
       return respond({ error: 'You cannot delete this question.' }, 401);
@@ -155,6 +159,10 @@ export class QuestionController {
   // Vote on the question
   @Post('/:id/vote/:type', [AuthService.authenticate])
   async doVote() {
+    if (isNaN(param('id'))) {
+      return respond({ error: 'Invalid question id.' }, 400);
+    }
+
     try {
       await QuestionService.voteForQuestion();
     } catch (e) {

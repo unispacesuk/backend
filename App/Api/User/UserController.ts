@@ -10,8 +10,13 @@ const upload = multer({ storage: Config.storage('avatars') });
 export class UserController {
   @Get('/data/:userId')
   async getUserData() {
-    if (!param('userId')) {
+    const userId: number = param('userId');
+    if (!userId) {
       return respond({ error: 'No user id.' }, 400);
+    }
+
+    if (isNaN(userId)) {
+      return respond({ error: 'Invalid user id.' }, 400);
     }
 
     const user = await UserService.getUserData().catch((e) => {

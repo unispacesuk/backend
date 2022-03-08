@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { IResponse } from '../../Interfaces';
-import { respond } from '../../Core/Routing';
+import { param, respond } from '../../Core/Routing';
 import { ThreadService } from '../../Services/Board/ThreadService';
 import { RolesService } from '../../Services/Roles/RolesService';
 import { UserService } from '../../Services/User/UserService';
@@ -10,6 +10,10 @@ import { UserService } from '../../Services/User/UserService';
 export class ThreadController {
   @Get('/:id')
   async getThread(): Promise<IResponse> {
+    if (isNaN(param('id'))) {
+      return respond({ error: 'Invalid Thread id.' }, 400);
+    }
+
     let thread;
     try {
       thread = await ThreadService.getThread();
@@ -35,6 +39,10 @@ export class ThreadController {
    */
   @Delete('/:id', [AuthService.authenticate])
   async deleteThread(): Promise<IResponse> {
+    if (isNaN(param('id'))) {
+      return respond({ error: 'Invalid Thread id.' }, 400);
+    }
+
     const thread: any = await ThreadService.getThread();
     if (!RolesService.isUserAdmin && UserService.getUserId !== thread.id) {
       return respond({ error: 'You cannot delete this thread.' }, 400);

@@ -48,20 +48,26 @@ export class ThreadService {
 
   /**
    * Get all threads from board
+   *
+   * TODO: Pagination
    */
   static async getAllThreads(id: number) {
     return new Promise((resolve, reject) => {
       this.conn.query(
-        // 'SELECT board_threads FROM board_threads WHERE board_threads.board_boards_id = $1',
-        'SELECT board_threads.*, users.username ' +
+        'SELECT board_threads.*, board_boards.title as board_title, board_boards.board_category_id, users.username, users.avatar, board_categories.title as cat_title ' +
           'FROM board_threads ' +
           'LEFT JOIN users ' +
           'ON board_threads.user_id = users._id ' +
+          'LEFT JOIN board_boards ' +
+          'ON board_boards._id = $1 ' +
+          'LEFT JOIN board_categories ' +
+          'ON board_categories._id = board_boards.board_category_id ' +
           'WHERE board_threads.board_boards_id = $1 ' +
           'ORDER BY created_at DESC',
         [id],
         (error, result) => {
           if (error) return reject(error);
+          if (result.rows.length === 0) return resolve(0);
           resolve(result.rows.map((t) => ThreadModel(t)));
         }
       );

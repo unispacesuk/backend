@@ -7,6 +7,7 @@ interface IBoardModel extends BaseModel {
   description: string;
   threads: number;
   replies: number;
+  // categoryTitle: string;
 }
 
 export function BoardModel(data: IBoard): IBoardModel {
@@ -20,5 +21,6 @@ export function BoardModel(data: IBoard): IBoardModel {
     lastUpdated: data.last_updated,
     threads: data.threads | 0,
     replies: 0,
+    // categoryTitle: data.cat_title,
   };
 }

@@ -6,4 +6,5 @@ export interface IBoard extends BaseInterface {
   description: string;
   threads: number;
   replies: number;
+  // cat_title: string;
 }
