@@ -10,7 +10,17 @@ import { UserService } from '../../Services/User/UserService';
 export class ThreadController {
   @Get('/:id')
   async getThread(): Promise<IResponse> {
-    const thread = await ThreadService.getThread();
+    let thread;
+    try {
+      thread = await ThreadService.getThread();
+    } catch (e) {
+      return respond({ error: e }, 400);
+    }
+
+    if (thread === 0) {
+      return respond({ message: 'This thread does not exist.' }, 200);
+    }
+
     return respond({ thread }, 200);
   }
 

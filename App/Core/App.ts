@@ -5,6 +5,7 @@ import * as morgan from 'morgan';
 import { BodyMiddleware } from '../Middlewares/Body';
 import { RequestContext } from './Routing';
 import * as cors from 'cors';
+import * as process from 'process';
 
 export default class App {
   private _express: express.Express;
@@ -30,6 +31,24 @@ export default class App {
     // it will allow us to create routes without having to repeat request, response in all methods 🤔
     this._express.use(new RequestContext().initRouter);
     this._express.use('/', this._bodyMiddleware.printBody);
+
+    this._express.use((req, res, next) => {
+      const listener = (error: any) => {
+        console.log('---------- UNHANDLED PROMISE REJECTION -----------');
+        console.log(error);
+        res.status(500).send('Something went wrong.');
+      };
+
+      // process.once('unhandledRejection', listener);
+      process.once('UncaughtExceptionListener', listener);
+
+      res.on('finish', () => {
+        // process.removeListener('unhandledRejection', listener);
+        process.removeListener('UncaughtExceptionListener', listener);
+      });
+
+      next();
+    });
 
     return this;
   }

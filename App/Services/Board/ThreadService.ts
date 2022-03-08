@@ -10,7 +10,7 @@ export class ThreadService {
    * Get a Thread
    * TODO: Refactor to get the any out
    */
-  static getThread() {
+  static getThread(): Promise<any> {
     const id: number = param<number>('id');
     return new Promise((resolve, reject) => {
       this.conn.query(
@@ -18,7 +18,10 @@ export class ThreadService {
         [id],
         (error, result) => {
           if (error) return reject(error);
-          resolve(ThreadModel(result.rows[0]));
+          if (result.rows.length > 0) {
+            return resolve(ThreadModel(result.rows[0]));
+          }
+          resolve(0);
         }
       );
     });
@@ -67,21 +70,15 @@ export class ThreadService {
 
   /**
    * Delete a thread
-   *
-   * TODO: Some handler to allow admins also to delete threads... Basically add a role bypasser
    */
   static async deleteThread() {
     const id = param<number>('id');
 
     return new Promise<void>((resolve, reject) => {
-      this.conn.query(
-        'DELETE FROM board_threads WHERE _id = $1',
-        [id],
-        (error) => {
-          if (error) return reject(error);
-          resolve();
-        }
-      );
+      this.conn.query('DELETE FROM board_threads WHERE _id = $1', [id], (error) => {
+        if (error) return reject(error);
+        resolve();
+      });
     });
   }
 
