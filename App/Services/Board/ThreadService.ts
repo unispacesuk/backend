@@ -99,9 +99,35 @@ export class ThreadService {
   static async getAllReplies() {}
 
   /**
-   * Edit a thread
+   * Update a thread
    */
-  static async editThread() {}
+  static async updateThread() {
+    const threadId = param('thread');
+    const { title, content } = request().body();
+
+    const values: any[] = [];
+    let query = 'UPDATE board_threads SET';
+
+    if (title && title !== '') {
+      values.push(title);
+      query += ` title = $${values.length}, `;
+    }
+
+    if (content && content !== '') {
+      values.push(content);
+      query += ` content = $${values.length}, `;
+    }
+
+    values.push(threadId);
+    query += `last_updated = now() WHERE _id = $${values.length}`;
+
+    return new Promise((resolve, reject) => {
+      this.conn.query(query, [...values], (error) => {
+        if (error) return reject(error);
+        resolve(true);
+      });
+    });
+  }
 
   /**
    * Edit a reply

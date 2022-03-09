@@ -64,7 +64,23 @@ export class ThreadController {
 
   @Patch('/:thread', [AuthService.authenticate])
   async editThread(): Promise<IResponse> {
-    return respond({ m: 'thread edited' }, 200);
+    if (isNaN(param('thread'))) {
+      return respond({ error: 'Invalid thread id.' }, 400);
+    }
+
+    let response;
+    try {
+      response = await ThreadService.updateThread();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
+
+    if (response) {
+      return respond({ message: 'Thread updated.' }, 200);
+    }
+
+    return respond({ error: 'oops' }, 400);
   }
 
   @Patch('/:thread/:reply', [AuthService.authenticate])
