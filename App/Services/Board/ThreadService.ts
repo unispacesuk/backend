@@ -11,11 +11,11 @@ export class ThreadService {
    * TODO: Refactor to get the any out
    */
   static getThread(): Promise<any> {
-    const id: number = param<number>('id');
+    const threadId: number = param<number>('thread');
     return new Promise((resolve, reject) => {
       this.conn.query(
         'SELECT threads.*, users.avatar, users.username FROM board_threads as threads JOIN users ON users._id = threads.user_id WHERE threads._id = $1',
-        [id],
+        [threadId],
         (error, result) => {
           if (error) return reject(error);
           if (result.rows.length > 0) {
@@ -78,10 +78,10 @@ export class ThreadService {
    * Delete a thread
    */
   static async deleteThread() {
-    const id = param<number>('id');
+    const threadId = param<number>('threadId');
 
     return new Promise<void>((resolve, reject) => {
-      this.conn.query('DELETE FROM board_threads WHERE _id = $1', [id], (error) => {
+      this.conn.query('DELETE FROM board_threads WHERE _id = $1', [threadId], (error) => {
         if (error) return reject(error);
         resolve();
       });
@@ -91,12 +91,46 @@ export class ThreadService {
   /**
    * Add a thread reply
    */
-  static async addNewReply() {}
+  static async addNewReply() {
+    const threadId = param<number>('thread');
+    const userId = request().data<number>('userId');
+    const { content } = request().body();
+
+    return new Promise((resolve, reject) => {
+      this.conn.query(
+        'INSERT INTO board_thread_replies (user_id, board_thread_id, content)' +
+          'VALUES ($1, $2, $3) RETURNING *',
+        [userId, threadId, content],
+        (error, result) => {
+          if (error) return reject(error);
+          if (result.rows && result.rows.length > 0) {
+            // build a reply model?
+            return resolve(result.rows[0]);
+          }
+          resolve(null);
+        }
+      );
+    });
+  }
 
   /**
    * Get all replies from thread
    */
-  static async getAllReplies() {}
+  static async getAllReplies() {
+    const threadId = param<number>('thread');
+
+    return new Promise((resolve, reject) => {
+      this.conn.query(
+        'SELECT * FROM board_thread_replies WHERE board_thread_id = $1',
+        [threadId],
+        (error, result) => {
+          if (error) return reject(error);
+          // build a reply model?
+          resolve(result.rows);
+        }
+      );
+    });
+  }
 
   /**
    * Update a thread

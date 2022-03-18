@@ -8,9 +8,9 @@ import { UserService } from '../../Services/User/UserService';
 
 @Controller('/thread')
 export class ThreadController {
-  @Get('/:id')
+  @Get('/:thread')
   async getThread(): Promise<IResponse> {
-    if (isNaN(param('id'))) {
+    if (isNaN(param('thread'))) {
       return respond({ error: 'Invalid Thread id.' }, 400);
     }
 
@@ -18,6 +18,7 @@ export class ThreadController {
     try {
       thread = await ThreadService.getThread();
     } catch (e) {
+      console.log(e);
       return respond({ error: e }, 400);
     }
 
@@ -37,29 +38,49 @@ export class ThreadController {
   /**
    * To delete only owner or admins!!!!
    */
-  @Delete('/:id', [AuthService.authenticate])
+  @Delete('/:thread', [AuthService.authenticate])
   async deleteThread(): Promise<IResponse> {
-    if (isNaN(param('id'))) {
+    if (isNaN(param('thread'))) {
       return respond({ error: 'Invalid Thread id.' }, 400);
     }
 
-    const thread: any = await ThreadService.getThread();
-    if (!RolesService.isUserAdmin && UserService.getUserId !== thread.id) {
-      return respond({ error: 'You cannot delete this thread.' }, 400);
+    try {
+      const thread = await ThreadService.getThread();
+      if (!RolesService.isUserAdmin && UserService.getUserId !== thread.id) {
+        return respond({ error: 'You cannot delete this thread.' }, 400);
+      }
+      await ThreadService.deleteThread();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
     }
-
-    await ThreadService.deleteThread();
     return respond({ message: 'Thread Deleted' }, 200);
   }
 
+  /**
+   * @Deprecated ?
+   */
   @Get('/all')
   async getAllThreads(): Promise<IResponse> {
     return respond({ m: 'all threads' }, 200);
   }
 
-  @Get('/all/:thread')
+  // fetch all replies from a thread
+  @Get('/:thread/replies')
   async getAllReplies(): Promise<IResponse> {
-    return respond({ m: 'all replies of a thread' }, 200);
+    if (isNaN(param('thread'))) {
+      return respond({ error: 'Invalid thread id.' }, 400);
+    }
+
+    let response;
+    try {
+      response = await ThreadService.getAllReplies();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
+
+    return respond({ response }, 200);
   }
 
   @Patch('/:thread', [AuthService.authenticate])
@@ -83,13 +104,30 @@ export class ThreadController {
     return respond({ error: 'oops' }, 400);
   }
 
+  // this is to edit a reply... can add maybe at a later stage?
   @Patch('/:thread/:reply', [AuthService.authenticate])
   async editReply(): Promise<IResponse> {
     return respond({ m: 'reply edited' }, 200);
   }
 
-  @Post('/add/:thread', [AuthService.authenticate])
+  @Post('/:thread/reply', [AuthService.authenticate])
   async addNewReply(): Promise<IResponse> {
-    return respond({ m: 'replied to a thread' }, 200);
+    if (isNaN(param('thread'))) {
+      return respond({ error: 'Invalid thread id.' }, 400);
+    }
+
+    let response;
+    try {
+      response = await ThreadService.addNewReply();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
+
+    if (response) {
+      return respond({ response }, 200);
+    }
+
+    return respond({ m: '........' }, 200);
   }
 }
