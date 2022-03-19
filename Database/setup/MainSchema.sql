@@ -130,12 +130,12 @@ CREATE TABLE board_threads (
 );
 ALTER SEQUENCE BOARD_THREADS_ID_AI OWNED BY board_threads._id;
 
--- threads favourites
--- for when users favourite a thread that they want to come back to
+-- thread stars
+-- for when users stars a thread that they want to come back to
 -- no need for pk only two fk user_id and thread_id
-CREATE TABLE board_threads_favourites (
+CREATE TABLE board_threads_stars (
     user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
-    thread_id INTEGER NOT NULL REFERENCES board_threads (_id) ON DELETE CASCADE,
+    thread_id INTEGER NOT NULL REFERENCES board_threads (_id) ON DELETE CASCADE
 );
 
 -- thread replies

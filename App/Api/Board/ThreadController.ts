@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete } from '../../Core/Decorators';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { IResponse } from '../../Interfaces';
-import { param, respond } from '../../Core/Routing';
+import { param, request, respond } from '../../Core/Routing';
 import { ThreadService } from '../../Services/Board/ThreadService';
 import { RolesService } from '../../Services/Roles/RolesService';
 import { UserService } from '../../Services/User/UserService';
@@ -129,5 +129,46 @@ export class ThreadController {
     }
 
     return respond({ m: '........' }, 200);
+  }
+
+  @Post('/star/:thread', [AuthService.authenticate])
+  async starThread() {
+    if (isNaN(param('thread'))) {
+      return respond({ error: 'Invalid thread id.' }, 400);
+    }
+
+    const threadId = param<number>('thread');
+    const userId = request().data('userId');
+    const { action } = request().body();
+
+    let response;
+    try {
+      if (action === 'star') response = await ThreadService.starThread(threadId, userId);
+      if (action === 'unstar') response = await ThreadService.unstarThread(threadId, userId);
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
+
+    if (!response) return respond({ response: 'You already starred this thread.' }, 200);
+
+    return respond({ response: 'Thread starred.' }, 200);
+  }
+
+  @Get('/star/:thread', [AuthService.authenticate])
+  async getStarState() {
+    if (isNaN(param('thread'))) {
+      return respond({ error: 'Invalid thread id.' }, 400);
+    }
+
+    let response;
+    try {
+      response = await ThreadService.getStarredState();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
+
+    return respond({ response }, 200);
   }
 }

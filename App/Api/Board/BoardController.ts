@@ -42,7 +42,13 @@ export class BoardController {
       return respond({ error: 'Invalid board id.' }, 400);
     }
 
-    const threads = await ThreadService.getAllThreads(board);
+    let threads;
+    try {
+      threads = await ThreadService.getAllThreads(board);
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
 
     // we need a fallback method to get the titles when the threads array is empty or non-existent
     // this could replace the query later also

@@ -9,6 +9,7 @@ interface IThread extends BaseInterface {
   avatar?: string;
   board_title?: string;
   cat_title?: string;
+  stars?: number;
 }
 
 interface IThreadModel extends BaseModel {
@@ -19,6 +20,7 @@ interface IThreadModel extends BaseModel {
   avatar?: string;
   boardTitle?: string;
   catTitle?: string;
+  stars?: number;
 }
 
 export function ThreadModel(data: IThread): IThreadModel {
@@ -34,5 +36,6 @@ export function ThreadModel(data: IThread): IThreadModel {
     avatar: data.avatar,
     boardTitle: data.board_title,
     catTitle: data.cat_title,
+    stars: data.stars,
   };
 }
