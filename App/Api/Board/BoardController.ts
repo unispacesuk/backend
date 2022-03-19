@@ -28,7 +28,13 @@ export class BoardController {
       return respond({ error: 'Invalid category id.' }, 400);
     }
 
-    const boards = await BoardService.getAllBoards(category);
+    let boards;
+    try {
+      boards = await BoardService.getAllBoards(category);
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
 
     return respond({ boards }, 200);
   }

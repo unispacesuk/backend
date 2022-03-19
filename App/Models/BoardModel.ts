@@ -20,7 +20,7 @@ export function BoardModel(data: IBoard): IBoardModel {
     createdAt: data.created_at,
     lastUpdated: data.last_updated,
     threads: data.threads | 0,
-    replies: 0,
+    replies: data.replies | 0,
     // categoryTitle: data.cat_title,
   };
 }

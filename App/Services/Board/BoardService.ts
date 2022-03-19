@@ -56,17 +56,35 @@ export class BoardService {
       return respond({ error: 'cat does not exist' }, 401);
     }
 
-    const { rows } = await this.conn.query(
-      'SELECT * FROM board_boards WHERE board_category_id = $1',
-      [category]
-    );
+    // const { rows } = await this.conn.query(
+    //   'SELECT * FROM board_boards WHERE board_category_id = $1',
+    //   [category]
+    // );
 
-    return Promise.all(
-      rows.map(async (b: IBoard) => {
-        b.threads = await this.getCountOfThreads(b._id);
-        return BoardModel(b);
-      })
-    );
+    // return Promise.all(
+    //   rows.map(async (b: IBoard) => {
+    //     b.threads = await this.getCountOfThreads(b._id);
+    //     return BoardModel(b);
+    //   })
+    // );
+
+    return new Promise((resolve, reject) => {
+      this.conn.query(
+        'SELECT board_boards.*, COUNT(DISTINCT board_threads.*) as threads, COUNT(DISTINCT board_thread_replies.*) as replies ' +
+          'FROM board_boards ' +
+          'LEFT OUTER JOIN board_threads ' +
+          'ON board_threads.board_boards_id = board_boards._id ' +
+          'LEFT OUTER JOIN board_thread_replies ' +
+          'ON board_thread_replies.board_thread_id = board_threads._id ' +
+          'WHERE board_category_id = $1 ' +
+          'GROUP BY board_boards._id',
+        [category],
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.rows.map((b) => BoardModel(b)));
+        }
+      );
+    });
   }
 
   public static async editBoard(): Promise<any> {
@@ -117,6 +135,7 @@ export class BoardService {
 
   /**
    * Get count() of threads of a board
+   * @Deprecated what was I thinking 😭
    */
   public static async getCountOfThreads(board: number) {
     const { rows } = await this.conn.query(

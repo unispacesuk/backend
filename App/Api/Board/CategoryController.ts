@@ -30,7 +30,13 @@ export class CategoryController {
   @Get('/')
   async getAllCategories(): Promise<IResponse> {
     // const categories = await CategoryService.getAllCategoriesAndBoards();
-    const categories = await CategoryService.getAllCategories();
+    let categories;
+    try {
+      categories = await CategoryService.getAllCategories();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
 
     return respond({ categories }, 200);
   }
