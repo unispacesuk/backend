@@ -1,5 +1,5 @@
 import { AuthenticationService as authService } from '../../Services/Auth/AuthenticationService';
-import {IJwtPayload, UserRole} from '../../Interfaces';
+import { IJwtPayload, UserRole } from '../../Interfaces';
 import { file, param, request, respond } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { UserModel } from '../../Models';
@@ -58,6 +58,29 @@ export class UserService {
         (error, result) => {
           if (error) return reject(error);
           resolve(result.rows[0]);
+        }
+      );
+    });
+  }
+
+  /**
+   * Get current users starred threads
+   * TODO: is this good here or should be on Board/Thread services?
+   */
+  public static async getStarredThreads() {
+    const userId = request().data('userId');
+
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        'SELECT board_threads.* ' +
+          'FROM board_threads_favourites ' +
+          'JOIN board_threads ' +
+          'ON board_threads_favourites.thread_id = board_threads._id ' +
+          'WHERE board_threads_favourites.user_id = $1',
+        [userId],
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.rows);
         }
       );
     });

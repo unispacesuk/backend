@@ -47,4 +47,17 @@ export class UserController {
 
     return respond({ avatar }, 200);
   }
+
+  @Get('/thread/starred', [AuthService.authenticate])
+  async getUserStarredThreads() {
+    let response;
+    try {
+      response = await UserService.getStarredThreads();
+    } catch (e) {
+      console.log(e);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
 }
