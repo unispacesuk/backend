@@ -19,7 +19,7 @@ export class ThreadService {
           'COUNT(thread_stars.thread_id) as stars ' +
           'FROM board_threads as threads ' +
           'JOIN users ON users._id = threads.user_id ' +
-          'LEFT OUTER JOIN board_threads_favourites as thread_stars ON thread_stars.thread_id = $1' + // here can be $1 (threadId) or just threads._id
+          'LEFT OUTER JOIN board_threads_stars as thread_stars ON thread_stars.thread_id = $1' + // here can be $1 (threadId) or just threads._id
           'WHERE threads._id = $1 ' +
           'GROUP BY threads._id, users.avatar, users.username',
         [threadId],
@@ -62,7 +62,7 @@ export class ThreadService {
     return new Promise((resolve, reject) => {
       this.conn.query(
         'SELECT board_threads.*, board_boards.title as board_title, board_boards.board_category_id, ' +
-          'users.username, users.avatar, board_categories.title as cat_title, COUNT(board_threads_favourites.thread_id) as stars ' +
+          'users.username, users.avatar, board_categories.title as cat_title, COUNT(board_threads_stars.thread_id) as stars ' +
           'FROM board_threads ' +
           'LEFT JOIN users ' +
           'ON board_threads.user_id = users._id ' +
@@ -70,8 +70,8 @@ export class ThreadService {
           'ON board_boards._id = $1 ' +
           'LEFT JOIN board_categories ' +
           'ON board_categories._id = board_boards.board_category_id ' +
-          'LEFT JOIN board_threads_favourites ' +
-          'ON board_threads_favourites.thread_id = board_threads._id ' +
+          'LEFT JOIN board_threads_stars ' +
+          'ON board_threads_stars.thread_id = board_threads._id ' +
           'WHERE board_threads.board_boards_id = $1 ' +
           'GROUP BY board_threads._id, board_title, board_boards.board_category_id, users.username, users.avatar, board_categories.title ' +
           'ORDER BY created_at DESC',
@@ -195,10 +195,10 @@ export class ThreadService {
   static async starThread(threadId: number, userId: any) {
     return new Promise((resolve, reject) => {
       this.conn.query(
-        'INSERT INTO board_threads_favourites (user_id, thread_id) ' +
+        'INSERT INTO board_threads_stars (user_id, thread_id) ' +
           'SELECT $1, $2 ' +
           'WHERE NOT EXISTS (' +
-          'SELECT user_id, thread_id FROM board_threads_favourites WHERE user_id = $1 AND thread_id = $2 ' +
+          'SELECT user_id, thread_id FROM board_threads_stars WHERE user_id = $1 AND thread_id = $2 ' +
           ') RETURNING *',
         [userId, threadId],
         (error, result) => {
@@ -213,7 +213,7 @@ export class ThreadService {
   static async unstarThread(threadId: number, userId: any) {
     return new Promise((resolve, reject) => {
       this.conn.query(
-        'DELETE FROM board_threads_favourites WHERE user_id = $1 AND thread_id = $2',
+        'DELETE FROM board_threads_stars WHERE user_id = $1 AND thread_id = $2',
         [userId, threadId],
         (error) => {
           if (error) return reject(error);
@@ -232,7 +232,7 @@ export class ThreadService {
 
     return new Promise((resolve, reject) => {
       this.conn.query(
-        'SELECT COUNT(*) FROM board_threads_favourites ' + 'WHERE user_id = $1 AND thread_id = $2',
+        'SELECT COUNT(*) FROM board_threads_stars ' + 'WHERE user_id = $1 AND thread_id = $2',
         [userId, threadId],
         (error, result) => {
           if (error) return reject(error);

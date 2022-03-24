@@ -73,10 +73,10 @@ export class UserService {
     return new Promise((resolve, reject) => {
       this._client.query(
         'SELECT board_threads.* ' +
-          'FROM board_threads_favourites ' +
+          'FROM board_threads_stars ' +
           'JOIN board_threads ' +
-          'ON board_threads_favourites.thread_id = board_threads._id ' +
-          'WHERE board_threads_favourites.user_id = $1',
+          'ON board_threads_stars.thread_id = board_threads._id ' +
+          'WHERE board_threads_stars.user_id = $1',
         [userId],
         (error, result) => {
           if (error) return reject(error);
