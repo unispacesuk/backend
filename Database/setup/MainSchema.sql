@@ -160,6 +160,7 @@ CREATE TABLE blog_posts (
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
+--     clicks INTEGER NULL,
     PRIMARY KEY (_id)
     -- views ?
 );
@@ -168,14 +169,28 @@ ALTER SEQUENCE BLOG_POSTS_ID_AI OWNED BY blog_posts._id;
 -- blog post comments
 CREATE SEQUENCE BLOG_COMMENTS_ID_AI;
 CREATE TABLE blog_comments (
-  _id INTEGER NOT NULL DEFAULT NEXTVAL('BLOG_COMMENTS_ID_AI'),
-  user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
-  blog_post INTEGER NOT NULL REFERENCES blog_posts (_id) ON DELETE CASCADE,
-  content TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT now(),
-  PRIMARY KEY (_id)
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('BLOG_COMMENTS_ID_AI'),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    blog_post INTEGER NOT NULL REFERENCES blog_posts (_id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+    PRIMARY KEY (_id)
 );
 ALTER SEQUENCE BLOG_COMMENTS_ID_AI OWNED BY blog_comments._id;
+
+-- blog vote types
+CREATE SEQUENCE BLOG_VOTE_TYPES_ID_AI;
+CREATE TABLE blog_vote_types (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('BLOG_VOTE_TYPES_ID_AI'),
+    vote_type VARCHAR (100) NOT NULL,
+    PRIMARY KEY (_id)
+);
+INSERT INTO blog_vote_types (vote_type) VALUES ('thumbs_up');
+INSERT INTO blog_vote_types (vote_type) VALUES ('thumbs_down');
+INSERT INTO blog_vote_types (vote_type) VALUES ('big_smile');
+INSERT INTO blog_vote_types (vote_type) VALUES ('heart_eyes');
+INSERT INTO blog_vote_types (vote_type) VALUES ('rofl');
+INSERT INTO blog_vote_types (vote_type) VALUES ('surprised');
 
 -- events table
 CREATE SEQUENCE EVENTS_ID_AI;

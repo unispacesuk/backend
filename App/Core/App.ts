@@ -6,18 +6,21 @@ import { BodyMiddleware } from '../Middlewares/Body';
 import { RequestContext } from './Routing';
 import * as cors from 'cors';
 import * as process from 'process';
+import { WebsocketServer } from './Websockets/WebsocketServer';
 
 export default class App {
   private _express: express.Express;
   private _config: Config;
   private _connection: Connection;
   private _bodyMiddleware: BodyMiddleware;
+  private _wss: WebsocketServer;
 
   constructor() {
     this._express = express();
     this._config = new Config();
     this._connection = new Connection();
     this._bodyMiddleware = new BodyMiddleware();
+    this._wss = new WebsocketServer();
   }
 
   public setMiddlewares(): App {
