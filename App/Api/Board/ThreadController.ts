@@ -18,7 +18,7 @@ export class ThreadController {
     try {
       thread = await ThreadService.getThread();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return respond({ error: e }, 400);
     }
 
@@ -38,9 +38,9 @@ export class ThreadController {
   /**
    * To delete only owner or admins!!!!
    */
-  @Delete('/:thread', [AuthService.authenticate])
+  @Delete('/:threadId', [AuthService.authenticate])
   async deleteThread(): Promise<IResponse> {
-    if (isNaN(param('thread'))) {
+    if (isNaN(param('threadId'))) {
       return respond({ error: 'Invalid Thread id.' }, 400);
     }
 
@@ -51,7 +51,7 @@ export class ThreadController {
       }
       await ThreadService.deleteThread();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return respond({ error: 'Something went wrong.' }, 400);
     }
     return respond({ message: 'Thread Deleted' }, 200);
@@ -76,7 +76,7 @@ export class ThreadController {
     try {
       response = await ThreadService.getAllReplies();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 
@@ -93,7 +93,7 @@ export class ThreadController {
     try {
       response = await ThreadService.updateThread();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 
@@ -120,7 +120,7 @@ export class ThreadController {
     try {
       response = await ThreadService.addNewReply();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 
@@ -146,7 +146,7 @@ export class ThreadController {
       if (action === 'star') response = await ThreadService.starThread(threadId, userId);
       if (action === 'unstar') response = await ThreadService.unstarThread(threadId, userId);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 
@@ -165,7 +165,7 @@ export class ThreadController {
     try {
       response = await ThreadService.getStarredState();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 
