@@ -126,4 +126,25 @@ export class BlogService {
       );
     });
   }
+
+  static getRecentActivity() {
+    const articleId = param('articleId');
+
+    return new Promise((resolve, reject) => {
+      this.conn.query(
+        'SELECT DISTINCT ON (blog_comments.user_id) blog_comments._id, ' +
+          'users.username, users.avatar ' +
+          'FROM blog_comments ' +
+          'LEFT OUTER JOIN users ON users._id = blog_comments.user_id ' +
+          'WHERE blog_comments.blog_post = $1 ' +
+          'ORDER BY blog_comments.user_id, blog_comments._id DESC ' +
+          'LIMIT 5',
+        [articleId],
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result.rows);
+        }
+      );
+    });
+  }
 }

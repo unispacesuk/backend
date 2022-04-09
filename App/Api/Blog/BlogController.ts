@@ -132,4 +132,22 @@ export class BlogController {
 
     return respond({ response }, 200);
   }
+
+  // this will return an object of the last people that commented
+  @Get('/article/:articleId/recentactivity')
+  async getArticleRecentActivity(): Promise<IResponse> {
+    if (isNaN(param('articleId'))) {
+      return respond({ error: 'Invalid article id.' }, 400);
+    }
+
+    let response;
+    try {
+      response = await BlogService.getRecentActivity();
+    } catch (error) {
+      console.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
 }
