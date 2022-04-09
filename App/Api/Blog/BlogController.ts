@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Delete, Patch } from '../../Core/Decorators';
-import { param, respond } from '../../Core/Routing';
+import { param, request, respond } from '../../Core/Routing';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import { IResponse } from '../../Interfaces';
 import { BlogService } from '../../Services/Blog/BlogService';
@@ -105,9 +105,31 @@ export class BlogController {
     try {
       await BlogService.insertNewVote();
     } catch (error) {
+      console.error(error);
       return respond({ error }, 400);
     }
 
     return respond({ m: 'Voted...' }, 200);
+  }
+
+  @Post('/article/comment/:articleId', [AuthService.authenticate])
+  async postNewComment() {
+    if (isNaN(param('articleId'))) {
+      return respond({ error: 'Invalid article id.' }, 400);
+    }
+
+    if (!request().body('content')) {
+      return respond({ error: 'Comment was empty.' }, 401);
+    }
+
+    let response;
+    try {
+      response = await BlogService.insertNewComment();
+    } catch (error) {
+      console.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
   }
 }

@@ -11,6 +11,7 @@ interface IBlog extends BaseInterface {
     last_name: string;
   };
   votes: any[];
+  comments: any[];
 }
 
 interface IBlogModel extends BaseModel {
@@ -23,6 +24,7 @@ interface IBlogModel extends BaseModel {
     lastName: string;
   };
   votes: any[];
+  comments: any[];
 }
 
 export function BlogModel(data: IBlog): IBlogModel {
@@ -40,5 +42,6 @@ export function BlogModel(data: IBlog): IBlogModel {
       lastName: data.user.last_name,
     },
     votes: data.votes,
+    comments: data.comments,
   };
 }
