@@ -4,6 +4,8 @@
  */
 
 DROP TABLE events;
+DROP TABLE blog_votes;
+DROP TABLE blog_vote_types;
 DROP TABLE blog_comments;
 DROP TABLE blog_posts;
 DROP TABLE board_threads_stars;

@@ -185,12 +185,20 @@ CREATE TABLE blog_vote_types (
     vote_type VARCHAR (100) NOT NULL,
     PRIMARY KEY (_id)
 );
+ALTER SEQUENCE BLOG_VOTE_TYPES_ID_AI OWNED BY blog_vote_types._id;
 INSERT INTO blog_vote_types (vote_type) VALUES ('thumbs_up');
 INSERT INTO blog_vote_types (vote_type) VALUES ('thumbs_down');
 INSERT INTO blog_vote_types (vote_type) VALUES ('big_smile');
 INSERT INTO blog_vote_types (vote_type) VALUES ('heart_eyes');
 INSERT INTO blog_vote_types (vote_type) VALUES ('rofl');
 INSERT INTO blog_vote_types (vote_type) VALUES ('surprised');
+
+-- blog votes / reactions
+CREATE TABLE blog_votes (
+    blog_id INTEGER NOT NULL REFERENCES blog_posts (_id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    vote_type INTEGER NOT NULL REFERENCES blog_vote_types (_id) ON DELETE CASCADE
+);
 
 -- events table
 CREATE SEQUENCE EVENTS_ID_AI;

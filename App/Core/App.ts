@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as express from 'express';
 import { Config, Connection } from '../Config';
 import { Api } from '../Api';
