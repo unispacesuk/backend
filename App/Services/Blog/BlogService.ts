@@ -47,13 +47,14 @@ export class BlogService {
     return new Promise((resolve, reject) => {
       this.conn.query(
         'SELECT blog_posts.*, ' +
-          "json_build_object('avatar', users.avatar, 'username', users.username, 'first_name', users.first_name, 'last_name', users.last_name) as user, " +
-          'json_agg(DISTINCT blog_votes.*) as votes, ' +
-          'json_agg(DISTINCT blog_comments.*) as comments ' +
+          "jsonb_build_object('avatar', users.avatar, 'username', users.username, 'first_name', users.first_name, 'last_name', users.last_name) as user, " +
+          'jsonb_agg(DISTINCT blog_votes.*) as votes, ' +
+          "jsonb_agg(DISTINCT jsonb_build_object('comment', blog_comments.*, 'avatar', commenter.avatar, 'username', commenter.username)) as comments " +
           'FROM blog_posts ' +
           'LEFT JOIN users ON users._id = blog_posts.user_id ' +
           'LEFT OUTER JOIN blog_votes ON blog_votes.blog_id = $1 ' +
           'LEFT OUTER JOIN blog_comments ON blog_comments.blog_post = $1 ' +
+          'LEFT OUTER JOIN users commenter ON commenter._id = blog_comments.user_id ' +
           'WHERE blog_posts._id = $1 ' +
           'GROUP BY blog_posts._id, users.avatar, users.username, users.first_name, users.last_name',
         [articleId],
