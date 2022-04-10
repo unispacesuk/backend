@@ -22,7 +22,10 @@ export class AnswerService {
           if (error) return reject(error);
           newQuestionId = result.rows[0]._id;
           this.conn.query(
-            'SELECT answers.*, users.username, users.avatar FROM users, answers LEFT JOIN users u on u._id = answers.user_id WHERE answers._id = $1',
+            'SELECT answers.*, users.username, users.avatar ' +
+              'FROM answers ' +
+              'LEFT JOIN users on users._id = answers.user_id ' +
+              'WHERE answers._id = $1',
             [newQuestionId],
             (error, result) => {
               if (error) return reject(error);
@@ -41,7 +44,7 @@ export class AnswerService {
     const { id } = param();
     return new Promise((resolve, reject) => {
       this.conn.query(
-        'SELECT answers.*, u.username, u.avatar FROM answers LEFT JOIN users u on u._id = answers.user_id WHERE answers.question_id = $1',
+        'SELECT answers.*, u.username, u.avatar FROM answers LEFT JOIN users u on u._id = answers.user_id WHERE answers.question_id = $1 ORDER BY answers.created_at',
         [id],
         (error, result) => {
           if (error) return reject(error);

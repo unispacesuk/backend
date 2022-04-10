@@ -12,6 +12,7 @@ interface IBlog extends BaseInterface {
   };
   votes: any[];
   comments: any[];
+  count: number;
 }
 
 interface IBlogModel extends BaseModel {
@@ -25,6 +26,7 @@ interface IBlogModel extends BaseModel {
   };
   votes: any[];
   comments: any[];
+  count: number;
 }
 
 export function BlogModel(data: IBlog): IBlogModel {
@@ -43,5 +45,6 @@ export function BlogModel(data: IBlog): IBlogModel {
     },
     votes: data.votes,
     comments: data.comments,
+    count: data.count,
   };
 }
