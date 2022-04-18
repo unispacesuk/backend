@@ -1,6 +1,6 @@
 import { Connection } from '../../Config';
 import { Client } from 'pg';
-import { compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 
 import { UserModel } from '../../Models';
 import { IUser } from '../../Interfaces';

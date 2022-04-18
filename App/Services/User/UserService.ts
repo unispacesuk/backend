@@ -3,6 +3,7 @@ import { IJwtPayload, UserRole } from '../../Interfaces';
 import { file, param, request, respond } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { UserModel } from '../../Models';
+import { compareHash, hashPassword } from '../Util/Hash';
 
 export class UserService {
   private static _client = Connection.client;
@@ -84,5 +85,56 @@ export class UserService {
         }
       );
     });
+  }
+
+  public static async updateUserProfile() {
+    const userId = request().data('userId');
+    const { username, email, firstName, lastName } = request().body();
+
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        'UPDATE users SET username = $1, email = $2, first_name = $3, last_name = $4 WHERE _id = $5',
+        [username, email, firstName, lastName, userId],
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.rows[0]);
+        }
+      );
+    });
+  }
+
+  public static async updateUserPassword() {
+    const userId = request().data('userId');
+    const { newPasswordConfirm } = request().body();
+
+    const digest = await hashPassword(newPasswordConfirm);
+
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        'UPDATE users SET not_username = $1 WHERE _id = $2',
+        [digest, userId],
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.rows[0]);
+        }
+      );
+    });
+  }
+
+  public static async isValidPassword() {
+    const userId = request().data('userId');
+    const { currentPassword } = request().body();
+
+    const user = await this._client.query('SELECT not_username FROM users WHERE _id = $1', [
+      userId,
+    ]);
+
+    return await compareHash(currentPassword, user.rows[0].not_username);
+  }
+
+  public static doPasswordsMatch() {
+    const { newPassword, newPasswordConfirm } = request().body();
+
+    return newPassword === newPasswordConfirm;
   }
 }
