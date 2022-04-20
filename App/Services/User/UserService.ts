@@ -4,6 +4,7 @@ import { file, param, request, respond } from '../../Core/Routing';
 import { Connection } from '../../Config';
 import { UserModel } from '../../Models';
 import { compareHash, hashPassword } from '../Util/Hash';
+import { NotificationSettingsModel } from '../../Models/NotificationSettingsModel';
 
 export class UserService {
   private static _client = Connection.client;
@@ -136,5 +137,58 @@ export class UserService {
     const { newPassword, newPasswordConfirm } = request().body();
 
     return newPassword === newPasswordConfirm;
+  }
+
+  public static setUserStatus(userId: number, status: boolean) {
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        'UPDATE users SET is_online = $1 WHERE _id = $2',
+        [status, userId],
+        (error) => {
+          if (error) return reject(error);
+          resolve(true);
+        }
+      );
+    });
+  }
+
+  // I want to use this method in various places...
+  // then I pass the userId as an argument...
+  // allows me to fetch not. settings for a specific user to then send email / live notification or not
+  public static getUserNotificationSettings(userId: number) {
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        'SELECT notification_settings FROM users WHERE _id = $1',
+        [userId],
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(NotificationSettingsModel(result.rows[0].notification_settings));
+        }
+      );
+    });
+  }
+
+  // now here... should I update 1 by 1 or update all at once?
+  // 1 by one when the user changes the toggle should be fine for now...
+  // but can be a bottleneck if too many users are changing their settings at once...
+  // we keep an eye on this...
+  public static async updateUserNotificationSettings() {
+    const userId = request().data('userId');
+    const { type, setting, value } = request().body();
+
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        `
+        UPDATE users
+        SET notification_settings = jsonb_set(notification_settings, '{${type}, ${setting}}', '${value}')
+        WHERE _id = $1
+          `,
+        [userId],
+        (error) => {
+          if (error) return reject(error);
+          resolve(true);
+        }
+      );
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { Controller, Get, Patch, Post } from '../../Core/Decorators';
-import { param, respond, file } from '../../Core/Routing';
+import { param, respond, file, request } from '../../Core/Routing';
 import { UserService } from '../../Services/User/UserService';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import * as multer from 'multer';
@@ -96,5 +96,33 @@ export class UserController {
     }
 
     return respond({ message: 'Password updated.' }, 200);
+  }
+
+  @Get('/notification-settings', [AuthService.authenticate])
+  async getUserNotificationSettings(): Promise<IResponse> {
+    const userId = request().data('userId');
+
+    let response;
+    try {
+      response = await UserService.getUserNotificationSettings(Number(userId));
+    } catch (error) {
+      console.error(error);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
+
+  @Patch('/notification-settings', [AuthService.authenticate])
+  async updateUserNotificationSettings(): Promise<IResponse> {
+    let response;
+    try {
+      response = await UserService.updateUserNotificationSettings();
+    } catch (error) {
+      console.error(error);
+      return respond({ error: 'Something went wrong.' }, 400);
+    }
+
+    return respond({ response }, 200);
   }
 }

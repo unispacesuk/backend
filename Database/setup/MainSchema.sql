@@ -22,6 +22,8 @@ CREATE TABLE users (
     last_login TIMESTAMP NULL,
     last_updated TIMESTAMP NULL, -- maybe make it now()? because we just created the account and means last edit was now?
     avatar VARCHAR (255),
+    is_online BOOLEAN DEFAULT FALSE,
+    notification_settings JSONB NOT NULL DEFAULT '{}',
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE USERS_ID_AI OWNED BY users._id;

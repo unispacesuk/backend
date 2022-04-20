@@ -8,6 +8,20 @@ interface Options {
   value: string;
 }
 
+const defaultNotificationSettings = {
+  email: {
+    article_comments: true,
+    thread_replies: true,
+    question_answers: true,
+    private_messages: true,
+  },
+  live: {
+    article_reacted: true,
+    question_upvoted: true,
+    thread_starred: true,
+  },
+};
+
 export class RegisterService {
   private static _client: Client = Connection.client;
 
@@ -17,9 +31,9 @@ export class RegisterService {
 
     // create the user and return the newUser object
     const newUser = await this._client.query(
-      `INSERT INTO users (username, email, not_username, first_name, last_name)
-        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [username, email, hashed_not_username, first_name, last_name]
+      `INSERT INTO users (username, email, not_username, first_name, last_name, notification_settings)
+        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [username, email, hashed_not_username, first_name, last_name, defaultNotificationSettings]
     );
 
     // create the new role

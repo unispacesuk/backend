@@ -1,4 +1,5 @@
 import { Server, WebSocket, WebSocketServer as WSServer } from 'ws';
+import { UserService } from '../../Services/User/UserService';
 
 interface IConnection {
   connection: WebSocket;
@@ -23,7 +24,7 @@ export class WebsocketServer {
     });
 
     this.wss.on('connection', (connection: WebSocket) => {
-      connection.on('message', (rawData: any) => {
+      connection.on('message', async (rawData: any) => {
         const data = JSON.parse(rawData.toString());
 
         if (data.type === 'connect') {
@@ -39,6 +40,8 @@ export class WebsocketServer {
           } else {
             this.connections.push(newConnection);
           }
+
+          await UserService.setUserStatus(newConnection.user, true); // set user online
         }
 
         if (data.type === 'pong' && data.user) {
@@ -76,9 +79,10 @@ export class WebsocketServer {
 
   ping() {
     setInterval(() => {
-      this.connections.map((c) => {
+      this.connections.map(async (c) => {
         if (!c.isAlive) {
           this.connections.splice(this.connections.indexOf(c), 1);
+          await UserService.setUserStatus(c.user, false); // set user offline
           return c.connection.terminate();
         }
 
