@@ -4,6 +4,13 @@ import { CategoryModel } from '../../Models';
 export class StatisticsService {
   static conn = Connection.client;
 
+  /**
+   * Boards count
+   * Threads count
+   * Replies count
+   * ^^ all based on the category id not the other way around
+   * TODO: Refactor the below qyery to satisfy the above
+   */
   static getCategoryStats(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.conn.query(
@@ -22,9 +29,20 @@ export class StatisticsService {
         [],
         (error, result) => {
           if (error) return reject(error);
-          return resolve(result.rows.map(r => CategoryModel(r)));
+          return resolve(result.rows.map((r) => CategoryModel(r)));
         }
       );
     });
   }
+
+  // TODO: These stats below
+  static async getTotalUsers() {}
+
+  static async getTotalThreads() {}
+
+  static async getTotalReplies() {}
+
+  static async getTotalBlogArticles() {}
+
+  static async getTotalQuestions() {}
 }

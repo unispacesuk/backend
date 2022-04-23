@@ -1,8 +1,7 @@
 import { sign, verify } from 'jsonwebtoken';
-import { Config } from '../../Config';
+import { Config, Connection } from '../../Config';
 import { request, respond } from '../../Core/Routing';
 import { Middleware, Next } from '../../Core/Decorators';
-import { IJwtPayload } from '../../Interfaces';
 import { IUser } from '../../Interfaces';
 
 /**
@@ -12,6 +11,7 @@ import { IUser } from '../../Interfaces';
 export class AuthenticationService {
   static token = '';
   private static _config = new Config();
+  private static _client = Connection.client;
 
   // TODO: Something wrong with the model. please fix
   static generateToken(data: IUser): string {
@@ -25,12 +25,32 @@ export class AuthenticationService {
     return this.token;
   }
 
-  public static verifyToken(token: string): Promise<IJwtPayload | undefined> {
+  public static verifyToken(token: string): Promise<any> {
     return new Promise((resolve, reject) => {
       verify(token, this._config.secret, { algorithms: ['HS256'] }, (error, payload) => {
         if (error) return reject(error.message);
-        resolve(<IJwtPayload>payload);
+        resolve(payload);
       });
+    });
+  }
+
+  public static generateRecoveryToken(email: string): string {
+    return sign({ email }, this._config.secret, {
+      algorithm: 'HS256',
+      expiresIn: '15 minutes',
+    });
+  }
+
+  public static updatePassword(password: string, email: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        'UPDATE users SET not_username = $1 WHERE email = $2',
+        [password, email],
+        (error) => {
+          if (error) return reject(error);
+          resolve(true);
+        }
+      );
     });
   }
 
