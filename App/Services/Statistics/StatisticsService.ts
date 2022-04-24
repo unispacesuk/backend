@@ -1,5 +1,6 @@
 import { Connection } from '../../Config';
 import { CategoryModel } from '../../Models';
+import { param } from '../../Core/Routing';
 
 export class StatisticsService {
   static conn = Connection.client;
@@ -9,27 +10,25 @@ export class StatisticsService {
    * Threads count
    * Replies count
    * ^^ all based on the category id not the other way around
-   * TODO: Refactor the below qyery to satisfy the above
    */
-  static getCategoryStats(): Promise<any> {
+  static getCategoryStats() {
+    const { category } = param();
+
     return new Promise((resolve, reject) => {
       this.conn.query(
-        'WITH boards AS (SELECT board_boards.* FROM board_boards), ' +
-          'threads AS (SELECT board_threads.* FROM board_threads), ' +
-          'replies AS (SELECT board_thread_replies.* FROM board_thread_replies) ' +
-          'SELECT board_categories.*, ' +
-          'COUNT(distinct boards.*) AS board_count, ' +
-          'COUNT(distinct threads.*) AS thread_count, ' +
-          'COUNT(distinct replies.*) AS reply_count ' +
-          'FROM board_categories, boards, threads, replies ' +
-          'WHERE board_categories._id = boards.board_category_id ' +
-          'AND boards._id = threads.board_boards_id ' +
-          'AND threads._id = replies.board_thread_id ' +
-          'GROUP BY board_categories._id',
-        [],
+        'with boards as (select * from board_boards where board_category_id = $1), ' +
+          'threads as (select * from board_threads), ' +
+          'replies as (select * from board_thread_replies) ' +
+          'select count(DISTINCT boards.*) as board_count, ' +
+          'count(DISTINCT threads.*) as thread_count, ' +
+          'count(DISTINCT replies.*) as reply_count ' +
+          'from boards ' +
+          'left outer join threads on threads.board_boards_id = boards._id ' +
+          'left outer join replies on replies.board_thread_id = threads._id',
+        [category],
         (error, result) => {
           if (error) return reject(error);
-          return resolve(result.rows.map((r) => CategoryModel(r)));
+          return resolve(result.rows);
         }
       );
     });

@@ -101,4 +101,18 @@ export class BoardController {
     }
     return respond({ m: 'deleted' }, 200);
   }
+
+  @Get('/recent/:board')
+  async getRecentActivity(): Promise<IResponse> {
+    let response;
+
+    try {
+      response = await BoardService.getRecentActivity();
+    } catch (error) {
+      console.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
 }

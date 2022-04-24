@@ -5,7 +5,7 @@ import { StatisticsService } from '../../Services/Statistics/StatisticsService';
 
 @Controller('/stats')
 export class StatisticsController {
-  @Get('/category')
+  @Get('/category/:category')
   async functionGetCategoryStats(): Promise<IResponse> {
     let response;
     try {
