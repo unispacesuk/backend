@@ -154,6 +154,22 @@ export class BoardService {
     });
   }
 
+  public static async updateBoardAccess() {
+    const { board } = param();
+    const { access } = request().body();
+
+    return new Promise((resolve, reject) => {
+      this.conn.query(
+        'UPDATE board_boards SET access = $1 WHERE _id = $2',
+        [access, board],
+        (error) => {
+          if (error) return reject(error);
+          return resolve(true);
+        }
+      );
+    });
+  }
+
   /**
    * Get count() of threads of a board
    * @Deprecated what was I thinking 😭

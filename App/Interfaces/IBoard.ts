@@ -7,4 +7,5 @@ export interface IBoard extends BaseInterface {
   threads: number;
   replies: number;
   // cat_title: string;
+  access: boolean;
 }
