@@ -4,6 +4,8 @@
  */
 
 DROP TABLE events;
+DROP TABLE chat_room_messages;
+DROP TABLE chat_rooms;
 DROP TABLE blog_votes;
 DROP TABLE blog_vote_types;
 DROP TABLE blog_comments;

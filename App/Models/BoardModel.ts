@@ -8,6 +8,7 @@ interface IBoardModel extends BaseModel {
   threads: number;
   replies: number;
   // categoryTitle: string;
+  access: boolean;
 }
 
 export function BoardModel(data: IBoard): IBoardModel {
@@ -22,5 +23,6 @@ export function BoardModel(data: IBoard): IBoardModel {
     threads: data.threads | 0,
     replies: data.replies | 0,
     // categoryTitle: data.cat_title,
+    access: data.access,
   };
 }

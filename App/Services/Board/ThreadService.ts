@@ -59,27 +59,49 @@ export class ThreadService {
    * TODO: Pagination
    */
   static async getAllThreads(id: number) {
+    // return new Promise((resolve, reject) => {
+    //   this.conn.query(
+    //     'SELECT board_threads.*, board_boards.title as board_title, board_boards.board_category_id, ' +
+    //       'users.username, users.avatar, board_categories.title as cat_title, COUNT(board_threads_stars.thread_id) as stars ' +
+    //       'FROM board_threads ' +
+    //       'LEFT JOIN users ' +
+    //       'ON board_threads.user_id = users._id ' +
+    //       'LEFT JOIN board_boards ' +
+    //       'ON board_boards._id = $1 ' +
+    //       'LEFT JOIN board_categories ' +
+    //       'ON board_categories._id = board_boards.board_category_id ' +
+    //       'LEFT JOIN board_threads_stars ' +
+    //       'ON board_threads_stars.thread_id = board_threads._id ' +
+    //       'WHERE board_threads.board_boards_id = $1 ' +
+    //       'GROUP BY board_threads._id, board_title, board_boards.board_category_id, users.username, users.avatar, board_categories.title ' +
+    //       'ORDER BY created_at DESC',
+    //     [id],
+    //     (error, result) => {
+    //       if (error) return reject(error);
+    //       if (result.rows.length === 0) return resolve(0);
+    //       resolve(result.rows.map((t) => ThreadModel(t)));
+    //     }
+    //   );
+    // });
     return new Promise((resolve, reject) => {
       this.conn.query(
-        'SELECT board_threads.*, board_boards.title as board_title, board_boards.board_category_id, ' +
-          'users.username, users.avatar, board_categories.title as cat_title, COUNT(board_threads_stars.thread_id) as stars ' +
-          'FROM board_threads ' +
-          'LEFT JOIN users ' +
-          'ON board_threads.user_id = users._id ' +
-          'LEFT JOIN board_boards ' +
-          'ON board_boards._id = $1 ' +
-          'LEFT JOIN board_categories ' +
-          'ON board_categories._id = board_boards.board_category_id ' +
-          'LEFT JOIN board_threads_stars ' +
-          'ON board_threads_stars.thread_id = board_threads._id ' +
-          'WHERE board_threads.board_boards_id = $1 ' +
-          'GROUP BY board_threads._id, board_title, board_boards.board_category_id, users.username, users.avatar, board_categories.title ' +
-          'ORDER BY created_at DESC',
+        'with threads as ( ' +
+          "select json_agg(json_build_object('thread', to_json(board_threads.*), " +
+          "'user', json_build_object('username', users.username, 'avatar', users.avatar))) as threads " +
+          'from board_threads, users ' +
+          'where users._id = board_threads.user_id ' +
+          'and board_threads.board_boards_id = $1), ' +
+          'board as (select board_boards.title as board_title, board_boards.access, board_categories.title as cat_title ' +
+          'from board_boards, board_categories ' +
+          'where board_boards._id = $1 ' +
+          'and board_categories._id = board_boards.board_category_id ) ' +
+          'select * from threads, board',
         [id],
         (error, result) => {
           if (error) return reject(error);
           if (result.rows.length === 0) return resolve(0);
-          resolve(result.rows.map((t) => ThreadModel(t)));
+          // resolve(result.rows.map((t) => ThreadModel(t)));
+          resolve(result.rows);
         }
       );
     });

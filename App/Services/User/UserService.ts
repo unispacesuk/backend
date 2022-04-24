@@ -191,4 +191,36 @@ export class UserService {
       );
     });
   }
+
+  public static async setLastUpdated() {
+    const userId = request().data('userId');
+
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        `UPDATE users
+       SET last_updated = 'now()'
+       WHERE _id = $1`,
+        [userId],
+        (error) => {
+          if (error) return reject(error);
+          return resolve(true);
+        }
+      );
+    });
+  }
+
+  public static async isUserAdmin() {
+    const userId = request().data('userId');
+
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        'SELECT role_id FROM user_roles WHERE user_id = $1',
+        [userId],
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result.rows[0]);
+        }
+      );
+    });
+  }
 }
