@@ -67,6 +67,7 @@ export class UserController {
     let response;
     try {
       response = await UserService.updateUserProfile();
+      await UserService.setLastUpdated();
     } catch (error) {
       console.error(error);
       return respond({ error: 'Something went wrong.' }, 400);
@@ -90,6 +91,7 @@ export class UserController {
 
       // update the password
       await UserService.updateUserPassword();
+      await UserService.setLastUpdated();
     } catch (error) {
       console.error(error);
       return respond({ error: 'Something went wrong.' }, 400);
@@ -118,6 +120,7 @@ export class UserController {
     let response;
     try {
       response = await UserService.updateUserNotificationSettings();
+      await UserService.setLastUpdated();
     } catch (error) {
       console.error(error);
       return respond({ error: 'Something went wrong.' }, 400);

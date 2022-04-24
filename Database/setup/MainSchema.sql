@@ -6,9 +6,12 @@
     - Id Column: _id
     - Hash or password columns must be not_column_name
         (user logs in with username then password column must be not_username)
-    -
- */
 
+ Access:
+    - Tables that have an access column can set who can view certain content
+    - 'all', 'admin', 'course-name' (course name would be replaced by the course of whoever is trying to access)
+
+ */
 -- users table
 CREATE SEQUENCE USERS_ID_AI;
 CREATE TABLE users (
@@ -52,7 +55,6 @@ CREATE TABLE user_roles (
 -- questions table
 CREATE SEQUENCE QUESTIONS_ID_AI;
 CREATE TABLE questions (
-    -- _id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     _id INTEGER NOT NULL DEFAULT NEXTVAL('QUESTIONS_ID_AI'),
     user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     title VARCHAR (255) NOT NULL,
@@ -78,7 +80,6 @@ CREATE TABLE questions_votes (
 -- answers table
 CREATE SEQUENCE ANSWERS_ID_AI;
 CREATE TABLE answers (
-    -- _id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     _id INTEGER NOT NULL DEFAULT NEXTVAL('ANSWERS_ID_AI'),
     user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     question_id INTEGER REFERENCES questions (_id) ON DELETE CASCADE,
@@ -114,6 +115,7 @@ CREATE TABLE board_boards (
     description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
+    access VARCHAR (10) DEFAULT 'all',
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE BOARD_BOARDS_ID_AI OWNED BY board_boards._id;
@@ -201,6 +203,29 @@ CREATE TABLE blog_votes (
     user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     vote_type INTEGER NOT NULL REFERENCES blog_vote_types (_id) ON DELETE CASCADE
 );
+
+-- chat-rooms
+CREATE SEQUENCE CHAT_ROOMS_ID_AI;
+CREATE TABLE chat_rooms (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('CHAT_ROOMS_ID_AI'),
+    title VARCHAR (255) NOT NULL,
+    users INTEGER[] DEFAULT [],
+    created_at TIMESTAMP DEFAULT now(),
+    last_updated TIMESTAMP NULL,
+    PRIMARY KEY (_id)
+);
+
+-- chat_messages
+CREATE SEQUENCE CHAT_ROOM_MESSAGES_ID_AI;
+CREATE TABLE chat_room_messages (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('CHAT_ROOM_MESSAGES_ID_AI'),
+    chat_room INTEGER NOT NULL REFERENCES chat_rooms (_id),
+    content TEXT NOT NULL,
+    user_id INTEGER NOT NULL REFERENCES users (_id),
+    created_at TIMESTAMP DEFAULT now(),
+    last_updated TIMESTAMP NULL,
+    PRIMARY KEY (_id)
+)
 
 -- events table
 CREATE SEQUENCE EVENTS_ID_AI;

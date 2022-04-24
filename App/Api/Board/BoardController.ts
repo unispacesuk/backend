@@ -5,6 +5,7 @@ import { param, request, respond } from '../../Core/Routing';
 import { IBoard, IResponse } from '../../Interfaces';
 import { BoardService } from '../../Services/Board/BoardService';
 import { ThreadService } from '../../Services/Board/ThreadService';
+import { AdminMiddleware } from '../../Middlewares/AdminMiddleware';
 
 @Controller('/board')
 export class BoardController {
@@ -114,5 +115,17 @@ export class BoardController {
     }
 
     return respond({ response }, 200);
+  }
+
+  @Patch('/access/:board', [AuthService.authenticate, AdminMiddleware.isAdmin])
+  async updateBoardAccess(): Promise<IResponse> {
+    try {
+      await BoardService.updateBoardAccess();
+    } catch (error) {
+      console.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ m: 'updated' }, 200);
   }
 }
