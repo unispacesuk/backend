@@ -10,4 +10,5 @@ export interface IUser {
   last_login: Date;
   avatar: string;
   role_id: number;
+  privacy_settings: object;
 }

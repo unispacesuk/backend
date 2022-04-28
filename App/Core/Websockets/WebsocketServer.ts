@@ -1,5 +1,6 @@
 import { Server, WebSocket, WebSocketServer as WSServer } from 'ws';
 import { UserService } from '../../Services/User/UserService';
+import { Logger } from '@ricdotnet/logger/dist';
 
 interface IConnection {
   connection: WebSocket;
@@ -20,7 +21,7 @@ export class WebsocketServer {
     });
 
     this.wss.on('listening', () => {
-      console.log('Websockets listening on wss://ws.unispaces.test');
+      Logger.info('Websockets listening on wss://ws.unispaces.test');
     });
 
     this.wss.on('connection', (connection: WebSocket) => {

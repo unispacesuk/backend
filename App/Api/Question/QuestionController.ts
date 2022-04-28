@@ -5,7 +5,7 @@ import { IResponse, UserRole } from '../../Interfaces';
 import { IQuestionModel } from '../../Models/QuestionModel';
 import { UserService } from '../../Services/User/UserService';
 import { Controller, Post, Get, Patch, Delete } from '../../Core/Decorators';
-import { addEvent } from '../../Services/Util/Events';
+import { addEvent } from '../../Services/Util/EventService';
 
 @Controller('/question')
 export class QuestionController {

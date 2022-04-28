@@ -22,11 +22,12 @@ export class UserService {
   }
 
   public static async getUserData() {
-    const userId = param('userId');
+    const username = param('username');
 
     return new Promise((resolve, reject) => {
-      this._client.query('SELECT * FROM users WHERE _id = $1', [userId], (error, result) => {
-        if (error) return reject();
+      this._client.query('SELECT * FROM users WHERE username = $1', [username], (error, result) => {
+        if (error) return reject(error);
+        if (!result.rows.length) return resolve(null);
         resolve(UserModel(result.rows[0]));
       });
     });
@@ -152,6 +153,26 @@ export class UserService {
     });
   }
 
+  public static updateUserPrivacySettings() {
+    const userId = request().data('userId');
+    const { type, value } = request().body();
+
+    return new Promise((resolve, reject) => {
+      this._client.query(
+        `
+      UPDATE users
+      SET privacy_settings = jsonb_set(privacy_settings, '{${type}}', '${value}')
+      WHERE _id = $1;
+      `,
+        [userId],
+        (error) => {
+          if (error) return reject(error);
+          resolve(null);
+        }
+      );
+    });
+  }
+
   // I want to use this method in various places...
   // then I pass the userId as an argument...
   // allows me to fetch not. settings for a specific user to then send email / live notification or not
@@ -182,7 +203,7 @@ export class UserService {
         UPDATE users
         SET notification_settings = jsonb_set(notification_settings, '{${type}, ${setting}}', '${value}')
         WHERE _id = $1
-          `,
+        `,
         [userId],
         (error) => {
           if (error) return reject(error);
@@ -198,8 +219,8 @@ export class UserService {
     return new Promise((resolve, reject) => {
       this._client.query(
         `UPDATE users
-       SET last_updated = 'now()'
-       WHERE _id = $1`,
+        SET last_updated = 'now()'
+        WHERE _id = $1`,
         [userId],
         (error) => {
           if (error) return reject(error);

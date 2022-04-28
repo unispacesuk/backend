@@ -25,7 +25,8 @@ CREATE TABLE users (
     last_login TIMESTAMP NULL,
     last_updated TIMESTAMP NULL, -- maybe make it now()? because we just created the account and means last edit was now?
     avatar VARCHAR (255),
-    is_online BOOLEAN DEFAULT FALSE,
+    is_online BOOLEAN DEFAULT false,
+    privacy_settings JSONB NOT NULL DEFAULT '{}',
     notification_settings JSONB NOT NULL DEFAULT '{}',
     PRIMARY KEY (_id)
 );
@@ -205,27 +206,39 @@ CREATE TABLE blog_votes (
 );
 
 -- chat-rooms
-CREATE SEQUENCE CHAT_ROOMS_ID_AI;
+-- CREATE SEQUENCE CHAT_ROOMS_ID_AI;
+    -- default of a room will be public and then allow for private
+    -- private rooms would have users[] as the allowed people to view it
+    -- can be all or admin... admin makes it be an admin only room
 CREATE TABLE chat_rooms (
-    _id INTEGER NOT NULL DEFAULT NEXTVAL('CHAT_ROOMS_ID_AI'),
+    _id UUID NOT NULL DEFAULT gen_random_uuid(), -- the id we want a uuid... will be better for usage
     title VARCHAR (255) NOT NULL,
-    users INTEGER[] DEFAULT [],
+    users INTEGER[],
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
+    status VARCHAR (15) DEFAULT 'public',
+    permission VARCHAR (15) DEFAULT 'all',
     PRIMARY KEY (_id)
 );
+INSERT INTO chat_rooms (title) VALUES ('General');
+INSERT INTO chat_rooms (title) VALUES ('General');
+INSERT INTO chat_rooms (title) VALUES ('Computing');
+INSERT INTO chat_rooms (title) VALUES ('Arts and Designs');
+INSERT INTO chat_rooms (title) VALUES ('Social Sciences');
+INSERT INTO chat_rooms (title, permission) VALUES ('The Admin Room', 'admin');
 
 -- chat_messages
 CREATE SEQUENCE CHAT_ROOM_MESSAGES_ID_AI;
 CREATE TABLE chat_room_messages (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('CHAT_ROOM_MESSAGES_ID_AI'),
-    chat_room INTEGER NOT NULL REFERENCES chat_rooms (_id),
+    chat_room UUID NOT NULL REFERENCES chat_rooms (_id),
     content TEXT NOT NULL,
     user_id INTEGER NOT NULL REFERENCES users (_id),
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
     PRIMARY KEY (_id)
-)
+);
+ALTER SEQUENCE CHAT_ROOM_MESSAGES_ID_AI OWNED BY chat_room_messages._id;
 
 -- events table
 CREATE SEQUENCE EVENTS_ID_AI;

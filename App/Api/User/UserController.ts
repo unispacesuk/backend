@@ -1,32 +1,38 @@
 import { Controller, Get, Patch, Post } from '../../Core/Decorators';
-import { param, respond, file, request } from '../../Core/Routing';
+import { file, param, request, respond } from '../../Core/Routing';
 import { UserService } from '../../Services/User/UserService';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
 import * as multer from 'multer';
 import { Config } from '../../Config';
 import { IResponse } from '../../Interfaces';
+import { Logger } from '@ricdotnet/logger/dist';
+
 const upload = multer({ storage: Config.storage('avatars') });
 
 @Controller('/user')
 export class UserController {
-  @Get('/data/:userId')
+  @Get('/data/:username')
   async getUserData() {
-    const userId: number = param('userId');
-    if (!userId) {
-      return respond({ error: 'No user id.' }, 400);
+    const username: string = param('username');
+    if (!username) {
+      return respond({ error: 'No username provided.' }, 400);
     }
 
-    if (isNaN(userId)) {
-      return respond({ error: 'Invalid user id.' }, 400);
-    }
+    let user: any;
 
-    const user = await UserService.getUserData().catch((e) => {
-      console.log(e);
-      return respond({ error: e }, 400);
-    });
+    try {
+      user = await UserService.getUserData();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
 
     if (!user) {
-      return respond({ error: 'No user found with that id' }, 400);
+      return respond({ error: 'No user found with that username.' }, 200);
+    }
+
+    if (user.privacy.profile) {
+      return respond({ error: "This user's profile is private.", private: true }, 200);
     }
 
     return respond({ user }, 200);
@@ -55,7 +61,7 @@ export class UserController {
     try {
       response = await UserService.getStarredThreads();
     } catch (e) {
-      console.log(e);
+      Logger.error(e);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 
@@ -69,7 +75,7 @@ export class UserController {
       response = await UserService.updateUserProfile();
       await UserService.setLastUpdated();
     } catch (error) {
-      console.error(error);
+      Logger.error(error);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 
@@ -100,6 +106,23 @@ export class UserController {
     return respond({ message: 'Password updated.' }, 200);
   }
 
+  // maybe not needed....
+  @Get('/privacy', [AuthService.authenticate])
+  async getUserPrivacySettings(): Promise<IResponse> {
+    return respond({ m: 'hey' }, 200);
+  }
+
+  @Patch('/privacy', [AuthService.authenticate])
+  async updateUserPrivacySettings(): Promise<IResponse> {
+    try {
+      await UserService.updateUserPrivacySettings();
+    } catch (error) {
+      Logger.error(error);
+    }
+
+    return respond({ m: 'hey' }, 200);
+  }
+
   @Get('/notification-settings', [AuthService.authenticate])
   async getUserNotificationSettings(): Promise<IResponse> {
     const userId = request().data('userId');
@@ -108,7 +131,7 @@ export class UserController {
     try {
       response = await UserService.getUserNotificationSettings(Number(userId));
     } catch (error) {
-      console.error(error);
+      Logger.error(error);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 
@@ -122,7 +145,7 @@ export class UserController {
       response = await UserService.updateUserNotificationSettings();
       await UserService.setLastUpdated();
     } catch (error) {
-      console.error(error);
+      Logger.error(error);
       return respond({ error: 'Something went wrong.' }, 400);
     }
 

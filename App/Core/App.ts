@@ -8,6 +8,7 @@ import { RequestContext } from './Routing';
 import * as cors from 'cors';
 import * as process from 'process';
 import { WebsocketServer } from './Websockets/WebsocketServer';
+import { Logger } from '@ricdotnet/logger/dist';
 
 export default class App {
   private _express: express.Express;
@@ -75,7 +76,7 @@ export default class App {
 
   public runServer(): App {
     this._express.listen(this._config.port, () => {
-      console.log(`Server is up and running on port: ${this._config.port}`);
+      Logger.info(`Server is up and running on port: ${this._config.port}`);
     });
     return this;
   }
