@@ -25,7 +25,7 @@ CREATE TABLE users (
     last_login TIMESTAMP NULL,
     last_updated TIMESTAMP NULL, -- maybe make it now()? because we just created the account and means last edit was now?
     avatar VARCHAR (255),
-    is_online BOOLEAN DEFAULT FALSE,
+    is_online BOOLEAN DEFAULT false,
     notification_settings JSONB NOT NULL DEFAULT '{}',
     PRIMARY KEY (_id)
 );
@@ -205,15 +205,26 @@ CREATE TABLE blog_votes (
 );
 
 -- chat-rooms
-CREATE SEQUENCE CHAT_ROOMS_ID_AI;
+-- CREATE SEQUENCE CHAT_ROOMS_ID_AI;
 CREATE TABLE chat_rooms (
-    _id INTEGER NOT NULL DEFAULT NEXTVAL('CHAT_ROOMS_ID_AI'),
+--     _id INTEGER NOT NULL DEFAULT NEXTVAL('CHAT_ROOMS_ID_AI'),
+    _id UUID NOT NULL DEFAULT 'gen_random_uuid()', -- the id we want a uuid... will be better for usage
     title VARCHAR (255) NOT NULL,
     users INTEGER[] DEFAULT [],
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
+    -- default of a room will be public and then allow for private
+    -- private rooms would have users[] as the allowed people to view it
+    status VARCHAR (15) DEFAULT 'public',
+    permission VARCHAR (15) DEFAULT 'all', -- can be all or admin... admin makes it be an admin only room
     PRIMARY KEY (_id)
 );
+INSERT INTO chat_rooms (title) VALUES ('General');
+INSERT INTO chat_rooms (title) VALUES ('General');
+INSERT INTO chat_rooms (title) VALUES ('Computing');
+INSERT INTO chat_rooms (title) VALUES ('Arts and Designs');
+INSERT INTO chat_rooms (title) VALUES ('Social Sciences');
+INSERT INTO chat_rooms (title, permission) VALUES ('The Admin Room', 'admin');
 
 -- chat_messages
 CREATE SEQUENCE CHAT_ROOM_MESSAGES_ID_AI;
@@ -225,7 +236,7 @@ CREATE TABLE chat_room_messages (
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
     PRIMARY KEY (_id)
-)
+);
 
 -- events table
 CREATE SEQUENCE EVENTS_ID_AI;

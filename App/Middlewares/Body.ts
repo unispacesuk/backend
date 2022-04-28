@@ -5,6 +5,7 @@
  */
 import { Middleware, Next } from '../Core/Decorators';
 import { request } from '../Core/Routing';
+import { Logger } from '@ricdotnet/logger/dist';
 
 export class BodyMiddleware {
   /**
@@ -22,7 +23,8 @@ export class BodyMiddleware {
       // });
 
       if (Object.keys(body).length !== 0) {
-        console.log(body);
+        // console.log(body);
+        Logger.info(JSON.stringify(body));
       }
     }
 
