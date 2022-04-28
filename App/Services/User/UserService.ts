@@ -219,8 +219,8 @@ export class UserService {
     return new Promise((resolve, reject) => {
       this._client.query(
         `UPDATE users
-         SET last_updated = 'now()'
-         WHERE _id = $1`,
+        SET last_updated = 'now()'
+        WHERE _id = $1`,
         [userId],
         (error) => {
           if (error) return reject(error);
