@@ -1,6 +1,6 @@
 import { Injectable } from '../../Core/Decorators/InjectableDecorator';
 
-@Injectable
+@Injectable()
 export class TestService {
   testMethod() {
     console.log('hi');

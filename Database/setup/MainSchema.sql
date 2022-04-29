@@ -210,10 +210,13 @@ CREATE TABLE blog_votes (
     -- default of a room will be public and then allow for private
     -- private rooms would have users[] as the allowed people to view it
     -- can be all or admin... admin makes it be an admin only room
+    -- blocked[] will hold blocked users... if a userid is present on this array the backend should respond with 'you are blocked'
 CREATE TABLE chat_rooms (
     _id UUID NOT NULL DEFAULT gen_random_uuid(), -- the id we want a uuid... will be better for usage
     title VARCHAR (255) NOT NULL,
+    user_id INTEGER REFERENCES users (_id),
     users INTEGER[],
+    blocked INTEGER[],
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
     status VARCHAR (15) DEFAULT 'public',
@@ -225,7 +228,7 @@ INSERT INTO chat_rooms (title) VALUES ('General');
 INSERT INTO chat_rooms (title) VALUES ('Computing');
 INSERT INTO chat_rooms (title) VALUES ('Arts and Designs');
 INSERT INTO chat_rooms (title) VALUES ('Social Sciences');
-INSERT INTO chat_rooms (title, permission) VALUES ('The Admin Room', 'admin');
+INSERT INTO chat_rooms (title, permission) VALUES ('The Admin Rooms', 'admin');
 
 -- chat_messages
 CREATE SEQUENCE CHAT_ROOM_MESSAGES_ID_AI;

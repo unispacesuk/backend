@@ -230,7 +230,7 @@ export class UserService {
     });
   }
 
-  public static async isUserAdmin() {
+  public static async isUserAdmin(): Promise<any> {
     const userId = request().data('userId');
 
     return new Promise((resolve, reject) => {
