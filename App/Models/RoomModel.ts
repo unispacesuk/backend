@@ -1,6 +1,3 @@
-import { BaseInterface } from '../Interfaces';
-import { BaseModel } from './BaseModel';
-
 interface IRoom {
   _id: string;
   title: string;
