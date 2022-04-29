@@ -1,0 +1,68 @@
+import { Connection } from '../../Config';
+import { UserService } from '../User/UserService';
+import { param, request } from '../../Core/Routing';
+import { IRoomModel, RoomModel } from '../../Models/RoomModel';
+
+export class RoomsService {
+  static client = Connection.client;
+
+  // this function will fetch all rooms
+  // we also want to check if the user is an admin or not and if not then do not send the admin only rooms
+  static async getAllRooms() {
+    const { role_id } = await UserService.isUserAdmin();
+
+    const permission = role_id === 1 ? 'admin' : 'all';
+
+    const values: string[] = [];
+    let query = 'SELECT * FROM chat_rooms';
+
+    if (permission !== 'admin') {
+      values.push('all');
+      query += ` WHERE permission = $${values.length}`;
+    }
+
+    return new Promise((resolve, reject) => {
+      this.client.query(query, [...values], (error, result) => {
+        if (error) return reject(error);
+        if (!result.rows.length) return resolve(null);
+        return resolve(result.rows.map((room) => RoomModel(room)));
+      });
+    });
+  }
+
+  // todo: add user permission in case a non-valid user fetches a room... maybe check on the controller?
+  static async getRoomData() {
+    const { roomId } = param();
+
+    return new Promise((resolve, reject) => {
+      this.client.query('SELECT * FROM chat_rooms WHERE _id = $1', [roomId], (error, result) => {
+        if (error) return reject(error);
+        return resolve(RoomModel(result.rows[0]));
+      });
+    });
+  }
+
+  // we want to remove any private rooms that the user does not have access
+  static async filterPrivateRooms(rooms: IRoomModel[]): Promise<IRoomModel[]> {
+    const userId: number | void = request().data('userId');
+    const { role_id } = await UserService.isUserAdmin();
+
+    if (role_id === 1) {
+      return Promise.resolve(rooms);
+    }
+
+    const privateRooms: IRoomModel[] = [];
+    const publicRooms: IRoomModel[] = [];
+
+    return new Promise((resolve) => {
+      for (const room of rooms) {
+        if (room.status === 'private' && room.users.includes(<number>userId)) {
+          privateRooms.push(room);
+        } else if (room.status === 'public' && room.permission === 'all') {
+          publicRooms.push(room);
+        }
+      }
+      resolve([...publicRooms, ...privateRooms]);
+    });
+  }
+}
