@@ -1,4 +1,4 @@
-import { Controller, Get } from '../../Core/Decorators';
+import { Controller, Delete, Get, Patch, Post } from '../../Core/Decorators';
 import { request, respond } from '../../Core/Routing';
 import { IResponse } from '../../Interfaces';
 import { RoomsService } from '../../Services/RoomsService/RoomsService';
@@ -32,7 +32,7 @@ export class RoomsController {
   async getSingleRoom(): Promise<IResponse> {
     const userId = request().data('userId');
 
-    let response: IRoomModel | unknown;
+    let response: IRoomModel | null = null;
     try {
       response = await RoomsService.getRoomData();
     } catch (error) {
@@ -40,8 +40,12 @@ export class RoomsController {
       return respond({ error }, 400);
     }
 
-    // @ts-ignore
-    if (!response.users.includes(userId)) {
+    if (
+      response &&
+      response.users &&
+      !response.users.includes(<number>userId) &&
+      userId !== response.userId
+    ) {
       return respond(
         { error: 'You have no permissions to access this room.', type: 'no-permission' },
         401
@@ -49,5 +53,58 @@ export class RoomsController {
     }
 
     return respond({ response }, 200);
+  }
+
+  @Delete('/room/:roomId', [AuthService.authenticate])
+  async deleteRoom(): Promise<IResponse> {
+    try {
+      await RoomsService.deleteRoom();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ message: 'Room Deleted.' }, 200);
+  }
+
+  @Patch('/room/:roomId', [AuthService.authenticate])
+  async updateRoom(): Promise<IResponse> {
+    try {
+      await RoomsService.updateRoom();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ m: 'room updated' }, 200);
+  }
+
+  @Post('/room/new', [AuthService.authenticate])
+  async createNewRoom(): Promise<IResponse> {
+    let response: IRoomModel;
+    try {
+      response = await RoomsService.createRoom();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
+
+  // user to invite will be passed by query param
+  @Post('/room/invite/:roomId', [AuthService.authenticate])
+  async inviteUser() {
+    try {
+      const response = await RoomsService.inviteUser();
+      if (response === 'duplicate-user') {
+        return respond({ error: 'duplicate', message: 'User already invited.' }, 200);
+      }
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ m: 'user invited' }, 200);
   }
 }

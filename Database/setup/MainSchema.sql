@@ -243,6 +243,17 @@ CREATE TABLE chat_room_messages (
 );
 ALTER SEQUENCE CHAT_ROOM_MESSAGES_ID_AI OWNED BY chat_room_messages._id;
 
+-- private chat messages
+CREATE SEQUENCE PRIVATE_MESSAGES_ID_AI;
+CREATE TABLE private_messages (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('PRIVATE_MESSAGES_ID_AI'),
+    sender INTEGER NOT NULL REFERENCES users (_id),
+    receiver INTEGER NOT NULL REFERENCES users (_id),
+    created_at TIMESTAMP DEFAULT now(),
+    read_at TIMESTAMP NULL -- if read_at is not null then it is read
+);
+ALTER SEQUENCE CHAT_ROOM_MESSAGES_ID_AI OWNED BY private_messages;
+
 -- events table
 CREATE SEQUENCE EVENTS_ID_AI;
 CREATE TABLE events (
