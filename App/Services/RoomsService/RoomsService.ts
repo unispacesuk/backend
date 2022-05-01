@@ -166,4 +166,26 @@ export class RoomsService {
 
     return Promise.resolve(result.rows[0].users.includes(invitee));
   }
+
+  static async getUsersList() {
+    const { roomId } = param();
+    const users = [];
+
+    const result = await this.client.query('SELECT users, user_id FROM chat_rooms WHERE _id = $1', [
+      roomId,
+    ]);
+    if (result.rows[0].users) {
+      for (const id of result.rows[0].users) {
+        const u = await UserService.getUserDataById(id);
+        users.push(u);
+      }
+    }
+
+    if (result.rows[0].user_id) {
+      const u = await UserService.getUserDataById(result.rows[0].user_id);
+      users.push(u);
+    }
+
+    return Promise.resolve(users);
+  }
 }

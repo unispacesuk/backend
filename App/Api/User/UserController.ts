@@ -151,4 +151,17 @@ export class UserController {
 
     return respond({ response }, 200);
   }
+
+  @Get('/search/:username')
+  async searchUser(): Promise<IResponse> {
+    let response;
+    try {
+      response = await UserService.searchUser();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
 }

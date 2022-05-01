@@ -107,4 +107,17 @@ export class RoomsController {
 
     return respond({ m: 'user invited' }, 200);
   }
+
+  @Get('/room/users/:roomId', [AuthService.authenticate])
+  async getRoomUsers(): Promise<IResponse> {
+    let response;
+    try {
+      response = await RoomsService.getUsersList();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
 }
