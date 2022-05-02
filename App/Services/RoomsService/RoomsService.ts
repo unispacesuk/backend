@@ -188,4 +188,17 @@ export class RoomsService {
 
     return Promise.resolve(users);
   }
+
+  static async removeUserFromRoom() {
+    const owner = request().data('userId');
+    const { roomId } = param();
+    const { removable } = query();
+
+    const remove = await this.client.query(
+      'UPDATE chat_rooms SET users = array_remove(users, $1) WHERE _id = $2 AND user_id = $3',
+      [removable, roomId, owner]
+    );
+
+    return Promise.resolve(remove);
+  }
 }

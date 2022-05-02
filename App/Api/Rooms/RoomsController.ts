@@ -120,4 +120,15 @@ export class RoomsController {
 
     return respond({ response }, 200);
   }
+
+  @Delete('/room/remove/user/:roomId', [AuthService.authenticate])
+  async removeUserFromRoom(): Promise<IResponse> {
+    try {
+      await RoomsService.removeUserFromRoom();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+    return respond({ m: 'user removed' }, 200);
+  }
 }
