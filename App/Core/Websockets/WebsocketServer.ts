@@ -1,18 +1,16 @@
+import 'reflect-metadata';
 import { Server, WebSocket, WebSocketServer as WSServer } from 'ws';
 import { UserService } from '../../Services/User/UserService';
 import { Logger } from '@ricdotnet/logger/dist';
+import { WebsocketChannelManager } from './WebsocketChannelManager';
+import { IConnection } from '../../Interfaces/IWebsocketConnection';
+import { NotificationsWebsocket } from '../../WebsocketChannels/Notifications.Websocket';
+import { ChatRoomWebsocket } from '../../WebsocketChannels/ChatRoom.Websocket';
 
-interface IConnection {
-  connection: WebSocket;
-  user: number;
-  isAlive: boolean;
-  channel?: string;
-}
+const channelClasses = [NotificationsWebsocket, ChatRoomWebsocket];
 
 export class WebsocketServer {
   wss: Server;
-
-  connections: IConnection[] = [];
 
   constructor() {
     this.wss = new WSServer({
@@ -24,37 +22,65 @@ export class WebsocketServer {
       Logger.info('Websockets listening on wss://ws.unispaces.test');
     });
 
+    for (const c of channelClasses) {
+      const channel = Reflect.getMetadata('websocket-channel', c);
+      WebsocketChannelManager.addChannel(new channel.target(channel.channelName));
+    }
+
     this.wss.on('connection', (connection: WebSocket) => {
-      connection.on('message', async (rawData: any) => {
+      connection.on('message', async (rawData) => {
         const data = JSON.parse(rawData.toString());
 
-        if (data.type === 'connect') {
-          const newConnection = {
+        if (data && data.type === 'notification' && data.metadata.receiver) {
+          const notificationsChannel = WebsocketChannelManager.getChannels().find(
+            (c) => c.getName() === 'notifications-channel'
+          );
+
+          if (!notificationsChannel) return;
+
+          notificationsChannel.broadcast(data);
+        }
+
+        if (data && data.type === 'room-message' && data.metadata.roomId) {
+          const roomChannel = WebsocketChannelManager.getChannels().find(
+            (c) => c.getName() === 'rooms-chat-channel'
+          );
+
+          if (!roomChannel) return;
+
+          roomChannel.broadcast(data);
+        }
+
+        if (data && data.type === 'connection') {
+          const newConnection: IConnection = {
             connection: connection,
             user: data.user,
             isAlive: true,
           };
+          WebsocketChannelManager.getConnections().push(newConnection);
 
-          const hasConnection = this.connections.filter((c) => c.user === data.user)[0];
+          const hasConnection = WebsocketChannelManager.getConnections().find(
+            (c) => c.user === data.user
+          );
           if (hasConnection) {
-            this.connections.splice(this.connections.indexOf(hasConnection), 1, newConnection);
+            WebsocketChannelManager.getConnections().splice(
+              WebsocketChannelManager.getConnections().indexOf(hasConnection),
+              1,
+              newConnection
+            );
           } else {
-            this.connections.push(newConnection);
+            WebsocketChannelManager.getConnections().push(newConnection);
           }
 
           await UserService.setUserStatus(newConnection.user, true); // set user online
         }
 
-        if (data.type === 'pong' && data.user) {
-          this.connections.map((c) => {
+        if (data && data.type === 'pong' && data.user) {
+          WebsocketChannelManager.getConnections().map((c) => {
             if (c.user === data.user) {
               c.isAlive = true;
             }
           });
-        }
-
-        if (data.event === 'notification' && data.user) {
-          this.sendMessage(data.user, data.type);
         }
       });
     });
@@ -64,8 +90,7 @@ export class WebsocketServer {
 
   // send to single user
   sendMessage(user: number, type: string) {
-    console.log(this.connections.length);
-    const connection = this.connections.filter((c) => c.user === user)[0];
+    const connection = WebsocketChannelManager.getConnections().find((c) => c.user === user);
     if (connection && connection.user === user) {
       console.log('sending?');
       const msg = {
@@ -80,16 +105,20 @@ export class WebsocketServer {
 
   ping() {
     setInterval(() => {
-      this.connections.map(async (c) => {
-        if (!c.isAlive) {
-          this.connections.splice(this.connections.indexOf(c), 1);
-          await UserService.setUserStatus(c.user, false); // set user offline
-          return c.connection.terminate();
+      const clients: IConnection[] = WebsocketChannelManager.getConnections();
+      clients.forEach(async (client) => {
+        if (!client.isAlive) {
+          WebsocketChannelManager.getConnections().splice(
+            WebsocketChannelManager.getConnections().indexOf(client),
+            1
+          );
+          await UserService.setUserStatus(client.user, false);
+          return client.connection.close();
         }
 
-        c.isAlive = false;
-        c.connection.send(JSON.stringify({ type: 'ping', user: c.user }));
+        client.isAlive = false;
+        client.connection.send(JSON.stringify({ type: 'ping', user: client.user }));
       });
-    }, 10000);
+    }, 15000);
   }
 }

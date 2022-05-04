@@ -228,13 +228,13 @@ export class UserService {
     });
   }
 
-  public static async isUserAdmin(): Promise<any> {
+  public static async isUserAdmin(id?: number): Promise<any> {
     const userId = request().data('userId');
 
     return new Promise((resolve, reject) => {
       this.client.query(
         'SELECT role_id FROM user_roles WHERE user_id = $1',
-        [userId],
+        [userId ?? id],
         (error, result) => {
           if (error) return reject(error);
           return resolve(result.rows[0]);

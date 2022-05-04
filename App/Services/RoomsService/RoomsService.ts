@@ -201,4 +201,36 @@ export class RoomsService {
 
     return Promise.resolve(remove);
   }
+
+  static async resolveRoomStatus(roomId: string) {
+    const result = await this.client.query('SELECT status FROM chat_rooms WHERE _id = $1', [
+      roomId,
+    ]);
+
+    if (!result.rows.length) return Promise.reject();
+
+    return Promise.resolve(result.rows[0].status);
+  }
+
+  static async resolveRoomPermission(roomId: string) {
+    const result = await this.client.query('SELECT permission FROM chat_rooms WHERE _id = $1', [
+      roomId,
+    ]);
+
+    if (!result.rows.length) return Promise.reject();
+
+    return Promise.resolve(result.rows[0].permission);
+  }
+
+  static async resolveRoomAllowedUsers(roomId: string) {
+    const result = await this.client.query('SELECT users FROM chat_rooms WHERE _id = $1', [roomId]);
+    const owner = await this.client.query('SELECT user_id FROM chat_rooms WHERE _id = $1', [
+      roomId,
+    ]);
+
+    const allowed = result.rows[0].users;
+    allowed.push(owner.rows[0].user_id);
+
+    return Promise.resolve(allowed);
+  }
 }
