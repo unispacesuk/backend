@@ -278,4 +278,46 @@ export class UserService {
 
     return Promise.resolve(rows[0]);
   }
+
+  public static async saveResourceFile() {
+    const body: any = request().body();
+    const file = request().file();
+    const userId = request().data('userId');
+
+    return new Promise((resolve, reject) => {
+      this.client.query(
+        'INSERT INTO resource_files (user_id, name, filename) VALUES ($1, $2, $3)',
+        [userId, body['file-name'], file?.filename],
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(null);
+        }
+      );
+    });
+  }
+
+  public static async getResourceFiles() {
+    const userId = request().data('userId');
+
+    return new Promise((resolve, reject) => {
+      this.client.query(
+        'SELECT * FROM resource_files WHERE user_id = $1',
+        [userId],
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result.rows);
+        }
+      );
+    });
+  }
+
+  public static async deleteResourceFile() {
+    const userId = request().data('userId');
+    const { resourceId } = param();
+
+    await this.client.query('DELETE FROM resource_files WHERE _id = $1 AND user_id = $2', [
+      resourceId,
+      userId,
+    ]);
+  }
 }

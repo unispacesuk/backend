@@ -258,7 +258,7 @@ export class RoomsService {
           "json_build_object('_id', u._id, 'username', u.username, 'avatar', u.avatar, 'is_online', is_online) as sender " +
           'FROM chat_room_messages ' +
           'LEFT OUTER JOIN users u on u._id = chat_room_messages.user_id ' +
-          'WHERE chat_room = $1 LIMIT 50',
+          'WHERE chat_room = $1 ORDER BY _id DESC LIMIT 50',
         [roomId],
         (error, result) => {
           if (error) return reject(error);

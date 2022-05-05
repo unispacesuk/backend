@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Post } from '../../Core/Decorators';
+import { Controller, Delete, Get, Patch, Post } from '../../Core/Decorators';
 import { file, param, request, respond } from '../../Core/Routing';
 import { UserService } from '../../Services/User/UserService';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
@@ -8,6 +8,7 @@ import { IResponse } from '../../Interfaces';
 import { Logger } from '@ricdotnet/logger/dist';
 
 const upload = multer({ storage: Config.storage('avatars') });
+const resource = multer({ storage: Config.resource('resources') });
 
 @Controller('/user')
 export class UserController {
@@ -176,5 +177,41 @@ export class UserController {
     }
 
     return respond({ response }, 200);
+  }
+
+  @Post('/upload/resource', [AuthService.authenticate, resource.single('resource-file')])
+  async uploadResource(): Promise<IResponse> {
+    try {
+      await UserService.saveResourceFile();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+    return respond({ m: 'resource uploaded' }, 200);
+  }
+
+  @Get('/resources', [AuthService.authenticate])
+  async getUserResources(): Promise<IResponse> {
+    let response;
+    try {
+      response = await UserService.getResourceFiles();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 200);
+    }
+
+    return respond({ response }, 200);
+  }
+
+  @Delete('/resource/:resourceId', [AuthService.authenticate])
+  async deleteResourceFile(): Promise<IResponse> {
+    try {
+      await UserService.deleteResourceFile();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 200);
+    }
+
+    return respond({ m: 'resource file deleted' }, 200);
   }
 }

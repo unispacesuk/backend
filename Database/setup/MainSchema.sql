@@ -253,9 +253,22 @@ CREATE TABLE private_messages (
     sender INTEGER NOT NULL REFERENCES users (_id),
     receiver INTEGER NOT NULL REFERENCES users (_id),
     created_at TIMESTAMP DEFAULT now(),
-    read_at TIMESTAMP NULL -- if read_at is not null then it is read
+    read_at TIMESTAMP NULL, -- if read_at is not null then it is read
+    PRIMARY KEY (_id)
 );
-ALTER SEQUENCE CHAT_ROOM_MESSAGES_ID_AI OWNED BY private_messages;
+ALTER SEQUENCE CHAT_ROOM_MESSAGES_ID_AI OWNED BY private_messages._id;
+
+-- resources list
+CREATE TABLE resource_files (
+    _id UUID NOT NULL DEFAULT gen_random_uuid(),
+    user_id INTEGER NOT NULL REFERENCES users (_id),
+    name VARCHAR (255) NOT NULL,
+    filename TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+    downloads INTEGER NOT NULL DEFAULT 0,
+    is_private BOOLEAN DEFAULT false,
+    PRIMARY KEY (_id)
+);
 
 -- events table
 CREATE SEQUENCE EVENTS_ID_AI;

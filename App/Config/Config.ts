@@ -35,4 +35,15 @@ export class Config {
       }
     });
   }
+
+  static resource(folder: string) {
+    return multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, 'uploads/' + folder);
+      },
+      filename: function (req, file, cb) {
+        cb(null, Date.now() + `-${file.originalname}`);
+      }
+    });
+  }
 }
