@@ -39,6 +39,19 @@ export class UserController {
     return respond({ user }, 200);
   }
 
+  @Get('/data/id/:userId')
+  async getUserDataById(): Promise<IResponse> {
+    let response;
+    try {
+      response = await UserService.getUserDataById(param('userId'));
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
+
   @Get('/avatar')
   async getUserAvatar() {
     const avatar = `https://avatars.dicebear.com/api/male/${Math.round(Math.random() * 10)}.svg`;
@@ -213,5 +226,55 @@ export class UserController {
     }
 
     return respond({ m: 'resource file deleted' }, 200);
+  }
+
+  @Post('/read-later/:articleId', [AuthService.authenticate])
+  async addToReadLaterList(): Promise<IResponse> {
+    try {
+      await UserService.addToReadLaterList();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ m: 'added to read later' }, 200);
+  }
+
+  @Delete('/read-later/:articleId', [AuthService.authenticate])
+  async removeFromReadLaterList(): Promise<IResponse> {
+    try {
+      await UserService.removeFromReadLaterList();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ m: 'removed from read later' }, 200);
+  }
+
+  @Get('/read-later/:articleId', [AuthService.authenticate])
+  async checkIfOnReadLaterList(): Promise<IResponse> {
+    let response;
+    try {
+      response = await UserService.getArticleFromReadLaterList();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
+
+  @Get('/read-later/get/all', [AuthService.authenticate])
+  async getReadLaterList(): Promise<IResponse> {
+    let response;
+    try {
+      response = await UserService.getReadLaterList();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
   }
 }

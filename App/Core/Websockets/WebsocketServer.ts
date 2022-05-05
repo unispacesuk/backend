@@ -19,7 +19,7 @@ export class WebsocketServer {
     });
 
     this.wss.on('listening', () => {
-      Logger.info('Websockets listening on wss://ws.unispaces.test');
+      Logger.info('Websockets listening on wss://ws.unispaces.uk');
     });
 
     for (const c of channelClasses) {

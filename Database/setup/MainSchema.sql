@@ -201,6 +201,17 @@ INSERT INTO blog_vote_types (vote_type) VALUES ('heart_eyes');
 INSERT INTO blog_vote_types (vote_type) VALUES ('rofl');
 INSERT INTO blog_vote_types (vote_type) VALUES ('surprised');
 
+-- blog posts read later
+CREATE SEQUENCE READ_LATER_ID_AI;
+CREATE TABLE read_later (
+    _id INTEGER NOT NULL DEFAULT NEXTVAL('READ_LATER_ID_AI'),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    blog_post INTEGER NOT NULL REFERENCES blog_posts (_id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT now(),
+    PRIMARY KEY (_id)
+);
+ALTER SEQUENCE READ_LATER_ID_AI OWNED BY read_later._id;
+
 -- blog votes / reactions
 CREATE TABLE blog_votes (
     blog_id INTEGER NOT NULL REFERENCES blog_posts (_id) ON DELETE CASCADE,
@@ -217,7 +228,7 @@ CREATE TABLE blog_votes (
 CREATE TABLE chat_rooms (
     _id UUID NOT NULL DEFAULT gen_random_uuid(), -- the id we want a uuid... will be better for usage
     title VARCHAR (255) NOT NULL,
-    user_id INTEGER REFERENCES users (_id),
+    user_id INTEGER REFERENCES users (_id) ON DELETE CASCADE,
     users INTEGER[],
     blocked INTEGER[],
     created_at TIMESTAMP DEFAULT now(),
@@ -226,7 +237,6 @@ CREATE TABLE chat_rooms (
     permission VARCHAR (15) DEFAULT 'all',
     PRIMARY KEY (_id)
 );
-INSERT INTO chat_rooms (title) VALUES ('General');
 INSERT INTO chat_rooms (title) VALUES ('General');
 INSERT INTO chat_rooms (title) VALUES ('Computing');
 INSERT INTO chat_rooms (title) VALUES ('Arts and Designs');
@@ -237,9 +247,9 @@ INSERT INTO chat_rooms (title, permission) VALUES ('The Admin Rooms', 'admin');
 CREATE SEQUENCE CHAT_ROOM_MESSAGES_ID_AI;
 CREATE TABLE chat_room_messages (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('CHAT_ROOM_MESSAGES_ID_AI'),
-    chat_room UUID NOT NULL REFERENCES chat_rooms (_id),
+    chat_room UUID NOT NULL REFERENCES chat_rooms (_id) ON DELETE CASCADE,
     message TEXT NOT NULL,
-    user_id INTEGER NOT NULL REFERENCES users (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,
     PRIMARY KEY (_id)
@@ -250,8 +260,8 @@ ALTER SEQUENCE CHAT_ROOM_MESSAGES_ID_AI OWNED BY chat_room_messages._id;
 CREATE SEQUENCE PRIVATE_MESSAGES_ID_AI;
 CREATE TABLE private_messages (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('PRIVATE_MESSAGES_ID_AI'),
-    sender INTEGER NOT NULL REFERENCES users (_id),
-    receiver INTEGER NOT NULL REFERENCES users (_id),
+    sender INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
+    receiver INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT now(),
     read_at TIMESTAMP NULL, -- if read_at is not null then it is read
     PRIMARY KEY (_id)
@@ -261,7 +271,7 @@ ALTER SEQUENCE CHAT_ROOM_MESSAGES_ID_AI OWNED BY private_messages._id;
 -- resources list
 CREATE TABLE resource_files (
     _id UUID NOT NULL DEFAULT gen_random_uuid(),
-    user_id INTEGER NOT NULL REFERENCES users (_id),
+    user_id INTEGER NOT NULL REFERENCES users (_id) ON DELETE CASCADE,
     name VARCHAR (255) NOT NULL,
     filename TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now(),

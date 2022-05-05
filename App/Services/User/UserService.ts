@@ -320,4 +320,63 @@ export class UserService {
       userId,
     ]);
   }
+
+  public static async addToReadLaterList() {
+    const userId = request().data('userId');
+    const { articleId } = param();
+
+    await this.client.query('INSERT INTO read_later (user_id, blog_post) VALUES ($1, $2)', [
+      userId,
+      articleId,
+    ]);
+
+    return Promise.resolve();
+  }
+
+  public static async removeFromReadLaterList() {
+    const userId = request().data('userId');
+    const { articleId } = param();
+
+    await this.client.query('DELETE FROM read_later WHERE user_id = $1 AND blog_post = $2', [
+      userId,
+      articleId,
+    ]);
+
+    return Promise.resolve();
+  }
+
+  public static async getArticleFromReadLaterList() {
+    const userId = request().data('userId');
+    const { articleId } = param();
+
+    return new Promise((resolve, reject) => {
+      this.client.query(
+        'SELECT * FROM read_later WHERE user_id = $1 and blog_post = $2',
+        [userId, articleId],
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result.rows);
+        }
+      );
+    });
+  }
+
+  public static async getReadLaterList() {
+    const userId = request().data('userId');
+
+    return new Promise((resolve, reject) => {
+      this.client.query(
+        "SELECT read_later.*, json_build_object('_id', users._id, 'username', users.username, 'avatar', users.avatar) as user, blog_posts.title " +
+        "FROM read_later " +
+        'LEFT OUTER JOIN users ON users._id = read_later.user_id ' +
+        'LEFT OUTER JOIN blog_posts ON blog_posts._id = read_later.blog_post ' +
+        'WHERE read_later.user_id = $1',
+        [userId],
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result.rows);
+        }
+      );
+    });
+  }
 }
