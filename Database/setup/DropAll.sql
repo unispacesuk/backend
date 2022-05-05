@@ -4,6 +4,7 @@
  */
 
 DROP TABLE events CASCADE;
+DROP TABLE read_later CASCADE;
 DROP TABLE resource_files CASCADE;
 DROP TABLE private_messages CASCADE;
 DROP TABLE chat_room_messages CASCADE;
