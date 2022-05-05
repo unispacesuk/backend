@@ -14,7 +14,7 @@ export class WebsocketServer {
 
   constructor() {
     this.wss = new WSServer({
-      port: 3002,
+      port: 10001,
       perMessageDeflate: false,
     });
 
