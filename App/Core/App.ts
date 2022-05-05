@@ -15,14 +15,16 @@ export default class App {
   private _config: Config;
   private _connection: Connection;
   private _bodyMiddleware: BodyMiddleware;
-  private _wss: WebsocketServer;
+  private _wss: WebsocketServer | undefined = undefined;
 
   constructor() {
     this._express = express();
     this._config = new Config();
     this._connection = new Connection();
     this._bodyMiddleware = new BodyMiddleware();
-    this._wss = new WebsocketServer();
+    setTimeout(() => {
+      this._wss = new WebsocketServer();
+    }, 2000);
   }
 
   public setMiddlewares(): App {

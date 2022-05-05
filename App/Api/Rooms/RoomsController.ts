@@ -131,4 +131,28 @@ export class RoomsController {
     }
     return respond({ m: 'user removed' }, 200);
   }
+
+  @Post('/room/message', [AuthService.authenticate])
+  async postMessage(): Promise<IResponse> {
+    try {
+      await RoomsService.saveRoomMessage();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+    return respond({ m: 'message sent' }, 200);
+  }
+
+  @Get('/room/messages/:roomId', [AuthService.authenticate])
+  async getRoomMessages(): Promise<IResponse> {
+    let response;
+    try {
+      response = await RoomsService.getRoomMessages();
+    } catch (error) {
+      Logger.error(error);
+      return respond({ error }, 400);
+    }
+
+    return respond({ response }, 200);
+  }
 }

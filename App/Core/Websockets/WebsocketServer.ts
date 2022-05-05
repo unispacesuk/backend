@@ -28,6 +28,18 @@ export class WebsocketServer {
     }
 
     this.wss.on('connection', (connection: WebSocket) => {
+      connection.onclose = async () => {
+        console.log('a connection broke...');
+        const c = WebsocketChannelManager.getConnections().find((c) => (c.connection = connection));
+        if (c) {
+          await UserService.setUserStatus(c.user, false);
+        }
+        WebsocketChannelManager.getConnections().splice(
+          WebsocketChannelManager.getConnections().findIndex((c) => c.connection === connection),
+          1
+        );
+      };
+
       connection.on('message', async (rawData) => {
         const data = JSON.parse(rawData.toString());
 
@@ -41,7 +53,7 @@ export class WebsocketServer {
           notificationsChannel.broadcast(data);
         }
 
-        if (data && data.type === 'room-message' && data.metadata.roomId) {
+        if (data && data.type === 'room-message' && data.metadata.room_id) {
           const roomChannel = WebsocketChannelManager.getChannels().find(
             (c) => c.getName() === 'rooms-chat-channel'
           );
@@ -60,7 +72,7 @@ export class WebsocketServer {
           WebsocketChannelManager.getConnections().push(newConnection);
 
           const hasConnection = WebsocketChannelManager.getConnections().find(
-            (c) => c.user === data.user
+            (c) => c.connection === connection
           );
           if (hasConnection) {
             WebsocketChannelManager.getConnections().splice(
@@ -77,7 +89,7 @@ export class WebsocketServer {
 
         if (data && data.type === 'pong' && data.user) {
           WebsocketChannelManager.getConnections().map((c) => {
-            if (c.user === data.user) {
+            if (c.user === data.user && c.connection === connection) {
               c.isAlive = true;
             }
           });
@@ -85,7 +97,7 @@ export class WebsocketServer {
       });
     });
 
-    this.ping();
+    // this.ping();
   }
 
   // send to single user

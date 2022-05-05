@@ -8,8 +8,8 @@ import { UserService } from '../Services/User/UserService';
 interface IChatRoomPayload {
   type: string;
   metadata: {
-    roomId: string;
-    sender: number;
+    room_id: string;
+    sender: any;
     message: string;
   };
 }
@@ -21,45 +21,51 @@ export class ChatRoomWebsocket extends WebsocketChannel {
   }
 
   async broadcast(data: IChatRoomPayload) {
-    const roomStatus = await this.resolveRoomStatus(data.metadata.roomId); // private or public
-    const roomPermission = await this.resolveRoomPermission(data.metadata.roomId);
+    const roomStatus = await this.resolveRoomStatus(data.metadata.room_id); // private or public
+    const roomPermission = await this.resolveRoomPermission(data.metadata.room_id);
+    const senderData = await UserService.getUserDataById(<number>data.metadata.sender._id);
+
+    // this data comes from the frontend already but, it does not hurt to fetch again
+    const resolvedData: IChatRoomPayload = Object.assign(data, {
+      metadata: { ...data.metadata, sender: senderData },
+    });
 
     if (roomPermission === 'admin') {
-      return this.sendAdminRoomMessage(data);
+      return this.sendAdminRoomMessage(resolvedData);
     }
 
     if (roomStatus === 'public' && roomPermission === 'all') {
-      return this.sendPublicRoomMessage(data);
+      return this.sendPublicRoomMessage(resolvedData);
     }
 
     if (roomStatus === 'private' && roomPermission === 'all') {
-      const allowedUsers = await this.resolveRoomAllowedUsers(data.metadata.roomId);
-      return this.sendPrivateRoomMessage(data, allowedUsers);
+      const allowedUsers = await this.resolveRoomAllowedUsers(data.metadata.room_id);
+      return this.sendPrivateRoomMessage(resolvedData, allowedUsers);
     }
   }
 
   private sendAdminRoomMessage(data: IChatRoomPayload) {
     this.connections().forEach(async (ws) => {
-      if (ws.user !== data.metadata.sender) {
-        const { role_id } = await UserService.isUserAdmin(ws.user);
-        if (role_id === 1) {
-          ws.connection.send(JSON.stringify(data));
-        }
+      // if (ws.user !== data.metadata.sender._id) {
+      const { role_id } = await UserService.isUserAdmin(ws.user);
+      if (role_id === 1) {
+        ws.connection.send(JSON.stringify(data));
       }
+      // }
     });
   }
 
   private sendPublicRoomMessage(data: IChatRoomPayload) {
-    this.connections().forEach((ws) => {
-      if (ws.user !== data.metadata.sender) {
-        ws.connection.send(JSON.stringify(data));
-      }
+    this.connections().forEach(async (ws) => {
+      // if (ws.user !== data.metadata.sender._id) {
+      ws.connection.send(JSON.stringify(data));
+      // }
     });
   }
 
   private sendPrivateRoomMessage(data: IChatRoomPayload, privateUsers: number[]) {
     this.connections().forEach((ws) => {
-      if (privateUsers.includes(ws.user) && ws.user !== data.metadata.sender) {
+      if (privateUsers.includes(ws.user)) {
         ws.connection.send(JSON.stringify(data));
       }
     });

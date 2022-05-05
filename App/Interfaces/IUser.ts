@@ -11,4 +11,6 @@ export interface IUser {
   avatar: string;
   role_id: number;
   privacy_settings: object;
+  university: string;
+  school: string;
 }

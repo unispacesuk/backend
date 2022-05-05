@@ -233,4 +233,38 @@ export class RoomsService {
 
     return Promise.resolve(allowed);
   }
+
+  static async saveRoomMessage() {
+    const { room_id, sender, message } = request().body();
+
+    return new Promise((resolve, reject) => {
+      this.client.query(
+        'INSERT INTO chat_room_messages (chat_room, message, user_id) VALUES ($1, $2, $3)',
+        [room_id, message, sender._id],
+        (error) => {
+          if (error) return reject(error);
+          return resolve(null);
+        }
+      );
+    });
+  }
+
+  static async getRoomMessages() {
+    const { roomId } = param();
+
+    return new Promise((resolve, reject) => {
+      this.client.query(
+        'SELECT chat_room_messages.*, ' +
+          "json_build_object('_id', u._id, 'username', u.username, 'avatar', u.avatar, 'is_online', is_online) as sender " +
+          'FROM chat_room_messages ' +
+          'LEFT OUTER JOIN users u on u._id = chat_room_messages.user_id ' +
+          'WHERE chat_room = $1 LIMIT 50',
+        [roomId],
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result.rows);
+        }
+      );
+    });
+  }
 }

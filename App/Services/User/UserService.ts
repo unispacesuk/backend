@@ -91,12 +91,12 @@ export class UserService {
 
   public static async updateUserProfile() {
     const userId = request().data('userId');
-    const { username, email, firstName, lastName } = request().body();
+    const { username, email, firstName, lastName, university, school } = request().body();
 
     return new Promise((resolve, reject) => {
       this.client.query(
-        'UPDATE users SET username = $1, email = $2, first_name = $3, last_name = $4 WHERE _id = $5',
-        [username, email, firstName, lastName, userId],
+        'UPDATE users SET username = $1, email = $2, first_name = $3, last_name = $4, university = $6, school = $7 WHERE _id = $5',
+        [username, email, firstName, lastName, userId, university, school],
         (error, result) => {
           if (error) return reject(error);
           resolve(result.rows[0]);
@@ -267,5 +267,15 @@ export class UserService {
     }
 
     return Promise.resolve(user.rows[0]);
+  }
+
+  public static async getUserNotifications() {
+    const userId = request().data('userId');
+
+    const { rows } = await this.client.query('SELECT notifications FROM users WHERE _id = $1', [
+      userId,
+    ]);
+
+    return Promise.resolve(rows[0]);
   }
 }

@@ -28,6 +28,9 @@ CREATE TABLE users (
     is_online BOOLEAN DEFAULT false,
     privacy_settings JSONB NOT NULL DEFAULT '{}',
     notification_settings JSONB NOT NULL DEFAULT '{}',
+    notifications JSONB NOT NULL DEFAULT '{}',
+    university VARCHAR (255) NULL,
+    school VARCHAR (255) NULL,
     PRIMARY KEY (_id)
 );
 ALTER SEQUENCE USERS_ID_AI OWNED BY users._id;
@@ -235,7 +238,7 @@ CREATE SEQUENCE CHAT_ROOM_MESSAGES_ID_AI;
 CREATE TABLE chat_room_messages (
     _id INTEGER NOT NULL DEFAULT NEXTVAL('CHAT_ROOM_MESSAGES_ID_AI'),
     chat_room UUID NOT NULL REFERENCES chat_rooms (_id),
-    content TEXT NOT NULL,
+    message TEXT NOT NULL,
     user_id INTEGER NOT NULL REFERENCES users (_id),
     created_at TIMESTAMP DEFAULT now(),
     last_updated TIMESTAMP NULL,

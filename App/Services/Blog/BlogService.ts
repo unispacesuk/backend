@@ -1,6 +1,7 @@
 import { Connection } from '../../Config';
 import { param, request, query } from '../../Core/Routing';
 import { BlogModel } from '../../Models/BlogModel';
+import { NotificationService } from '../User/NotificationService';
 
 export class BlogService {
   static conn = Connection.client;
@@ -107,6 +108,8 @@ export class BlogService {
     const articleId = param('articleId');
     const userId = request().data('userId');
     const { voteType } = request().body();
+
+    NotificationService.addBlogVoteNotification(<number>articleId, <number>userId);
 
     return new Promise((resolve, reject) => {
       this.conn.query(

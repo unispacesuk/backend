@@ -5,6 +5,7 @@ import { IResponse } from '../../Interfaces';
 import { BlogService } from '../../Services/Blog/BlogService';
 import { RolesService } from '../../Services/Roles/RolesService';
 import { UserService } from '../../Services/User/UserService';
+import { NotificationService } from '../../Services/User/NotificationService';
 
 @Controller('/blogs')
 export class BlogController {
