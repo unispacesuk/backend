@@ -5,6 +5,7 @@
 
 DROP TABLE events;
 DROP TABLE resource_files;
+DROP TABLE private_messages;
 DROP TABLE chat_room_messages;
 DROP TABLE chat_rooms;
 DROP TABLE blog_votes;
