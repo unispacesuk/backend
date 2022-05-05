@@ -266,7 +266,7 @@ CREATE TABLE private_messages (
     read_at TIMESTAMP NULL, -- if read_at is not null then it is read
     PRIMARY KEY (_id)
 );
-ALTER SEQUENCE CHAT_ROOM_MESSAGES_ID_AI OWNED BY private_messages._id;
+ALTER SEQUENCE PRIVATE_MESSAGES_ID_AI OWNED BY private_messages._id;
 
 -- resources list
 CREATE TABLE resource_files (
