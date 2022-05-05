@@ -164,6 +164,8 @@ export class RoomsService {
   static async isUserInRoom(roomId: string, invitee: number) {
     const result = await this.client.query('SELECT users FROM chat_rooms WHERE _id = $1', [roomId]);
 
+    if (!result.rows.length) return Promise.resolve(null);
+
     return Promise.resolve(result.rows[0].users.includes(invitee));
   }
 
