@@ -1,5 +1,4 @@
 import { Connection } from '../../Config';
-import { CategoryModel } from '../../Models';
 import { param } from '../../Core/Routing';
 
 export class StatisticsService {
@@ -33,15 +32,4 @@ export class StatisticsService {
       );
     });
   }
-
-  // TODO: These stats below
-  static async getTotalUsers() {}
-
-  static async getTotalThreads() {}
-
-  static async getTotalReplies() {}
-
-  static async getTotalBlogArticles() {}
-
-  static async getTotalQuestions() {}
 }

@@ -96,41 +96,5 @@ export class WebsocketServer {
         }
       });
     });
-
-    // this.ping();
-  }
-
-  // send to single user
-  sendMessage(user: number, type: string) {
-    const connection = WebsocketChannelManager.getConnections().find((c) => c.user === user);
-    if (connection && connection.user === user) {
-      console.log('sending?');
-      const msg = {
-        event: 'notification',
-        type: type,
-        user: user,
-      };
-
-      connection.connection.send(JSON.stringify(msg));
-    }
-  }
-
-  ping() {
-    setInterval(() => {
-      const clients: IConnection[] = WebsocketChannelManager.getConnections();
-      clients.forEach(async (client) => {
-        if (!client.isAlive) {
-          WebsocketChannelManager.getConnections().splice(
-            WebsocketChannelManager.getConnections().indexOf(client),
-            1
-          );
-          await UserService.setUserStatus(client.user, false);
-          return client.connection.close();
-        }
-
-        client.isAlive = false;
-        client.connection.send(JSON.stringify({ type: 'ping', user: client.user }));
-      });
-    }, 15000);
   }
 }
