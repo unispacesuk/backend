@@ -65,9 +65,6 @@ export class Api {
       } else {
         Api.apiRoutes.use(controllerData.path, <Router>group);
       }
-
-      // Api.apiRoutes.use(controllerData.path, <Router>group);
-      // });
     }
 
     return this;

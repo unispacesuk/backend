@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Patch, Post } from '../../Core/Decorators';
+import { Controller, Delete, Get, Middleware, Patch, Post } from '../../Core/Decorators';
 import { file, param, request, respond } from '../../Core/Routing';
 import { UserService } from '../../Services/User/UserService';
 import { AuthenticationService as AuthService } from '../../Services/Auth/AuthenticationService';
@@ -15,7 +15,7 @@ export class UserController {
   @Get('/data/:username')
   async getUserData() {
     const username: string = param('username');
-    if (!username) {
+    if ( !username ) {
       return respond({ error: 'No username provided.' }, 400);
     }
 
@@ -28,12 +28,12 @@ export class UserController {
       return respond({ error }, 400);
     }
 
-    if (!user) {
+    if ( !user ) {
       return respond({ error: 'No user found with that username.' }, 200);
     }
 
-    if (user.privacy.profile) {
-      return respond({ error: "This user's profile is private.", private: true }, 200);
+    if ( user.privacy.profile ) {
+      return respond({ error: 'This user\'s profile is private.', private: true }, 200);
     }
 
     return respond({ user }, 200);
@@ -58,9 +58,10 @@ export class UserController {
     return respond({ avatar }, 200);
   }
 
-  @Post('/avatar', [AuthService.authenticate, upload.single('avatar')])
+  // @Post('/avatar', [AuthService.authenticate, upload.single('avatar')])
+  @Post('/avatar', [AuthService.authenticate, Config.uploadAvatar])
   async updateUserAvatar() {
-    if (!file()) {
+    if ( !file() ) {
       return respond({ error: 'No file uploaded.' }, 400);
     }
 
@@ -100,12 +101,12 @@ export class UserController {
   async updateUserPassword(): Promise<IResponse> {
     try {
       // check if the current password is correct
-      if (!(await UserService.isValidPassword())) {
+      if ( !(await UserService.isValidPassword()) ) {
         return respond({ error: 'The current password is wrong.' }, 400);
       }
 
       // check if the passwords match
-      if (!UserService.doPasswordsMatch()) {
+      if ( !UserService.doPasswordsMatch() ) {
         return respond({ error: 'The new passwords do not match.' }, 400);
       }
 

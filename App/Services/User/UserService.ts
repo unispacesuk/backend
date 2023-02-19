@@ -39,7 +39,7 @@ export class UserService {
     return new Promise((resolve, reject) => {
       this.client.query(
         'UPDATE users SET avatar = $1 WHERE _id = $2 RETURNING avatar',
-        [file()?.filename, userId],
+        [file()?.fileName, userId],
         (error, result) => {
           if (error) return reject(error);
           resolve(result.rows[0]);

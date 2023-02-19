@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ricdotnet/logger": "^0.0.3",
+    "@ricdotnet/upfile": "^0.0.9",
     "@types/bcrypt": "^5.0.0",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/morgan": "^1.9.3",

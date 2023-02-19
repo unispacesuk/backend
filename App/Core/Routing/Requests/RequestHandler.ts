@@ -78,7 +78,8 @@ export class RequestHandler {
   }
 
   file() {
-    return this._request!.file;
+    // @ts-ignore
+    return this._request!.files[0];
   }
 
   /**
